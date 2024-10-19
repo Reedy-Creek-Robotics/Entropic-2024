@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.bareBones;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
@@ -26,7 +27,9 @@ public class HardwareTester extends OpMode {
     public void init() {
         devices = new ArrayList<>();
         for (HardwareDevice device : hardwareMap) {
-            devices.add(device);
+            if(device instanceof DcMotorEx || device instanceof Servo || device instanceof CRServo || device instanceof DcMotor){
+                devices.add(device);
+            }
 
             if(device instanceof DcMotorEx){
                 ((DcMotorEx) device).setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -64,7 +67,7 @@ public class HardwareTester extends OpMode {
             telemetry.addData("encoder tolerance", motor.getTargetPositionTolerance());
 
             double power = controller.leftStickY();
-            motor.setPower(power*0.5);
+            motor.setPower(power);
 
             if (controller.isPressed(Controller.Button.CIRCLE)) {
                 motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
