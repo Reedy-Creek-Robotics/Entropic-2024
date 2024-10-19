@@ -65,9 +65,9 @@ public class TeloOpMain extends OpMode {
             hooker.moveToTicks(hooker.getPosition() - 10);
         }*/
 
-        if (driver.isPressed(Controller.Button.RIGHT_BUMPER)){
+        if (driver.isButtonDown(Controller.Button.RIGHT_BUMPER)){
             intake.intake(1);
-        } else if (driver.isPressed(Controller.Button.LEFT_BUMPER)) {
+        } else if (driver.isButtonDown(Controller.Button.LEFT_BUMPER)) {
             intake.intake(-1);
         }else {
             intake.intake(0);
