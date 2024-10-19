@@ -27,9 +27,7 @@ public class HardwareTester extends OpMode {
     public void init() {
         devices = new ArrayList<>();
         for (HardwareDevice device : hardwareMap) {
-            if(device instanceof DcMotorEx || device instanceof Servo || device instanceof CRServo || device instanceof DcMotor){
-                devices.add(device);
-            }
+            devices.add(device);
 
             if(device instanceof DcMotorEx){
                 ((DcMotorEx) device).setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -67,7 +65,7 @@ public class HardwareTester extends OpMode {
             telemetry.addData("encoder tolerance", motor.getTargetPositionTolerance());
 
             double power = controller.leftStickY();
-            motor.setPower(power);
+            motor.setPower(power*0.5);
 
             if (controller.isPressed(Controller.Button.CIRCLE)) {
                 motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
