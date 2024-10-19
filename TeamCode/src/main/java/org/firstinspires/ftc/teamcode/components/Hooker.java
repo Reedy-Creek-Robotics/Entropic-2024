@@ -62,7 +62,7 @@ public class Hooker extends BaseComponent{
 
     public void rotate(double power){
         if(!isBusy()){
-            if(power>0){
+            if(power != 0){
                 motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 motor.setPower(power);
             }else {
