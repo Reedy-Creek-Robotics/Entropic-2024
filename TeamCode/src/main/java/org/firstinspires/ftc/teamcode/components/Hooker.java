@@ -87,6 +87,8 @@ public class Hooker extends BaseComponent{
     private class MoveToTicks implements Command {
         private int ticks;
 
+        //test
+
         public MoveToTicks(int ticks) {
             this.ticks = ticks;
         }
