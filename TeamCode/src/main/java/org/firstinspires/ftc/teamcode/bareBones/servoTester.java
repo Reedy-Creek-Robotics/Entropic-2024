@@ -11,8 +11,8 @@ public class servoTester extends OpMode {
 
     @Override
     public void init() {
-        right = hardwareMap.crservo.get("rightIntake");
-        left = hardwareMap.crservo.get("leftIntake");
+        right = hardwareMap.crservo.get("RightIntake");
+        left = hardwareMap.crservo.get("LeftIntake");
     }
 
     @Override

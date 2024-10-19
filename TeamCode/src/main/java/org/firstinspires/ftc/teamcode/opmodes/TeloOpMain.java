@@ -54,9 +54,9 @@ public class TeloOpMain extends OpMode {
         }
 
         if (driver.isPressed(Controller.Button.DPAD_UP)){
-            intake.moveToTicks(intake.getPosition() - 100);
+            intake.moveToTicks(intake.getPosition() + 10);
         } else if (driver.isPressed(Controller.Button.DPAD_DOWN)) {
-            intake.moveToTicks(intake.getPosition() + 100);
+            intake.moveToTicks(intake.getPosition() - 10);
         }
 
         if (driver.isPressed(Controller.Button.TRIANGLE)){
@@ -65,17 +65,15 @@ public class TeloOpMain extends OpMode {
             hooker.moveToTicks(hooker.getPosition() - 10);
         }
 
-        if (driver.isPressed(RIGHT_TRIGGER)){
+        if (driver.isPressed(Controller.Button.RIGHT_BUMPER)){
             intake.intake(1);
-        } else if (driver.isPressed(LEFT_TRIGGER)) {
+        } else if (driver.isPressed(Controller.Button.LEFT_BUMPER)) {
             intake.intake(-1);
         }else {
             intake.intake(0);
         }
 
-        driveTrain.update();
-        hooker.update();
-        intake.update();
+        hooker.rotate(driver.rightTrigger()-driver.leftTrigger());
 
 
     }

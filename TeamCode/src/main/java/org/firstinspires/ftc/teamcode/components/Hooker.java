@@ -60,6 +60,19 @@ public class Hooker extends BaseComponent{
         moveToTicks(angle.ticks);
     }
 
+    public void rotate(double power){
+        if(!isBusy()){
+            if(power>0){
+                motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                motor.setPower(power);
+            }else {
+                motor.setTargetPosition(motor.getCurrentPosition());
+                motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                motor.setPower(idlePower);
+            }
+        }
+    }
+
     /**
      * Move the slide to the set amount of ticks
      */
