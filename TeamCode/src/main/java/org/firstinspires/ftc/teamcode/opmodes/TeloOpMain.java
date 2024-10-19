@@ -23,6 +23,7 @@ public class TeloOpMain extends OpMode {
     DriveTrain driveTrain;
     Hooker hooker;
     Intake intake;
+    double speed = 1;
 
     RobotContext robotContext;
 
@@ -50,13 +51,13 @@ public class TeloOpMain extends OpMode {
             double strafe = driver.leftStickX();
             double turn = driver.rightStickX();
 
-            driveTrain.drive(drive, strafe, turn, 0.5);
+            driveTrain.drive(drive, strafe, turn, speed);
         }
 
         if (driver.isPressed(Controller.Button.DPAD_UP)){
-            intake.moveToTicks(intake.getPosition() + 100);
+            intake.moveToTicks(intake.getPosition() - 50);
         } else if (driver.isPressed(Controller.Button.DPAD_DOWN)) {
-            intake.moveToTicks(intake.getPosition() - 100);
+            intake.moveToTicks(intake.getPosition() + 50);
         }
 
        /* if (driver.isPressed(Controller.Button.TRIANGLE)){
@@ -65,15 +66,25 @@ public class TeloOpMain extends OpMode {
             hooker.moveToTicks(hooker.getPosition() - 10);
         }*/
 
-        if (driver.isButtonDown(Controller.Button.RIGHT_BUMPER)){
+        if (driver.rightTrigger() > 0.2){
             intake.intake(1);
-        } else if (driver.isButtonDown(Controller.Button.LEFT_BUMPER)) {
+        } else if (driver.leftTrigger() > 0.2) {
             intake.intake(-1);
         }else {
             intake.intake(0);
         }
+        if(driver.isButtonDown(Controller.Button.LEFT_BUMPER)){
+            hooker.rotate(-1);
+        } else if (driver.isButtonDown(Controller.Button.RIGHT_BUMPER)){
+            hooker.rotate(1);
+        } else {
+            hooker.rotate(0);
+        }
 
-        hooker.rotate(driver.rightTrigger()-driver.leftTrigger());
+
+        if(driver.isPressed(Controller.Button.LEFT_STICK_BUTTON)){
+            speed = (speed == 1) ? 0.3 : 1;
+        }
 
 
         driveTrain.update();
