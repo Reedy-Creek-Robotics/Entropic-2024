@@ -26,9 +26,9 @@ public class Intake extends BaseComponent{
     private int targetPosition;
     public Intake(RobotContext context) {
         super(context);
-        rightServo = hardwareMap.crservo.get("rightServo");
-        leftServo = hardwareMap.crservo.get("leftServo");
-        motor = (DcMotorEx) hardwareMap.dcMotor.get("intakeArm");
+        rightServo = hardwareMap.crservo.get("RightIntake");
+        leftServo = hardwareMap.crservo.get("LeftIntake");
+        motor = (DcMotorEx) hardwareMap.dcMotor.get("IntakeArm");
     }
 
     private double idlePower = 0.4;

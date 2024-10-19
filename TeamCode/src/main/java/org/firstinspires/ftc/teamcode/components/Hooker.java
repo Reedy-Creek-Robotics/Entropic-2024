@@ -23,7 +23,7 @@ public class Hooker extends BaseComponent{
 
     public Hooker(RobotContext context) {
         super(context);
-        motor = (DcMotorEx) hardwareMap.dcMotor.get("hangArm");
+        motor = (DcMotorEx) hardwareMap.dcMotor.get("HangArm");
     }
 
     private double idlePower = 0.4;
