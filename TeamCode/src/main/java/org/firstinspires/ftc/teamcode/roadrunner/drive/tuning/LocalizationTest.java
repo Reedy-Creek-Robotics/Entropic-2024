@@ -21,7 +21,7 @@ public class LocalizationTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         DriveTrain driveTrain = new DriveTrain(BaseComponent.createRobotContext(this));
-        ModifiedMecanumDrive drive = driveTrain.roadrunner;
+        ModifiedMecanumDrive drive = driveTrain.getRoadrunner();
 
         driveTrain.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
