@@ -5,6 +5,9 @@ import static org.firstinspires.ftc.teamcode.components.RobotDescriptor.Odometry
 
 import android.annotation.SuppressLint;
 
+import com.acmerobotics.roadrunner.drive.MecanumDrive;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -15,6 +18,7 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 import org.firstinspires.ftc.teamcode.geometry.Heading;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.ModifiedMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.util.DriveUtil;
 
 import java.util.Arrays;
@@ -99,6 +103,10 @@ public class DriveTrain extends BaseComponent {
         }
     }
 
+    public MecanumDrive getRoadRunner(){
+        return roadrunner;
+    }
+
     public void setMode(DcMotor.RunMode runMode) {
         for (DcMotorEx motor : motors) {
             motor.setMode(runMode);
@@ -134,16 +142,26 @@ public class DriveTrain extends BaseComponent {
     public void driverRelative(double drive, double strafe, double turn, double speedFactor) {
         DriveUtil.MotorPowers motorPowers = context.driveUtil.calculateWheelPowerForDriverRelative(drive, strafe, turn, new Heading(Math.toDegrees(context.localizer.getPoseEstimate().getHeading())), speedFactor);
 
+        // DriveUtil.MotorPowers motorPowers = context.driveUtil.calculateWheelPowerForDriverRelative(drive, strafe, turn, new Heading(), speedFactor);
+
         leftFront.setPower(motorPowers.frontLeft);
         leftRear.setPower(motorPowers.backLeft);
         rightFront.setPower(motorPowers.frontRight);
         rightRear.setPower(motorPowers.backRight);
     }
 
-    public class followTrajectory implements Command {
+    public void followTrajectory(TrajectorySequence trajectory){
+        executeCommand(new FollowTrajectory(trajectory));
+    }
+
+    public TrajectorySequenceBuilder trajectoryBuilder(Pose2d start){
+        return roadrunner.trajectorySequenceBuilder(start);
+    }
+
+    public class FollowTrajectory implements Command {
         private TrajectorySequence trajectory;
 
-        public followTrajectory(TrajectorySequence trajectory) {
+        public FollowTrajectory(TrajectorySequence trajectory) {
             this.trajectory = trajectory;
         }
 

@@ -37,6 +37,22 @@ public class RobotContext {
         //this.alliance = Alliance.RED;
     }
 
+    public OpMode getOpMode() {
+        return opMode;
+    }
+
+    public RobotDescriptor getDescriptor() {
+        return descriptor;
+    }
+
+    public Localizer getLocalizer() {
+        return localizer;
+    }
+
+    public DriveUtil getDriveUtil() {
+        return driveUtil;
+    }
+
     /*public Alliance getAlliance() {
         return alliance;
     }*/
