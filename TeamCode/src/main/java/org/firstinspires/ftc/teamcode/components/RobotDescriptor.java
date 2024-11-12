@@ -227,6 +227,11 @@ public class RobotDescriptor {
 
     }
 
+    public static class OTOSTuner {
+
+
+    }
+
     /**
      * The webcam used for detecting April tags.
      */
