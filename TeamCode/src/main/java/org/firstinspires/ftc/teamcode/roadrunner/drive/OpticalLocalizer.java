@@ -10,13 +10,23 @@ import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 public class OpticalLocalizer implements Localizer {
     SparkFunOTOS sensor;
+    BNO055IMU imu;
+    Orientation lastAngles;
+    double globalAngle;
 
-    public OpticalLocalizer(HardwareMap hardwareMap, BNO055IMU imu) {
+    public OpticalLocalizer(HardwareMap hardwareMap) {
         sensor = hardwareMap.get(SparkFunOTOS.class,"OTOS");
+        lastAngles = new Orientation();
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        callibrateIMU();
+        resetAngle();
         configureOtos();
     }
 
@@ -24,7 +34,7 @@ public class OpticalLocalizer implements Localizer {
     @NonNull
     @Override
     public Pose2d getPoseEstimate() {
-        return new Pose2d(sensor.getPosition().x,sensor.getPosition().y,sensor.getPosition().h);
+        return new Pose2d(sensor.getPosition().x,sensor.getPosition().y,getAngle());
     }
 
     @Override
@@ -40,7 +50,7 @@ public class OpticalLocalizer implements Localizer {
 
     @Override
     public void update() {
-
+        sensor.setPosition(new SparkFunOTOS.Pose2D(sensor.getPosition().x,sensor.getPosition().y,getAngle()));
     }
 
     private void configureOtos() {
@@ -52,7 +62,7 @@ public class OpticalLocalizer implements Localizer {
         // myOtos.setLinearUnit(DistanceUnit.METER);
         sensor.setLinearUnit(DistanceUnit.INCH);
         // myOtos.setAngularUnit(AnguleUnit.RADIANS);
-        sensor.setAngularUnit(AngleUnit.RADIANS);
+        sensor.setAngularUnit(AngleUnit.DEGREES);
 
         // Assuming you've mounted your sensor to a robot and it's not centered,
         // you can specify the offset for the sensor relative to the center of the
@@ -65,7 +75,7 @@ public class OpticalLocalizer implements Localizer {
         // clockwise (negative rotation) from the robot's orientation, the offset
         // would be {-5, 10, -90}. These can be any value, even the angle can be
         // tweaked slightly to compensate for imperfect mounting (eg. 1.3 degrees).
-        SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(-8/25.4, 104/25.4, Math.toRadians(-90));
+        SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(0,0, -90);
         sensor.setOffset(offset);
 
         // Here we can set the linear and angular scalars, which can compensate for
@@ -84,7 +94,7 @@ public class OpticalLocalizer implements Localizer {
         // multiple speeds to get an average, then set the linear scalar to the
         // inverse of the error. For example, if you move the robot 100 inches and
         // the sensor reports 103 inches, set the linear scalar to 100/103 = 0.971
-        sensor.setLinearScalar(1.0);
+        sensor.setLinearScalar(1.00875711628);
         sensor.setAngularScalar(1.0);
 
         // The IMU on the OTOS includes a gyroscope and accelerometer, which could
@@ -114,6 +124,56 @@ public class OpticalLocalizer implements Localizer {
         SparkFunOTOS.Version hwVersion = new SparkFunOTOS.Version();
         SparkFunOTOS.Version fwVersion = new SparkFunOTOS.Version();
         sensor.getVersionInfo(hwVersion, fwVersion);
+    }
+    private void callibrateIMU(){
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+
+        parameters.mode                = BNO055IMU.SensorMode.IMU;
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.loggingEnabled      = false;
+
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+
+
+        imu.initialize(parameters);
+
+
+        // make sure the imu gyro is calibrated before continuing.
+        while (!imu.isGyroCalibrated())
+        {
+
+        }
+
+    }
+    private double getAngle() {
+        // We experimentally determined the Z axis is the axis we want to use for heading angle.
+        // We have to process the angle because the imu works in euler angles so the Z axis is
+        // returned as 0 to +180 or 0 to -180 rolling back to -179 or +179 when rotation passes
+        // 180 degrees. We detect this transition and track the total cumulative angle of rotation.
+
+        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        double deltaAngle = angles.firstAngle - lastAngles.firstAngle;
+
+        if (deltaAngle < -180)
+            deltaAngle += 360;
+        else if (deltaAngle > 180)
+            deltaAngle -= 360;
+
+        globalAngle += deltaAngle;
+
+        lastAngles = angles;
+
+        return globalAngle;
+    }
+
+    private void resetAngle() {
+        lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        globalAngle = 0;
     }
 
 }
