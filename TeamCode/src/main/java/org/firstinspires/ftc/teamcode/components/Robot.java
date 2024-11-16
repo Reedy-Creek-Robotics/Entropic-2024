@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
+import com.qualcomm.robotcore.robocol.Command;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.roadrunner.util.LynxModuleUtil;
@@ -93,6 +94,7 @@ public class Robot extends BaseComponent{
         super.update();
 
         // Update telemetry once per iteration after all components have been called.
+        telemetry.addData("position",getDriveTrain().getRoadRunner().getLocalizer().getPoseEstimate());
         telemetry.update();
 
     }
@@ -161,6 +163,19 @@ public class Robot extends BaseComponent{
                 opMode,
                 new RobotDescriptor()
         );
+    }
+
+    public void waitForCommandsToFinish() {
+        waitForCommandsToFinish(Double.MAX_VALUE);
+    }
+
+    public void waitForCommandsToFinish(double maxTime) {
+        // While the components are busy trying to execute a command, keep looping and giving
+        // each of them a chance to update.
+        ElapsedTime time = new ElapsedTime();
+        while (!isStopRequested() && isBusy() && time.seconds() < maxTime) {
+            update();
+        }
     }
 
     public DriveTrain getDriveTrain() {

@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.components.Robot;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.util.FileUtil;
 
 public abstract class AutoMain extends LinearOpMode {
     protected Robot robot;
@@ -31,11 +30,12 @@ public abstract class AutoMain extends LinearOpMode {
     }
 
     public void runPath(){
-        robot.getDriveTrain().followTrajectory(toPark());
+        robot.getDriveTrain().followTrajectory(autoTrajectory(getStartPosition()));
+        robot.waitForCommandsToFinish();
     }
 
     public abstract Pose2d getStartPosition();
-    public abstract TrajectorySequence toPark();
+    public abstract TrajectorySequence autoTrajectory(Pose2d pos);
 
     /*public abstract void park();*/
 }

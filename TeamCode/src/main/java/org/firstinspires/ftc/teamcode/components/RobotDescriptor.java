@@ -48,8 +48,8 @@ public class RobotDescriptor {
             0.0001,
             30,
             30,
-            180,//138.74,
-            180,
+            270,
+            270,
             RevHubOrientationOnRobot.LogoFacingDirection.DOWN,
             RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD,
             new PIDCoefficients(8, 0, 0),
@@ -134,7 +134,7 @@ public class RobotDescriptor {
             this.driveWheelRadius = driveWheelRadius;
             this.driveGearRatio = driveGearRatio;
             this.driveTrackWidth = driveTrackWidth;
-            this.kv = kv ;
+            this.kv = kv;
             this.ka = ka;
             this.kStatic = kStatic;
             this.maxVel = maxVel;
@@ -177,6 +177,33 @@ public class RobotDescriptor {
             return new ProfileAccelerationConstraint(maxAccel);
         }
 
+    }
+
+    public static OpticalTuner OTOS_TUNER = new OpticalTuner(
+            0,
+            0,
+            0,
+            1,
+            1
+    );
+
+    public static class OpticalTuner {
+
+        public double x;
+        public double y;
+        public double h;
+
+        public double linearScalar;
+        public double angularScalar;
+
+
+        public OpticalTuner(double x, double y, double h, double linearScalar, double angularScalar) {
+            this.x = x;
+            this.y = y;
+            this.h = h;
+            this.linearScalar = linearScalar;
+            this.angularScalar = angularScalar;
+        }
     }
 
     public static OdometryTuner ODOMETRY_TUNER = new OdometryTuner(
