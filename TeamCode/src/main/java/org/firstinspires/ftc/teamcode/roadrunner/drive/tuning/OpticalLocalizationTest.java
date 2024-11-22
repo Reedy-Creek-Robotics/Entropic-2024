@@ -12,6 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.components.BaseComponent;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
+import org.firstinspires.ftc.teamcode.components.RobotDescriptor;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.ModifiedMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.OpticalLocalizer;
 
@@ -22,7 +23,7 @@ public class OpticalLocalizationTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        OTOS = new OpticalLocalizer(this.hardwareMap);
+        OTOS = new OpticalLocalizer(this.hardwareMap,new RobotDescriptor());
 
         telemetry.addLine("ready");
         telemetry.update();
