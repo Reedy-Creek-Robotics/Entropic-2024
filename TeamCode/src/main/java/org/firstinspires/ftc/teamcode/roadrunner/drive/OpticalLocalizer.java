@@ -18,6 +18,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.components.RobotContext;
 import org.firstinspires.ftc.teamcode.components.RobotDescriptor;
 import org.firstinspires.ftc.teamcode.roadrunner.util.Encoder;
 
@@ -34,26 +35,28 @@ public class OpticalLocalizer extends TwoTrackingWheelLocalizer {
     Pose2d pose;
 
 
-    public OpticalLocalizer(HardwareMap hardwareMap, RobotDescriptor descriptor) {
+    public OpticalLocalizer(RobotContext context) {
         super(Arrays.asList(
-                new Pose2d(descriptor.ODOMETRY_TUNER.parrallel_x, descriptor.ODOMETRY_TUNER.parrallel_y, 0),
-                new Pose2d(descriptor.ODOMETRY_TUNER.perpendicular_x, descriptor.ODOMETRY_TUNER.perpendicular_y, Math.toRadians(90))
+                new Pose2d(context.descriptor.OTOS_TUNER.x, context.descriptor.OTOS_TUNER.y, 0),
+                new Pose2d(context.descriptor.OTOS_TUNER.x, context.descriptor.OTOS_TUNER.y, Math.toRadians(90))
         ));
 
-        opticalTuner = descriptor.OTOS_TUNER;
-        driveTuner = descriptor.DRIVE_TUNER;
+        opticalTuner = context.descriptor.OTOS_TUNER;
+        driveTuner = context.descriptor.DRIVE_TUNER;
 
-        imu = hardwareMap.get(IMU.class, "imu");
+        imu = context.opMode.hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 driveTuner.logoFacingDir,  driveTuner.usbFacingDir));
         imu.initialize(parameters);
 
-        sensor = hardwareMap.get(SparkFunOTOS.class, "OTOS");
+        context.opMode.telemetry.addLine("test");
+        sensor = context.opMode.hardwareMap.get(SparkFunOTOS.class, "OTOS");
 
         // TODO: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
         //perpendicularEncoder.setDirection(Encoder.Direction.REVERSE);
 
         configureOtos();
+
         sensor.setSignalProcessConfig(new SparkFunOTOS.SignalProcessConfig((byte) 0x0B));
     }
 
@@ -72,8 +75,8 @@ public class OpticalLocalizer extends TwoTrackingWheelLocalizer {
     @Override
     public List<Double> getWheelPositions() {
         return Arrays.asList(
-                sensor.getPosition().x * opticalTuner.linearScalar,
-                sensor.getPosition().y * opticalTuner.linearScalar
+                sensor.getPosition().y * opticalTuner.linearScalar,
+                -sensor.getPosition().x * opticalTuner.linearScalar
         );
     }
 
@@ -85,8 +88,9 @@ public class OpticalLocalizer extends TwoTrackingWheelLocalizer {
         //  compensation method
 
         return Arrays.asList(
-                sensor.getVelocity().x * opticalTuner.linearScalar,
-                sensor.getVelocity().y * opticalTuner.linearScalar
+                sensor.getVelocity().y * opticalTuner.linearScalar,
+                -sensor.getVelocity().x * opticalTuner.linearScalar
+
         );
     }
 
@@ -99,7 +103,7 @@ public class OpticalLocalizer extends TwoTrackingWheelLocalizer {
         // myOtos.setLinearUnit(DistanceUnit.METER);
         sensor.setLinearUnit(DistanceUnit.INCH);
         // myOtos.setAngularUnit(AnguleUnit.RADIANS);
-        sensor.setAngularUnit(AngleUnit.DEGREES);
+        sensor.setAngularUnit(AngleUnit.RADIANS);
 
         // Assuming you've mounted your sensor to a robot and it's not centered,
         // you can specify the offset for the sensor relative to the center of the
@@ -112,7 +116,7 @@ public class OpticalLocalizer extends TwoTrackingWheelLocalizer {
         // clockwise (negative rotation) from the robot's orientation, the offset
         // would be {-5, 10, -90}. These can be any value, even the angle can be
         // tweaked slightly to compensate for imperfect mounting (eg. 1.3 degrees).
-        SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(0,0, -90);
+        SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(0,0, 0);
         sensor.setOffset(offset);
 
         // Here we can set the linear and angular scalars, which can compensate for
@@ -144,7 +148,7 @@ public class OpticalLocalizer extends TwoTrackingWheelLocalizer {
         // to wait until the calibration is complete. If no parameters are provided,
         // it will take 255 samples and wait until done; each sample takes about
         // 2.4ms, so about 612ms total
-        sensor.calibrateImu(1000,true);
+        sensor.calibrateImu();
 
         // Reset the tracking algorithm - this resets the position to the origin,
         // but can also be used to recover from some rare tracking errors
@@ -154,8 +158,8 @@ public class OpticalLocalizer extends TwoTrackingWheelLocalizer {
         // the origin. If your robot does not start at the origin, or you have
         // another source of location information (eg. vision odometry), you can set
         // the OTOS location to match and it will continue to track from there.
-//        SparkFunOTOS.Pose2D currentPosition = new SparkFunOTOS.Pose2D(0, 0, 0);
-//        sensor.setPosition(currentPosition);
+        SparkFunOTOS.Pose2D currentPosition = new SparkFunOTOS.Pose2D(30, 10, 0);
+        sensor.setPosition(currentPosition);
 
         // Get the hardware and firmware version
         SparkFunOTOS.Version hwVersion = new SparkFunOTOS.Version();

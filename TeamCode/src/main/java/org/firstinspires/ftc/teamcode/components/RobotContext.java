@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.components;
 import com.acmerobotics.roadrunner.localization.Localizer;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.teamcode.roadrunner.drive.OpticalLocalizer;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.TwoWheelTrackingLocalizer;
 import org.firstinspires.ftc.teamcode.util.DriveUtil;
@@ -29,11 +30,11 @@ public class RobotContext {
         this.opMode = opMode;
         this.descriptor = descriptor;
         this.driveUtil = new MecanumUtil();
-        this.localizer = new StandardTrackingWheelLocalizer(opMode.hardwareMap,
+        this.localizer = new OpticalLocalizer(this);/* new StandardTrackingWheelLocalizer(opMode.hardwareMap,
                 lastTrackingEncPositions,
                 lastTrackingEncVels,
                 this.descriptor.ODOMETRY_TUNER
-        );//new TwoWheelTrackingLocalizer(opMode.hardwareMap,this.descriptor);
+        );*///new TwoWheelTrackingLocalizer(opMode.hardwareMap,this.descriptor);
         //this.alliance = Alliance.RED;
     }
 

@@ -180,8 +180,8 @@ public class RobotDescriptor {
     }
 
     public static OpticalTuner OTOS_TUNER = new OpticalTuner(
-            -8/25.4,
-            104/25.4,
+            -104/25.4,
+            8/25.4,
             -90,
             1,
             1

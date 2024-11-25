@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.components.BaseComponent;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
 import org.firstinspires.ftc.teamcode.components.Hooker;
+import org.firstinspires.ftc.teamcode.components.HorizontalSlide;
 import org.firstinspires.ftc.teamcode.components.Intake;
 import org.firstinspires.ftc.teamcode.components.RobotContext;
 import org.firstinspires.ftc.teamcode.game.Controller;
@@ -23,6 +24,7 @@ public class TeloOpMain extends OpMode {
     DriveTrain driveTrain;
     Hooker hooker;
     Intake intake;
+    HorizontalSlide horizontalSlide;
     double speed = 1;
 
     RobotContext robotContext;
@@ -36,6 +38,7 @@ public class TeloOpMain extends OpMode {
         driveTrain = new DriveTrain(robotContext);
         hooker = new Hooker(robotContext);
         intake = new Intake(robotContext);
+        horizontalSlide = new HorizontalSlide(robotContext);
 
         driver = new Controller(gamepad1);
 
@@ -79,6 +82,12 @@ public class TeloOpMain extends OpMode {
             hooker.rotate(1);
         } else {
             hooker.rotate(0);
+        }
+
+        if(driver.isPressed(Controller.Button.CIRCLE)) {
+            horizontalSlide.contract();
+        } else if (driver.isPressed(Controller.Button.CROSS)){
+            horizontalSlide.expand();
         }
 
 
