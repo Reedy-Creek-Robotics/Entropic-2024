@@ -3,7 +3,12 @@ package org.firstinspires.ftc.teamcode.components;
 import com.acmerobotics.roadrunner.localization.Localizer;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.roadrunner.drive.OpticalLocalizer;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.roadrunner.drive.AprilTagLocalizer;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.TwoWheelTrackingLocalizer;
 import org.firstinspires.ftc.teamcode.util.DriveUtil;
@@ -20,9 +25,17 @@ public class RobotContext {
 
     public Localizer localizer;
 
+    public Localizer aprilTagLocalizer;
+    private Position cameraPosition = new Position(DistanceUnit.INCH,
+            0, 0, 0, 0);
+    private YawPitchRollAngles cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES,
+            0, -90, 0, 0);
+
     public DriveUtil driveUtil;
 
-    //public Alliance alliance;
+    public int alliance;
+
+    public WebcamName webcam;
 
     List<Integer> lastTrackingEncPositions = new ArrayList<>();
     List<Integer> lastTrackingEncVels = new ArrayList<>();
@@ -30,12 +43,15 @@ public class RobotContext {
         this.opMode = opMode;
         this.descriptor = descriptor;
         this.driveUtil = new MecanumUtil();
-        this.localizer = new OpticalLocalizer(this);/* new StandardTrackingWheelLocalizer(opMode.hardwareMap,
+        this.localizer = new StandardTrackingWheelLocalizer(opMode.hardwareMap,
                 lastTrackingEncPositions,
                 lastTrackingEncVels,
                 this.descriptor.ODOMETRY_TUNER
-        );*///new TwoWheelTrackingLocalizer(opMode.hardwareMap,this.descriptor);
-        //this.alliance = Alliance.RED;
+        );//new TwoWheelTrackingLocalizer(opMode.hardwareMap,this.descriptor);
+        //blue is negative one, red is positive one
+        this.aprilTagLocalizer = new AprilTagLocalizer(cameraPosition, cameraOrientation, webcam);
+        this.alliance = -1;
+        this.webcam = opMode.hardwareMap.get(WebcamName.class, "Webcam 1");
     }
 
     public OpMode getOpMode() {
@@ -50,15 +66,21 @@ public class RobotContext {
         return localizer;
     }
 
+    public Localizer getAprilTagLocalizer() {return aprilTagLocalizer;}
+
     public DriveUtil getDriveUtil() {
         return driveUtil;
     }
 
-    /*public Alliance getAlliance() {
+    public int getAlliance() {
         return alliance;
-    }*/
+    }
 
-   /* public enum Alliance{
+    public WebcamName getWebcam() {
+        return webcam;
+    }
+
+    /*public enum Alliance{
         BLUE(1,-90),
         RED(-1,90);
 

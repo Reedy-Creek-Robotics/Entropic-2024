@@ -37,5 +37,7 @@ public abstract class AutoMain extends LinearOpMode {
     public abstract Pose2d getStartPosition();
     public abstract TrajectorySequence autoTrajectory(Pose2d pos);
 
+
+
     /*public abstract void park();*/
 }
