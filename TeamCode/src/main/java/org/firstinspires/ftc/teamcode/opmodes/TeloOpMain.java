@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.components.Hooker;
 import org.firstinspires.ftc.teamcode.components.HorizontalSlide;
 import org.firstinspires.ftc.teamcode.components.Intake;
 import org.firstinspires.ftc.teamcode.components.RobotContext;
+import org.firstinspires.ftc.teamcode.components.ScoringSlide;
 import org.firstinspires.ftc.teamcode.game.Controller;
 import org.firstinspires.ftc.teamcode.geometry.Heading;
 
@@ -25,6 +26,7 @@ public class TeloOpMain extends OpMode {
     Hooker hooker;
     Intake intake;
     HorizontalSlide horizontalSlide;
+    ScoringSlide scoringSlide;
     double speed = 1;
 
     RobotContext robotContext;
@@ -39,6 +41,7 @@ public class TeloOpMain extends OpMode {
         hooker = new Hooker(robotContext);
         intake = new Intake(robotContext);
         horizontalSlide = new HorizontalSlide(robotContext);
+        scoringSlide = new ScoringSlide(robotContext);
 
         driver = new Controller(gamepad1);
 
@@ -76,18 +79,55 @@ public class TeloOpMain extends OpMode {
         }else {
             intake.intake(0);
         }
-        if(driver.isButtonDown(Controller.Button.LEFT_BUMPER)){
-            hooker.rotate(-1);
-        } else if (driver.isButtonDown(Controller.Button.RIGHT_BUMPER)){
-            hooker.rotate(1);
-        } else {
-            hooker.rotate(0);
-        }
 
         if(driver.isPressed(Controller.Button.CIRCLE)) {
             horizontalSlide.contract();
         } else if (driver.isPressed(Controller.Button.CROSS)){
             horizontalSlide.expand();
+        }
+        if(driver.isPressed(Controller.Button.DPAD_RIGHT)) {
+            switch (scoringSlide.getTarget()) {
+                case GROUND:
+                    scoringSlide.moveToHeight(ScoringSlide.Positions.WALL_EDGE);
+                    break;
+                case WALL_EDGE:
+                    scoringSlide.moveToHeight(ScoringSlide.Positions.LOW_BASKET);
+                    break;
+                case LOW_BASKET:
+                    scoringSlide.moveToHeight(ScoringSlide.Positions.LOW_BAR);
+                    break;
+                case LOW_BAR:
+                    scoringSlide.moveToHeight(ScoringSlide.Positions.HIGH_BAR);
+                    break;
+                case HIGH_BAR:
+                    scoringSlide.moveToHeight(ScoringSlide.Positions.HIGH_BASKET);
+                    break;
+                case HIGH_BASKET:
+                    scoringSlide.moveToHeight(ScoringSlide.Positions.GROUND);
+                    break;
+            }
+
+        } else if (driver.isPressed(Controller.Button.DPAD_LEFT)) {
+            switch (scoringSlide.getTarget()) {
+                case GROUND:
+                    scoringSlide.moveToHeight(ScoringSlide.Positions.HIGH_BASKET);
+                    break;
+                case WALL_EDGE:
+                    scoringSlide.moveToHeight(ScoringSlide.Positions.GROUND);
+                    break;
+                case LOW_BASKET:
+                    scoringSlide.moveToHeight(ScoringSlide.Positions.WALL_EDGE);
+                    break;
+                case LOW_BAR:
+                    scoringSlide.moveToHeight(ScoringSlide.Positions.LOW_BASKET);
+                    break;
+                case HIGH_BAR:
+                    scoringSlide.moveToHeight(ScoringSlide.Positions.LOW_BAR);
+                    break;
+                case HIGH_BASKET:
+                    scoringSlide.moveToHeight(ScoringSlide.Positions.HIGH_BAR);
+                    break;
+            }
         }
 
 

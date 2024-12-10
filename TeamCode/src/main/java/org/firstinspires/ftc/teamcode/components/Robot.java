@@ -25,6 +25,7 @@ public class Robot extends BaseComponent{
     private DriveTrain driveTrain;
     private Intake intake;
     private Hooker hooker;
+    private ScoringSlide scoreSlide;
 
     private int updateCount;
     private ElapsedTime initTime;
@@ -38,6 +39,7 @@ public class Robot extends BaseComponent{
         driveTrain = new DriveTrain(context);
         intake = new Intake(context);
         hooker = new Hooker(context);
+        scoreSlide = new ScoringSlide(context);
 
         addSubComponents(driveTrain,intake,hooker);
 
@@ -189,6 +191,10 @@ public class Robot extends BaseComponent{
     public Hooker getHooker() {
         return hooker;
     }
+
+    public ScoringSlide getScoringSlide() {
+        return scoreSlide;
+    };
 
     private double computeBatteryVoltage() {
         double result = Double.POSITIVE_INFINITY;
