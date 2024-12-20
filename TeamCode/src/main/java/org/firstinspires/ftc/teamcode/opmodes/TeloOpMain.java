@@ -48,6 +48,8 @@ public class TeloOpMain extends OpMode {
         driveTrain.init();
         hooker.init();
         intake.init();
+        horizontalSlide.init();
+        scoringSlide.init();
     }
 
     @Override
@@ -139,5 +141,7 @@ public class TeloOpMain extends OpMode {
         driveTrain.update();
         hooker.update();
         intake.update();
+        horizontalSlide.update();
+        scoringSlide.update();
     }
 }

@@ -49,9 +49,9 @@ public class RobotContext {
                 this.descriptor.ODOMETRY_TUNER
         );//new TwoWheelTrackingLocalizer(opMode.hardwareMap,this.descriptor);
         //blue is negative one, red is positive one
-        this.aprilTagLocalizer = new AprilTagLocalizer(cameraPosition, cameraOrientation, webcam);
+        //this.aprilTagLocalizer = new AprilTagLocalizer(cameraPosition, cameraOrientation, webcam);
         this.alliance = -1;
-        this.webcam = opMode.hardwareMap.get(WebcamName.class, "Webcam 1");
+        //this.webcam = opMode.hardwareMap.get(WebcamName.class, "Webcam 1");
     }
 
     public OpMode getOpMode() {

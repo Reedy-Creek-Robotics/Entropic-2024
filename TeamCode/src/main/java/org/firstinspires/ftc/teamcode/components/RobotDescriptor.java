@@ -183,7 +183,7 @@ public class RobotDescriptor {
             -104/25.4,
             8/25.4,
             -90,
-            1,
+            0.9583162,
             1
     );
 
