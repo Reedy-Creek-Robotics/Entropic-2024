@@ -34,6 +34,7 @@ import androidx.annotation.Nullable;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.localization.Localizer;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -70,24 +71,6 @@ import java.util.Map;
 
 public class AprilTagLocalizer implements Localizer {
 
-    private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
-    private final WebcamName webcamName;
-
-    Map<Integer,Pose2d> aprilTagIDPositions;
-
-    public AprilTagLocalizer(Position cameraPosition, YawPitchRollAngles cameraOrientation, WebcamName webcamName) {
-        this.cameraPosition = cameraPosition;
-        this.cameraOrientation = cameraOrientation;
-        this.webcamName = webcamName;
-
-        aprilTagIDPositions = new HashMap<Integer,Pose2d>();
-        aprilTagIDPositions.put(11,new Pose2d(0,0,0));
-        aprilTagIDPositions.put(12,new Pose2d(0,0,0));
-        aprilTagIDPositions.put(13,new Pose2d(0,0,0));
-        aprilTagIDPositions.put(14,new Pose2d(0,0,0));
-        aprilTagIDPositions.put(15,new Pose2d(0,0,0));
-        aprilTagIDPositions.put(16,new Pose2d(0,0,0));
-    }
 
     /**
      * Variables to store the position and orientation of the camera on the robot. Setting these
@@ -125,6 +108,8 @@ public class AprilTagLocalizer implements Localizer {
 
     private Pose2d positionEstimate;
 
+    private double range;
+
     /**
      * The variable to store our instance of the vision portal.
      */
@@ -133,6 +118,31 @@ public class AprilTagLocalizer implements Localizer {
     /**
      * Initialize the AprilTag processor.
      */
+
+    private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
+    private final WebcamName webcamName;
+
+    private Telemetry telemetry;
+
+    Map<Integer,Pose2d> aprilTagIDPositions;
+
+    public AprilTagLocalizer(Position cameraPosition, YawPitchRollAngles cameraOrientation, WebcamName webcamName, Telemetry telemetry) {
+        this.cameraPosition = cameraPosition;
+        this.cameraOrientation = cameraOrientation;
+        this.webcamName = webcamName;
+        this.telemetry = telemetry;
+
+        aprilTagIDPositions = new HashMap<Integer,Pose2d>();
+        aprilTagIDPositions.put(11,new Pose2d(0,0,0));
+        aprilTagIDPositions.put(12,new Pose2d(0,0,0));
+        aprilTagIDPositions.put(13,new Pose2d(0,0,0));
+        aprilTagIDPositions.put(14,new Pose2d(0,0,0));
+        aprilTagIDPositions.put(15,new Pose2d(0,0,0));
+        aprilTagIDPositions.put(16,new Pose2d(0,0,0));
+
+        initAprilTag();
+    }
+
     private void initAprilTag() {
 
         // Create the AprilTag processor.
@@ -144,13 +154,13 @@ public class AprilTagLocalizer implements Localizer {
                 //.setDrawTagOutline(true)
                 //.setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
                 //.setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
-                //.setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
+                .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
                 .setCameraPose(cameraPosition, cameraOrientation)
 
                 // == CAMERA CALIBRATION ==
                 // If you do not manually specify calibration parameters, the SDK will attempt
                 // to load a predefined calibration for your camera.
-                //.setLensIntrinsics(578.272, 578.272, 402.145, 221.506)
+                .setLensIntrinsics(458.511, 458.511, 308.875, 253.078)
                 // ... these parameters are fx, fy, cx, cy.
 
                 .build();
@@ -197,6 +207,8 @@ public class AprilTagLocalizer implements Localizer {
         // Disable or re-enable the aprilTag processor at any time.
         //visionPortal.setProcessorEnabled(aprilTag, true);
 
+        positionEstimate = new Pose2d(0,0,0);
+
     }   // end method initAprilTag()
 
     /**
@@ -240,7 +252,6 @@ public class AprilTagLocalizer implements Localizer {
     @Override
     public void setPoseEstimate(@NonNull Pose2d pose2d) {
         positionEstimate = pose2d;
-
     }
 
     @Nullable
@@ -253,25 +264,42 @@ public class AprilTagLocalizer implements Localizer {
     public void update() {
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         int index = 0;
-        if (currentDetections.isEmpty()){
-        }
-        else {
+        if (!currentDetections.isEmpty()){
             double min = currentDetections.get(0).ftcPose.range;
             for (AprilTagDetection aprilTagDetection : currentDetections){
                 min = Math.min(min,aprilTagDetection.ftcPose.range);
                 index = currentDetections.indexOf(aprilTagDetection);
             }
+
+            range = min;
+
+            AprilTagDetection closestDetection = currentDetections.get(index);
+
+            Pose2d tagPosition = aprilTagIDPositions.get(closestDetection.id);
+
+            Pose2d distanceFromTag = new Pose2d(closestDetection.ftcPose.x,closestDetection.ftcPose.y, closestDetection.ftcPose.yaw);
+
+            telemetry.addLine("here");
+            telemetry.addData("Tag Pos", distanceFromTag.toString());
+
+            this.setPoseEstimate(new Pose2d(tagPosition.getX()+ distanceFromTag.getX(),tagPosition.getY()+ distanceFromTag.getY(), tagPosition.getHeading() + distanceFromTag.getHeading()));
+        } else{
+            range = -1;
         }
-        AprilTagDetection closestDetection = currentDetections.get(index);
 
-
-        Pose2d tagPosition = aprilTagIDPositions.get(closestDetection.id);
-
-        Pose2d distanceFromTag = new Pose2d();
-
-        this.setPoseEstimate(new Pose2d(tagPosition.getX()+ distanceFromTag.getX(),tagPosition.getY()+ distanceFromTag.getY()));
     }
 
+    public List<AprilTagDetection> getDetections(){
+        return aprilTag.getDetections();
+    }
+
+
+    public boolean good_detection(){
+        if(range < 48 && range != -1){
+            return true;
+        }
+        return false;
+    }
 
 
 }

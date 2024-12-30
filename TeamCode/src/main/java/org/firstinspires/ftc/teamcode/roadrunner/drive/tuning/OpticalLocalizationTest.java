@@ -2,37 +2,30 @@ package org.firstinspires.ftc.teamcode.roadrunner.drive.tuning;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.localization.Localizer;
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.teamcode.components.BaseComponent;
-import org.firstinspires.ftc.teamcode.components.DriveTrain;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.components.RobotContext;
 import org.firstinspires.ftc.teamcode.components.RobotDescriptor;
-import org.firstinspires.ftc.teamcode.roadrunner.drive.ModifiedMecanumDrive;
-import org.firstinspires.ftc.teamcode.roadrunner.drive.OpticalLocalizer;
-import org.firstinspires.ftc.teamcode.roadrunner.drive.StandardTrackingWheelLocalizer;
-
-import java.util.ArrayList;
+import org.firstinspires.ftc.teamcode.roadrunner.drive.AprilTagLocalizer;
 
 @TeleOp
 public class OpticalLocalizationTest extends LinearOpMode {
 
-    Localizer OTOS;
-    RobotDescriptor descriptor;
-    RobotContext context;
+    AprilTagLocalizer aprilTagLocalizer;
+
+    private Position cameraPosition = new Position(DistanceUnit.INCH,
+            0, 0, 0, 0);
+    private YawPitchRollAngles cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES,
+            0, -90, 0, 0);
     @Override
     public void runOpMode() throws InterruptedException {
-        descriptor = new RobotDescriptor();
-        context = new RobotContext(this,descriptor );
-        OTOS = context.getLocalizer();
-
+        aprilTagLocalizer = new AprilTagLocalizer(cameraPosition, cameraOrientation, this.hardwareMap.get(WebcamName.class, "Webcam 1"), this.telemetry);
 
         telemetry.addLine("ready");
         telemetry.update();
@@ -40,13 +33,16 @@ public class OpticalLocalizationTest extends LinearOpMode {
         waitForStart();
 
         while (!isStopRequested()) {
-            Pose2d poseEstimate = OTOS.getPoseEstimate();
+            Pose2d poseEstimate = aprilTagLocalizer.getPoseEstimate();
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", (poseEstimate.getHeading()));
+
+
+            telemetry.addData("detections:", aprilTagLocalizer.getDetections());
             telemetry.update();
 
-            OTOS.update();
+            aprilTagLocalizer.update();
         }
     }
 }
