@@ -23,7 +23,7 @@ public class intakeTester extends OpMode {
     @Override
     public void init() {
         controller = new Controller(gamepad1);
-        arm = hardwareMap.servo.get("ArmRotation");
+        arm = hardwareMap.servo.get("Rotator");
         linkage = hardwareMap.servo.get("Linkage");
 
         arm.setPosition(rotationPos);

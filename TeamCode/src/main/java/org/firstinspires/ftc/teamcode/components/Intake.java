@@ -4,64 +4,43 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 public class Intake extends BaseComponent{
 
-    public static final int TARGET_REACHED_THRESHOLD = 5;
-
-    public enum Angles {
-        GROUND(0);
-
-        private final int ticks;
-
-        Angles(int ticks){
-            this.ticks = ticks;
-        }
-    }
+    double startLinkagePos = 0.15;
+    double endLinkagePos = 0.75;
+    double startRotatorPos = 0.55;
+    double endRotatorPos = 0;
+    double startRotator2Pos = 0.62;
+    double endRotator2Pos = 0;
+    double linkagePos = startLinkagePos;
+    double rotatorPos = startRotatorPos;
+    double rotator2Pos = startRotator2Pos;
 
     public CRServo rightServo;
     public CRServo leftServo;
-    public DcMotorEx motor;
+    public Servo rotator;
+    public Servo rotator2;
+    public Servo linkage;
 
     private int targetPosition;
     public Intake(RobotContext context) {
         super(context);
         rightServo = hardwareMap.crservo.get("RightIntake");
         leftServo = hardwareMap.crservo.get("LeftIntake");
-        motor = (DcMotorEx) hardwareMap.dcMotor.get("IntakeArm");
+        rotator = hardwareMap.servo.get("Rotator");
+        rotator2 = hardwareMap.servo.get("Rotator2");
+        linkage = hardwareMap.servo.get("Linkage");
     }
 
-    private double idlePower = 0.4;
-    private double ascendingPower = 1.0;
-    private double descendingPower = 1.0;
 
     @Override
     public void init(){
-        targetPosition = Angles.GROUND.ticks;
-
-        motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //motor.setDirection(DcMotorSimple.Direction.REVERSE);
-    }
-
-    public void resetSlideTicks() {
-        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    }
-
-    public int getPosition() {
-        return (motor.getCurrentPosition());
-    }
-
-    public void stopMotors() {
-        motor.setTargetPosition(motor.getCurrentPosition());
-        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motor.setPower(idlePower);
-    }
-
-    public void moveToHeight(Angles angle) {
-        // If the height is at the small pole or above, also reset the deliver offset to move down.
-        moveToTicks(angle.ticks);
+        telemetry.addLine("intake initialized");
+        rotator.setPosition(rotatorPos);
+        rotator2.setPosition(rotator2Pos);
+        linkage.setPosition(linkagePos);
     }
 
     public void intake(double power){
@@ -69,51 +48,35 @@ public class Intake extends BaseComponent{
         leftServo.setPower(-power);
     }
 
-    /**
-     * Move the slide to the set amount of ticks
-     */
-    public void moveToTicks(int ticks) {
-        //ticks = ensureSafeTicks(ticks);
-        this.targetPosition = ticks;
-        //this.manualControl = false;
-        stopAllCommands();
-        executeCommand(new MoveToTicks(ticks));
+    public void extend(){
+        telemetry.addLine("intake extend");
+        rotatorPos = endRotatorPos;
+        rotator2Pos = endRotator2Pos;
+        linkagePos = endLinkagePos;
+        rotator.setPosition(rotatorPos);
+        rotator2.setPosition(rotator2Pos);
+        linkage.setPosition(linkagePos);
+
+    }
+    public void contract(){
+        telemetry.addLine("intake contract");
+        rotatorPos = startRotatorPos;
+        rotator2Pos = startRotator2Pos;
+        linkagePos = startLinkagePos;
+        rotator.setPosition(rotatorPos);
+        rotator2.setPosition(rotator2Pos);
+        linkage.setPosition(linkagePos);
     }
 
-    private class MoveToTicks implements Command {
-        private int ticks;
 
-        public MoveToTicks(int ticks) {
-            this.ticks = ticks;
-        }
-
-        @Override
-        public void start() {
-            motor.setTargetPosition(ticks);
-            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            double power = ticks > motor.getCurrentPosition() ?
-                    ascendingPower :
-                    descendingPower;
-
-            motor.setPower(power);
-        }
-
-        @Override
-        public void stop() {
-            stopMotors();
-
-            //TODO implement
-            /*if(ticks == 0){
-                resetSlideTicks();
-            }*/
-        }
-
-        @Override
-        public boolean update() {
-            return Math.abs(motor.getCurrentPosition() - ticks) <= TARGET_REACHED_THRESHOLD;
-        }
+    public double getRotatorPos(){
+        return rotatorPos;
     }
-
+    public double getRotator2Pos(){
+        return rotator2Pos;
+    }
+    public double getLinkagePos(){
+        return linkagePos;
+    }
 
 }

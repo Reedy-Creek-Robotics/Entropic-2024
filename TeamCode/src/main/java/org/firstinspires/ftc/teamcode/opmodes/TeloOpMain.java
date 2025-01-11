@@ -2,31 +2,26 @@ package org.firstinspires.ftc.teamcode.opmodes;
 
 import static org.firstinspires.ftc.teamcode.game.Controller.AnalogControl.LEFT_STICK_X;
 import static org.firstinspires.ftc.teamcode.game.Controller.AnalogControl.LEFT_STICK_Y;
-import static org.firstinspires.ftc.teamcode.game.Controller.AnalogControl.LEFT_TRIGGER;
 import static org.firstinspires.ftc.teamcode.game.Controller.AnalogControl.RIGHT_STICK_X;
-import static org.firstinspires.ftc.teamcode.game.Controller.AnalogControl.RIGHT_TRIGGER;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.components.BaseComponent;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
-import org.firstinspires.ftc.teamcode.components.Hooker;
-import org.firstinspires.ftc.teamcode.components.HorizontalSlide;
 import org.firstinspires.ftc.teamcode.components.Intake;
+import org.firstinspires.ftc.teamcode.components.LittleHanger;
 import org.firstinspires.ftc.teamcode.components.RobotContext;
 import org.firstinspires.ftc.teamcode.components.ScoringSlide;
 import org.firstinspires.ftc.teamcode.game.Controller;
-import org.firstinspires.ftc.teamcode.geometry.Heading;
 
 @TeleOp
 public class TeloOpMain extends OpMode {
 
     DriveTrain driveTrain;
-    Hooker hooker;
     Intake intake;
-    HorizontalSlide horizontalSlide;
     ScoringSlide scoringSlide;
+    LittleHanger littleHanger;
     double speed = 1;
 
     RobotContext robotContext;
@@ -38,18 +33,16 @@ public class TeloOpMain extends OpMode {
         robotContext = BaseComponent.createRobotContext(this);
 
         driveTrain = new DriveTrain(robotContext);
-        hooker = new Hooker(robotContext);
         intake = new Intake(robotContext);
-        horizontalSlide = new HorizontalSlide(robotContext);
         scoringSlide = new ScoringSlide(robotContext);
+        littleHanger = new LittleHanger(robotContext);
 
         driver = new Controller(gamepad1);
 
         driveTrain.init();
-        hooker.init();
         intake.init();
-        horizontalSlide.init();
         scoringSlide.init();
+        littleHanger.init();
     }
 
     @Override
@@ -63,16 +56,16 @@ public class TeloOpMain extends OpMode {
         }
 
         if (driver.isPressed(Controller.Button.DPAD_UP)){
-            intake.moveToTicks(intake.getPosition() - 50);
+            intake.extend();
         } else if (driver.isPressed(Controller.Button.DPAD_DOWN)) {
-            intake.moveToTicks(intake.getPosition() + 50);
+            intake.contract();
         }
 
-       /* if (driver.isPressed(Controller.Button.TRIANGLE)){
-            hooker.moveToTicks(hooker.getPosition() + 10);
+        if (driver.isPressed(Controller.Button.TRIANGLE)){
+            littleHanger.moveToHeight(LittleHanger.HangHeights.TOP);
         } else if (driver.isPressed(Controller.Button.SQUARE)) {
-            hooker.moveToTicks(hooker.getPosition() - 10);
-        }*/
+            littleHanger.moveToHeight(LittleHanger.HangHeights.PULL);
+        }
 
         if (driver.rightTrigger() > 0.2){
             intake.intake(1);
@@ -82,11 +75,6 @@ public class TeloOpMain extends OpMode {
             intake.intake(0);
         }
 
-        if(driver.isPressed(Controller.Button.CIRCLE)) {
-            horizontalSlide.contract();
-        } else if (driver.isPressed(Controller.Button.CROSS)){
-            horizontalSlide.expand();
-        }
         if(driver.isPressed(Controller.Button.DPAD_RIGHT)) {
             switch (scoringSlide.getTarget()) {
                 case GROUND:
@@ -139,9 +127,9 @@ public class TeloOpMain extends OpMode {
 
 
         driveTrain.update();
-        hooker.update();
         intake.update();
-        horizontalSlide.update();
         scoringSlide.update();
+        littleHanger.update();
+        telemetry.update();
     }
 }

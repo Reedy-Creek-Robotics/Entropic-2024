@@ -6,7 +6,6 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
-import com.qualcomm.robotcore.robocol.Command;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.roadrunner.util.LynxModuleUtil;
@@ -15,7 +14,6 @@ import org.firstinspires.ftc.teamcode.util.FileUtil;
 import org.firstinspires.ftc.teamcode.util.TelemetryHolder;
 
 import java.util.List;
-import java.util.Objects;
 
 public class Robot extends BaseComponent{
     private static final double VOLTAGE_WARNING_THRESHOLD = 12.0;
@@ -24,7 +22,7 @@ public class Robot extends BaseComponent{
 
     private DriveTrain driveTrain;
     private Intake intake;
-    private Hooker hooker;
+    private LittleHanger hooker;
     private ScoringSlide scoreSlide;
 
     private int updateCount;
@@ -38,7 +36,7 @@ public class Robot extends BaseComponent{
 
         driveTrain = new DriveTrain(context);
         intake = new Intake(context);
-        hooker = new Hooker(context);
+        hooker = new LittleHanger(context);
         scoreSlide = new ScoringSlide(context);
 
         addSubComponents(driveTrain,intake,hooker);
@@ -188,7 +186,7 @@ public class Robot extends BaseComponent{
         return intake;
     }
 
-    public Hooker getHooker() {
+    public LittleHanger getHooker() {
         return hooker;
     }
 
