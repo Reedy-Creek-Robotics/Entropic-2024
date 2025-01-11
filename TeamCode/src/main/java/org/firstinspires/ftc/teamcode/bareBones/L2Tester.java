@@ -25,8 +25,8 @@ public class L2Tester extends OpMode {
     @Override
     public void init() {
         controller = new Controller(gamepad1);
-        L2AscentLeft = hardwareMap.dcMotor.get("L2AscentLeft");
-        L2AscentRight = hardwareMap.dcMotor.get("L2AscentRight");
+        L2AscentLeft = hardwareMap.dcMotor.get("LeftHang");
+        L2AscentRight = hardwareMap.dcMotor.get("RightHang");
 
         L2AscentLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         L2AscentRight.setDirection(DcMotorSimple.Direction.REVERSE);
