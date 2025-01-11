@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.components.BaseComponent;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
 import org.firstinspires.ftc.teamcode.components.Intake;
 import org.firstinspires.ftc.teamcode.components.LittleHanger;
+import org.firstinspires.ftc.teamcode.components.Robot;
 import org.firstinspires.ftc.teamcode.components.RobotContext;
 import org.firstinspires.ftc.teamcode.components.ScoringSlide;
 import org.firstinspires.ftc.teamcode.game.Controller;
@@ -18,10 +19,8 @@ import org.firstinspires.ftc.teamcode.game.Controller;
 @TeleOp
 public class TeloOpMain extends OpMode {
 
-    DriveTrain driveTrain;
-    Intake intake;
-    ScoringSlide scoringSlide;
-    LittleHanger littleHanger;
+    Robot robot;
+
     double speed = 1;
 
     RobotContext robotContext;
@@ -30,92 +29,83 @@ public class TeloOpMain extends OpMode {
 
     @Override
     public void init() {
-        robotContext = BaseComponent.createRobotContext(this);
-
-        driveTrain = new DriveTrain(robotContext);
-        intake = new Intake(robotContext);
-        scoringSlide = new ScoringSlide(robotContext);
-        littleHanger = new LittleHanger(robotContext);
-
+        robot = new Robot(this);
         driver = new Controller(gamepad1);
 
-        driveTrain.init();
-        intake.init();
-        scoringSlide.init();
-        littleHanger.init();
+        robot.init();
     }
 
     @Override
     public void loop() {
-        if (driver.isPressed(LEFT_STICK_X, LEFT_STICK_Y, RIGHT_STICK_X) || !driveTrain.isBusy()) {
+        if (driver.isPressed(LEFT_STICK_X, LEFT_STICK_Y, RIGHT_STICK_X) || !robot.getDriveTrain().isBusy()) {
             double drive = driver.leftStickY();
             double strafe = driver.leftStickX();
             double turn = driver.rightStickX();
 
-            driveTrain.drive(drive, strafe, turn, speed);
+            robot.getDriveTrain().drive(drive, strafe, turn, speed);
         }
 
         if (driver.isPressed(Controller.Button.DPAD_UP)){
-            intake.extend();
+            robot.getIntake().extend();
         } else if (driver.isPressed(Controller.Button.DPAD_DOWN)) {
-            intake.contract();
+            robot.getIntake().contract();
         }
 
         if (driver.isPressed(Controller.Button.TRIANGLE)){
-            littleHanger.moveToHeight(LittleHanger.HangHeights.TOP);
+            robot.getLittleHanger().moveToHeight(LittleHanger.HangHeights.TOP);
         } else if (driver.isPressed(Controller.Button.SQUARE)) {
-            littleHanger.moveToHeight(LittleHanger.HangHeights.PULL);
+            robot.getLittleHanger().moveToHeight(LittleHanger.HangHeights.PULL);
         }
 
         if (driver.rightTrigger() > 0.2){
-            intake.intake(1);
+            robot.getIntake().intake(1);
         } else if (driver.leftTrigger() > 0.2) {
-            intake.intake(-1);
+            robot.getIntake().intake(-1);
         }else {
-            intake.intake(0);
+            robot.getIntake().intake(0);
         }
 
         if(driver.isPressed(Controller.Button.DPAD_RIGHT)) {
-            switch (scoringSlide.getTarget()) {
+            switch (robot.getScoringSlide().getTarget()) {
                 case GROUND:
-                    scoringSlide.moveToHeight(ScoringSlide.Positions.WALL_EDGE);
+                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.WALL_EDGE);
                     break;
                 case WALL_EDGE:
-                    scoringSlide.moveToHeight(ScoringSlide.Positions.LOW_BASKET);
+                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.LOW_BASKET);
                     break;
                 case LOW_BASKET:
-                    scoringSlide.moveToHeight(ScoringSlide.Positions.LOW_BAR);
+                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.LOW_BAR);
                     break;
                 case LOW_BAR:
-                    scoringSlide.moveToHeight(ScoringSlide.Positions.HIGH_BAR);
+                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.HIGH_BAR);
                     break;
                 case HIGH_BAR:
-                    scoringSlide.moveToHeight(ScoringSlide.Positions.HIGH_BASKET);
+                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.HIGH_BASKET);
                     break;
                 case HIGH_BASKET:
-                    scoringSlide.moveToHeight(ScoringSlide.Positions.GROUND);
+                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.GROUND);
                     break;
             }
 
         } else if (driver.isPressed(Controller.Button.DPAD_LEFT)) {
-            switch (scoringSlide.getTarget()) {
+            switch (robot.getScoringSlide().getTarget()) {
                 case GROUND:
-                    scoringSlide.moveToHeight(ScoringSlide.Positions.HIGH_BASKET);
+                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.HIGH_BASKET);
                     break;
                 case WALL_EDGE:
-                    scoringSlide.moveToHeight(ScoringSlide.Positions.GROUND);
+                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.GROUND);
                     break;
                 case LOW_BASKET:
-                    scoringSlide.moveToHeight(ScoringSlide.Positions.WALL_EDGE);
+                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.WALL_EDGE);
                     break;
                 case LOW_BAR:
-                    scoringSlide.moveToHeight(ScoringSlide.Positions.LOW_BASKET);
+                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.LOW_BASKET);
                     break;
                 case HIGH_BAR:
-                    scoringSlide.moveToHeight(ScoringSlide.Positions.LOW_BAR);
+                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.LOW_BAR);
                     break;
                 case HIGH_BASKET:
-                    scoringSlide.moveToHeight(ScoringSlide.Positions.HIGH_BAR);
+                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.HIGH_BAR);
                     break;
             }
         }
@@ -126,10 +116,7 @@ public class TeloOpMain extends OpMode {
         }
 
 
-        driveTrain.update();
-        intake.update();
-        scoringSlide.update();
-        littleHanger.update();
+        robot.update();
         telemetry.update();
     }
 }

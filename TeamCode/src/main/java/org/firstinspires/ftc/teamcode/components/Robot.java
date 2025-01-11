@@ -22,7 +22,7 @@ public class Robot extends BaseComponent{
 
     private DriveTrain driveTrain;
     private Intake intake;
-    private LittleHanger hooker;
+    private LittleHanger littleHanger;
     private ScoringSlide scoreSlide;
 
     private int updateCount;
@@ -36,10 +36,10 @@ public class Robot extends BaseComponent{
 
         driveTrain = new DriveTrain(context);
         intake = new Intake(context);
-        hooker = new LittleHanger(context);
+        littleHanger = new LittleHanger(context);
         scoreSlide = new ScoringSlide(context);
 
-        addSubComponents(driveTrain,intake,hooker);
+        addSubComponents(driveTrain,intake,littleHanger,scoreSlide);
 
         TelemetryHolder.telemetry = telemetry;
     }
@@ -186,8 +186,8 @@ public class Robot extends BaseComponent{
         return intake;
     }
 
-    public LittleHanger getHooker() {
-        return hooker;
+    public LittleHanger getLittleHanger() {
+        return littleHanger;
     }
 
     public ScoringSlide getScoringSlide() {
