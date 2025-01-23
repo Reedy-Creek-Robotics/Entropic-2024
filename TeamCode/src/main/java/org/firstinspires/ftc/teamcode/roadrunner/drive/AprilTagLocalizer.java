@@ -97,10 +97,8 @@ public class AprilTagLocalizer implements Localizer {
      * it's pointing straight left, -90 degrees for straight right, etc. You can also set the roll
      * to +/-90 degrees if it's vertical, or 180 degrees if it's upside-down.
      */
-    private Position cameraPosition = new Position(DistanceUnit.INCH,
-            -180.467, 160.292, 384.632, 0);
-    private YawPitchRollAngles cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES,
-            0, -90, 0, 0);
+    private Position cameraPosition; //= new Position(DistanceUnit.INCH,-180.467, 160.292, 384.632, 0);
+    private YawPitchRollAngles cameraOrientation; // = new YawPitchRollAngles(AngleUnit.DEGREES,0, -90, 0, 0);
 
     /**
      * The variable to store our instance of the AprilTag processor.
@@ -127,21 +125,11 @@ public class AprilTagLocalizer implements Localizer {
 
     private Telemetry telemetry;
 
-    Map<Integer,Pose2d> aprilTagIDPositions;
-
     public AprilTagLocalizer(RobotContext context, Position cameraPosition, YawPitchRollAngles cameraOrientation, WebcamName webcamName) {
         this.cameraPosition = cameraPosition;
         this.cameraOrientation = cameraOrientation;
         this.webcamName = webcamName;
         this.telemetry = context.getOpMode().telemetry;
-
-        aprilTagIDPositions = new HashMap<Integer,Pose2d>();
-        aprilTagIDPositions.put(11,new Pose2d(0,0,0));
-        aprilTagIDPositions.put(12,new Pose2d(0,0,0));
-        aprilTagIDPositions.put(13,new Pose2d(0,0,0));
-        aprilTagIDPositions.put(14,new Pose2d(0,0,0));
-        aprilTagIDPositions.put(15,new Pose2d(0,0,0));
-        aprilTagIDPositions.put(16,new Pose2d(0,0,0));
 
         initAprilTag();
     }
