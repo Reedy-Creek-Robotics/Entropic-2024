@@ -16,10 +16,6 @@ public class OpticalAprilTagLocalizer implements Localizer {
 
     AprilTagLocalizer aprilTag;
     OpticalLocalizer optical;
-    private Position cameraPosition = new Position(DistanceUnit.INCH,
-            0, 0, 0, 0);
-    private YawPitchRollAngles cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES,
-            0, -90, 0, 0);
     Pose2d position = new Pose2d(0,0,0);
 
     public OpticalAprilTagLocalizer(RobotContext context, AprilTagLocalizer aprilTagLocalizer, OpticalLocalizer opticalLocalizer) {
@@ -50,8 +46,8 @@ public class OpticalAprilTagLocalizer implements Localizer {
     @Override
     public void setPoseEstimate(@NonNull Pose2d pose2d) {
         this.position = pose2d;
-        optical.setPoseEstimate(pose2d);
-        aprilTag.setPoseEstimate(pose2d);
+        optical.setPoseEstimate(this.position);
+        aprilTag.setPoseEstimate(this.position);
     }
 
     @Nullable
