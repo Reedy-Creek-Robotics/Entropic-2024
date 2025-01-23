@@ -65,7 +65,7 @@ public class TeloOpMain extends OpMode {
             robot.getIntake().intake(0);
         }
 
-        if(driver.isPressed(Controller.Button.DPAD_RIGHT)) {
+       /* if(driver.isPressed(Controller.Button.DPAD_RIGHT)) {
             switch (robot.getScoringSlide().getTarget()) {
                 case GROUND:
                     robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.LOW_BASKET);
@@ -102,7 +102,7 @@ public class TeloOpMain extends OpMode {
                     robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.HIGH_BAR);
                     break;
             }
-        }
+        }*/
 
 
         if(driver.isPressed(Controller.Button.LEFT_STICK_BUTTON)){

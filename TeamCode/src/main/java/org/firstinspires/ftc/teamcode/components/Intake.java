@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode.components;
 
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -43,8 +40,8 @@ public class Intake extends BaseComponent{
 
     public CRServo rightServo;
     public CRServo leftServo;
-    public Servo rotator;
-    public Servo rotator2;
+    public Servo leftRotator;
+    public Servo rightRotator;
     public Servo leftLinkage;
     public Servo rightLinkage;
 
@@ -53,8 +50,8 @@ public class Intake extends BaseComponent{
         super(context);
         rightServo = hardwareMap.crservo.get("RightIntake");
         leftServo = hardwareMap.crservo.get("LeftIntake");
-        rotator = hardwareMap.servo.get("RotatorLeft");
-        rotator2 = hardwareMap.servo.get("RotatorRight");
+        leftRotator = hardwareMap.servo.get("RotatorLeft");
+        rightRotator = hardwareMap.servo.get("RotatorRight");
         leftLinkage = hardwareMap.servo.get("LinkageLeft");
         rightLinkage = hardwareMap.servo.get("LinkageRight");
     }
@@ -63,8 +60,8 @@ public class Intake extends BaseComponent{
     @Override
     public void init(){
         telemetry.addLine("intake initialized");
-        rotator.setPosition(rotatorPos);
-        rotator2.setPosition(rotator2Pos);
+        leftRotator.setPosition(rotatorPos);
+        rightRotator.setPosition(rotator2Pos);
         leftLinkage.setPosition(linkagePos.left);
         rightLinkage.setPosition(linkagePos.right);
     }
@@ -85,8 +82,8 @@ public class Intake extends BaseComponent{
         linkagePos = LinkagePos.END;
 
 
-        rotator.setPosition(rotatorPos);
-        rotator2.setPosition(rotator2Pos);
+        leftRotator.setPosition(rotatorPos);
+        rightRotator.setPosition(rotator2Pos);
 
         leftLinkage.setPosition(linkagePos.left);
         rightLinkage.setPosition(linkagePos.right);
@@ -97,8 +94,8 @@ public class Intake extends BaseComponent{
         rotatorPos = startRotatorPos;
         rotator2Pos = startRotator2Pos;
         linkagePos = LinkagePos.START;
-        rotator.setPosition(rotatorPos);
-        rotator2.setPosition(rotator2Pos);
+        leftRotator.setPosition(rotatorPos);
+        rightRotator.setPosition(rotator2Pos);
 
         leftLinkage.setPosition(linkagePos.left);
         rightLinkage.setPosition(linkagePos.right);

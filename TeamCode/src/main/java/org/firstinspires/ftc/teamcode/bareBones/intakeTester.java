@@ -8,58 +8,108 @@ import org.firstinspires.ftc.teamcode.game.Controller;
 
 @TeleOp(group = "Barebone Component Testing")
 public class intakeTester extends OpMode {
-    public Servo arm;
-    public Servo linkage;
+    /**
+     * Steps for tuning intake
+     *  - Find matching START positions in Hardware Tester
+     *  - Update START position in this opmode
+     *  - Increment in this Opmode to find END positions
+     *  - Update START and END in Intake class
+     **/
+
+    public Servo leftRotator;
+    public Servo rightRotator;
+    public Servo leftLinkage;
+    public Servo rightLinkage;
 
     public Controller controller;
 
-    double startLinkagePos = 0.15;
-    double endLinkagePos = 0.75;
-    double startRotationPos = 0.65;
-    double endRotationPos = 0.15;
-    double linkagePos = startLinkagePos;
-    double rotationPos = startRotationPos;
+    double leftLinkagePos = LinkagePos.START.left;
+    double rightLinkagePos = LinkagePos.START.right;
+    double leftRotationPos = RotatorPos.START.left;
+    double rightRotationPos = RotatorPos.START.right;
+
+
+    public enum LinkagePos{
+        START(0.9,0.04),
+        END(0.55,0.29);
+
+        double left, right;
+        LinkagePos(double left, double right) {
+            this.left = left;
+            this.right = right;
+        }
+    }
+
+    public enum RotatorPos{
+        START(0.75,0.1),
+        END(0.2,0.65);
+
+        double left, right;
+        RotatorPos(double left, double right) {
+            this.left = left;
+            this.right = right;
+        }
+    }
 
     @Override
     public void init() {
         controller = new Controller(gamepad1);
-        arm = hardwareMap.servo.get("Rotator");
-        linkage = hardwareMap.servo.get("Linkage");
+        leftRotator = hardwareMap.servo.get("RotatorLeft");
+        rightRotator = hardwareMap.servo.get("RotatorRight");
+        leftLinkage = hardwareMap.servo.get("LinkageLeft");
+        rightLinkage = hardwareMap.servo.get("LinkageRight");
 
-        arm.setPosition(rotationPos);
-        linkage.setPosition(linkagePos);
+        leftRotator.setPosition(leftRotationPos);
+        rightRotator.setPosition(rightRotationPos);
+
+        leftLinkage.setPosition(leftLinkagePos);
+        rightLinkage.setPosition(rightLinkagePos);
     }
 
     @Override
     public void loop() {
         double incrementValue = 0.05;
         if(controller.isPressed(Controller.Button.DPAD_UP)){
-            rotationPos += incrementValue;
+            leftLinkagePos += incrementValue;
+            rightLinkagePos -= incrementValue;
+
         }else if (controller.isPressed(Controller.Button.DPAD_DOWN)){
-            rotationPos -= incrementValue;
+            leftLinkagePos -= incrementValue;
+            rightLinkagePos += incrementValue;
         }
 
         if(controller.isPressed(Controller.Button.DPAD_RIGHT)){
-            linkagePos += incrementValue;
+            leftLinkagePos += incrementValue;
+            rightLinkagePos -= incrementValue;
         }else if (controller.isPressed(Controller.Button.DPAD_LEFT)){
-            linkagePos -= incrementValue;
+            leftLinkagePos -= incrementValue;
+            rightLinkagePos += incrementValue;
         }
 
         if(controller.isPressed(Controller.Button.A)){
-            rotationPos = startRotationPos;
+            leftRotationPos = RotatorPos.START.left;
+            rightRotationPos = RotatorPos.START.right;
         }else if (controller.isPressed(Controller.Button.B)){
-            rotationPos = endRotationPos;
+            leftRotationPos = RotatorPos.END.left;
+            rightRotationPos = RotatorPos.END.right;
         }else if(controller.isPressed(Controller.Button.X)){
-            linkagePos = startLinkagePos;
+            leftLinkagePos = LinkagePos.START.left;
+            rightLinkagePos = LinkagePos.START.right;
         }else if (controller.isPressed(Controller.Button.Y)){
-            linkagePos = endLinkagePos;
+            leftLinkagePos = LinkagePos.END.left;
+            rightLinkagePos = LinkagePos.END.right;
         }
 
-        arm.setPosition(rotationPos);
-        linkage.setPosition(linkagePos);
+        leftRotator.setPosition(leftRotationPos);
+        rightRotator.setPosition(rightRotationPos);
 
-        telemetry.addData("arm pos:", rotationPos);
-        telemetry.addData("linkage pos:", linkagePos);
+        leftLinkage.setPosition(leftLinkagePos);
+        rightLinkage.setPosition(rightLinkagePos);
+
+        telemetry.addData("left rot pos:", leftRotationPos);
+        telemetry.addData("right rot pos:", rightRotationPos);
+        telemetry.addData("left link pos:", leftLinkagePos);
+        telemetry.addData("right link pos:", rightLinkagePos);
         telemetry.update();
     }
 }
