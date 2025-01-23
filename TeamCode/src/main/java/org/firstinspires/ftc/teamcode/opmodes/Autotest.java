@@ -12,17 +12,28 @@ public class Autotest extends AutoMain{
     @Override
     public void runPath() {
         TrajectorySequence trajectorySequence = robot.getDriveTrain().trajectoryBuilder(currentEnd)
-                .lineTo(new Vector2d(12,12))
+                .lineTo(new Vector2d(0,24))
                 .build();
 
         robot.getDriveTrain().followTrajectory(trajectorySequence);
         robot.getLittleHanger().moveToHeight(LittleHanger.HangHeights.PULL);
         robot.waitForCommandsToFinish();
+
+        currentEnd = trajectorySequence.end();
+
+        TrajectorySequence trajectorySequence2 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
+                .lineTo(new Vector2d(0,50))
+                .build();
+
+        robot.getDriveTrain().followTrajectory(trajectorySequence2);
+        robot.waitForCommandsToFinish();
+
+        currentEnd = trajectorySequence.end();
     }
 
     @Override
     public Pose2d getStartPosition() {
-        return new Pose2d(0,0,90);
+        return new Pose2d(0,0,Math.toRadians(90));
     }
 
     @Override

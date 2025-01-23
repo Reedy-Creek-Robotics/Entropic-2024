@@ -178,6 +178,7 @@ public class DriveTrain extends BaseComponent {
         @Override
         public boolean update() {
             roadrunner.update();
+            telemetry.addData("rr:",!roadrunner.isBusy());
 
             return !roadrunner.isBusy();
         }
