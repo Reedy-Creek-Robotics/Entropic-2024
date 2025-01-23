@@ -68,9 +68,6 @@ public class TeloOpMain extends OpMode {
         if(driver.isPressed(Controller.Button.DPAD_RIGHT)) {
             switch (robot.getScoringSlide().getTarget()) {
                 case GROUND:
-                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.WALL_EDGE);
-                    break;
-                case WALL_EDGE:
                     robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.LOW_BASKET);
                     break;
                 case LOW_BASKET:
@@ -92,11 +89,8 @@ public class TeloOpMain extends OpMode {
                 case GROUND:
                     robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.HIGH_BASKET);
                     break;
-                case WALL_EDGE:
-                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.GROUND);
-                    break;
                 case LOW_BASKET:
-                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.WALL_EDGE);
+                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.GROUND);
                     break;
                 case LOW_BAR:
                     robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.LOW_BASKET);
@@ -114,9 +108,9 @@ public class TeloOpMain extends OpMode {
         if(driver.isPressed(Controller.Button.LEFT_STICK_BUTTON)){
             speed = (speed == 1) ? 0.3 : 1;
         }
-
+        telemetry.addData("left hang", robot.getLittleHanger().getLeftTicks());
+        telemetry.addData("right hang", robot.getLittleHanger().getRightTicks());
 
         robot.update();
-        telemetry.update();
     }
 }

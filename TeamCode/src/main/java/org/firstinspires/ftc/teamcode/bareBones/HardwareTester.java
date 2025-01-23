@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.game.Controller;
 
 import java.util.ArrayList;
@@ -62,6 +63,7 @@ public class HardwareTester extends OpMode {
 
             telemetry.addData("Position", motor.getCurrentPosition());
             telemetry.addData("Power", motor.getPower());
+            telemetry.addData("current",motor.getCurrent(CurrentUnit.AMPS));
             telemetry.addData("encoder tolerance", motor.getTargetPositionTolerance());
 
             double power = controller.leftStickY();

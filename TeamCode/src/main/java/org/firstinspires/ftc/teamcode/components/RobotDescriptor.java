@@ -50,8 +50,8 @@ public class RobotDescriptor {
             30,
             270,
             270,
-            RevHubOrientationOnRobot.LogoFacingDirection.DOWN,
-            RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD,
+            RevHubOrientationOnRobot.LogoFacingDirection.UP,
+            RevHubOrientationOnRobot.UsbFacingDirection.FORWARD,
             new PIDCoefficients(8, 0, 0),
             new PIDCoefficients(2.5, 0, 0),
             1.5,
@@ -180,10 +180,10 @@ public class RobotDescriptor {
     }
 
     public static OpticalTuner OTOS_TUNER = new OpticalTuner(
-            -104/25.4,
-            8/25.4,
-            -90,
-            0.9583162,
+            125.8/25.4,
+            -90/25.4,
+            0,
+            0.9799584,
             1
     );
 

@@ -9,6 +9,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.AprilTagLocalizer;
+import org.firstinspires.ftc.teamcode.roadrunner.drive.OpticalAprilTagLocalizer;
+import org.firstinspires.ftc.teamcode.roadrunner.drive.OpticalLocalizer;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.TwoWheelTrackingLocalizer;
 import org.firstinspires.ftc.teamcode.util.DriveUtil;
@@ -25,7 +27,9 @@ public class RobotContext {
 
     public Localizer localizer;
 
-    public Localizer aprilTagLocalizer;
+    public AprilTagLocalizer aprilTagLocalizer;
+    public OpticalLocalizer opticalLocalizer;
+
     private Position cameraPosition = new Position(DistanceUnit.INCH,
             0, 0, 0, 0);
     private YawPitchRollAngles cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES,
@@ -43,15 +47,14 @@ public class RobotContext {
         this.opMode = opMode;
         this.descriptor = descriptor;
         this.driveUtil = new MecanumUtil();
-        this.localizer = new StandardTrackingWheelLocalizer(opMode.hardwareMap,
-                lastTrackingEncPositions,
-                lastTrackingEncVels,
-                this.descriptor.ODOMETRY_TUNER
-        );//new TwoWheelTrackingLocalizer(opMode.hardwareMap,this.descriptor);
-        //blue is negative one, red is positive one
-        //this.aprilTagLocalizer = new AprilTagLocalizer(cameraPosition, cameraOrientation, webcam);
-        this.alliance = -1;
-        //this.webcam = opMode.hardwareMap.get(WebcamName.class, "Webcam 1");
+        this.webcam = opMode.hardwareMap.get(WebcamName.class, "Webcam 1");
+
+        //this.localizer = new OpticalAprilTagLocalizer(this,aprilTagLocalizer,opticalLocalizer);
+        this.localizer = new OpticalLocalizer(this); //new StandardTrackingWheelLocalizer(opMode.hardwareMap, lastTrackingEncPositions, lastTrackingEncVels, this.descriptor.ODOMETRY_TUNER);//new TwoWheelTrackingLocalizer(opMode.hardwareMap,this.descriptor);
+        this.opticalLocalizer = new OpticalLocalizer(this);
+        this.aprilTagLocalizer = new AprilTagLocalizer(this,cameraPosition, cameraOrientation, webcam);
+
+        this.alliance = 1; //blue is negative one, red is positive one
     }
 
     public OpMode getOpMode() {

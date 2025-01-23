@@ -41,6 +41,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.components.RobotContext;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -97,7 +98,7 @@ public class AprilTagLocalizer implements Localizer {
      * to +/-90 degrees if it's vertical, or 180 degrees if it's upside-down.
      */
     private Position cameraPosition = new Position(DistanceUnit.INCH,
-            0, 0, 0, 0);
+            -180.467, 160.292, 384.632, 0);
     private YawPitchRollAngles cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES,
             0, -90, 0, 0);
 
@@ -109,6 +110,8 @@ public class AprilTagLocalizer implements Localizer {
     private Pose2d positionEstimate;
 
     private double range;
+
+    private boolean newDetection = false;
 
     /**
      * The variable to store our instance of the vision portal.
@@ -126,11 +129,11 @@ public class AprilTagLocalizer implements Localizer {
 
     Map<Integer,Pose2d> aprilTagIDPositions;
 
-    public AprilTagLocalizer(Position cameraPosition, YawPitchRollAngles cameraOrientation, WebcamName webcamName, Telemetry telemetry) {
+    public AprilTagLocalizer(RobotContext context, Position cameraPosition, YawPitchRollAngles cameraOrientation, WebcamName webcamName) {
         this.cameraPosition = cameraPosition;
         this.cameraOrientation = cameraOrientation;
         this.webcamName = webcamName;
-        this.telemetry = telemetry;
+        this.telemetry = context.getOpMode().telemetry;
 
         aprilTagIDPositions = new HashMap<Integer,Pose2d>();
         aprilTagIDPositions.put(11,new Pose2d(0,0,0));
@@ -160,7 +163,8 @@ public class AprilTagLocalizer implements Localizer {
                 // == CAMERA CALIBRATION ==
                 // If you do not manually specify calibration parameters, the SDK will attempt
                 // to load a predefined calibration for your camera.
-                .setLensIntrinsics(458.511, 458.511, 308.875, 253.078)
+                .setLensIntrinsics(237.835, 237.835, 328.272, 237.727)
+                //.setLensIntrinsics(458.511, 458.511, 308.875, 253.078)
                 // ... these parameters are fx, fy, cx, cy.
 
                 .build();
@@ -200,7 +204,7 @@ public class AprilTagLocalizer implements Localizer {
 
         // Set and enable the processor.
         builder.addProcessor(aprilTag);
-
+        builder.setStreamFormat(VisionPortal.StreamFormat.MJPEG);
         // Build the Vision Portal, using the above settings.
         visionPortal = builder.build();
 
@@ -210,38 +214,6 @@ public class AprilTagLocalizer implements Localizer {
         positionEstimate = new Pose2d(0,0,0);
 
     }   // end method initAprilTag()
-
-    /**
-     * Add telemetry about AprilTag detections.
-     */
-//    private void telemetryAprilTag() {
-//
-//        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-//        telemetry.addData("# AprilTags Detected", currentDetections.size());
-//
-//        // Step through the list of detections and display info for each one.
-//        for (AprilTagDetection detection : currentDetections) {
-//            if (detection.metadata != null) {
-//                telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
-//                telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)",
-//                        detection.robotPose.getPosition().x,
-//                        detection.robotPose.getPosition().y,
-//                        detection.robotPose.getPosition().z));
-//                telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)",
-//                        detection.robotPose.getOrientation().getPitch(AngleUnit.DEGREES),
-//                        detection.robotPose.getOrientation().getRoll(AngleUnit.DEGREES),
-//                        detection.robotPose.getOrientation().getYaw(AngleUnit.DEGREES)));
-//            } else {
-//                telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
-//                telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
-//            }
-//        }   // end for() loop
-//
-//        // Add "key" information to telemetry
-//        telemetry.addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.");
-//        telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
-//
-//    }   // end method telemetryAprilTag()
 
     @NonNull
     @Override
@@ -266,6 +238,7 @@ public class AprilTagLocalizer implements Localizer {
         int index = 0;
         if (!currentDetections.isEmpty()){
             double min = currentDetections.get(0).ftcPose.range;
+
             for (AprilTagDetection aprilTagDetection : currentDetections){
                 min = Math.min(min,aprilTagDetection.ftcPose.range);
                 index = currentDetections.indexOf(aprilTagDetection);
@@ -275,27 +248,26 @@ public class AprilTagLocalizer implements Localizer {
 
             AprilTagDetection closestDetection = currentDetections.get(index);
 
-            Pose2d tagPosition = aprilTagIDPositions.get(closestDetection.id);
+            telemetry.addLine(String.format("xyx %6.1f %6.1f %6.1f  (inch)",
+                    closestDetection.robotPose.getPosition().x,
+                    closestDetection.robotPose.getPosition().y,
+                    closestDetection.robotPose.getOrientation().getYaw(AngleUnit.DEGREES)));
 
-            Pose2d distanceFromTag = new Pose2d(closestDetection.ftcPose.x,closestDetection.ftcPose.y, closestDetection.ftcPose.yaw);
+            this.setPoseEstimate(new Pose2d(closestDetection.robotPose.getPosition().x, closestDetection.robotPose.getPosition().y, closestDetection.robotPose.getOrientation().getYaw(AngleUnit.DEGREES)));
 
-            telemetry.addLine("here");
-            telemetry.addData("Tag Pos", distanceFromTag.toString());
-
-            this.setPoseEstimate(new Pose2d(tagPosition.getX()+ distanceFromTag.getX(),tagPosition.getY()+ distanceFromTag.getY(), tagPosition.getHeading() + distanceFromTag.getHeading()));
+            newDetection = true;
         } else{
             range = -1;
+            newDetection = false;
         }
 
     }
-
     public List<AprilTagDetection> getDetections(){
         return aprilTag.getDetections();
     }
 
-
-    public boolean good_detection(){
-        if(range < 48 && range != -1){
+    public boolean hasGoodDetection(){
+        if(range < 48 && range != -1 && newDetection){
             return true;
         }
         return false;

@@ -8,8 +8,8 @@ public class LittleHanger extends BaseComponent{
     public static final int TARGET_REACHED_THRESHOLD = 5;
 
     public enum HangHeights {
-        TOP(950),
-        PULL(740);
+        TOP(900),
+        PULL(300);
 
         private final int ticks;
 
@@ -71,6 +71,14 @@ public class LittleHanger extends BaseComponent{
         moveToTicks(height.ticks);
     }
 
+    public double getLeftTicks(){
+        return leftHang.getCurrentPosition();
+    }
+
+    public double getRightTicks(){
+        return rightHang.getCurrentPosition();
+    }
+
     public void rotate(double power){
         if(!isBusy()){
             if(power != 0){
@@ -118,7 +126,6 @@ public class LittleHanger extends BaseComponent{
                     ascendingPower :
                     descendingPower;
 
-            leftHang.setPower(leftPower);
             rightHang.setTargetPosition(ticks);
             rightHang.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -126,6 +133,7 @@ public class LittleHanger extends BaseComponent{
                     ascendingPower :
                     descendingPower;
 
+            leftHang.setPower(leftPower);
             rightHang.setPower(rightPower);
         }
 
@@ -141,7 +149,7 @@ public class LittleHanger extends BaseComponent{
 
         @Override
         public boolean update() {
-            return (Math.abs(leftHang.getCurrentPosition() - ticks) <= TARGET_REACHED_THRESHOLD) && (Math.abs(leftHang.getCurrentPosition() - ticks) <= TARGET_REACHED_THRESHOLD);
+            return (Math.abs(leftHang.getCurrentPosition() - ticks) <= TARGET_REACHED_THRESHOLD) && (Math.abs(rightHang.getCurrentPosition() - ticks) <= TARGET_REACHED_THRESHOLD);
         }
     }
 }

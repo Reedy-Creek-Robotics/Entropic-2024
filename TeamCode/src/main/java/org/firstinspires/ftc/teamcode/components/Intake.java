@@ -5,16 +5,39 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Intake extends BaseComponent{
 
-    double startLinkagePos = 0.15;
-    double endLinkagePos = 0.75;
-    double startRotatorPos = 0.55;
-    double endRotatorPos = 0;
-    double startRotator2Pos = 0.62;
-    double endRotator2Pos = 0;
-    double linkagePos = startLinkagePos;
+    public enum LinkagePos{
+        START(0.9,0.04),
+        END(0.55,0.29);
+
+        double left, right;
+        LinkagePos(double left, double right) {
+            this.left = left;
+            this.right = right;
+        }
+    }
+
+    public enum RotatorPos{
+        START(0,0),
+        END(0,0);
+
+        double left, right;
+        RotatorPos(double left, double right) {
+
+        }
+    }
+
+    double startRotatorPos = 0.75;
+    double endRotatorPos = 0.2;
+    double startRotator2Pos = 0.1;
+    double endRotator2Pos = 0.65;
+
+    LinkagePos linkagePos = LinkagePos.START;
+
+
     double rotatorPos = startRotatorPos;
     double rotator2Pos = startRotator2Pos;
 
@@ -22,16 +45,18 @@ public class Intake extends BaseComponent{
     public CRServo leftServo;
     public Servo rotator;
     public Servo rotator2;
-    public Servo linkage;
+    public Servo leftLinkage;
+    public Servo rightLinkage;
 
     private int targetPosition;
     public Intake(RobotContext context) {
         super(context);
         rightServo = hardwareMap.crservo.get("RightIntake");
         leftServo = hardwareMap.crservo.get("LeftIntake");
-        rotator = hardwareMap.servo.get("Rotator");
-        rotator2 = hardwareMap.servo.get("Rotator2");
-        linkage = hardwareMap.servo.get("Linkage");
+        rotator = hardwareMap.servo.get("RotatorLeft");
+        rotator2 = hardwareMap.servo.get("RotatorRight");
+        leftLinkage = hardwareMap.servo.get("LinkageLeft");
+        rightLinkage = hardwareMap.servo.get("LinkageRight");
     }
 
 
@@ -40,7 +65,8 @@ public class Intake extends BaseComponent{
         telemetry.addLine("intake initialized");
         rotator.setPosition(rotatorPos);
         rotator2.setPosition(rotator2Pos);
-        linkage.setPosition(linkagePos);
+        leftLinkage.setPosition(linkagePos.left);
+        rightLinkage.setPosition(linkagePos.right);
     }
 
     public void intake(double power){
@@ -48,24 +74,34 @@ public class Intake extends BaseComponent{
         leftServo.setPower(-power);
     }
 
+    public void timedIntake(double power, double time){
+        executeCommand(new TimedIntake(power, time));
+    }
+
     public void extend(){
         telemetry.addLine("intake extend");
         rotatorPos = endRotatorPos;
         rotator2Pos = endRotator2Pos;
-        linkagePos = endLinkagePos;
+        linkagePos = LinkagePos.END;
+
+
         rotator.setPosition(rotatorPos);
         rotator2.setPosition(rotator2Pos);
-        linkage.setPosition(linkagePos);
+
+        leftLinkage.setPosition(linkagePos.left);
+        rightLinkage.setPosition(linkagePos.right);
 
     }
     public void contract(){
         telemetry.addLine("intake contract");
         rotatorPos = startRotatorPos;
         rotator2Pos = startRotator2Pos;
-        linkagePos = startLinkagePos;
+        linkagePos = LinkagePos.START;
         rotator.setPosition(rotatorPos);
         rotator2.setPosition(rotator2Pos);
-        linkage.setPosition(linkagePos);
+
+        leftLinkage.setPosition(linkagePos.left);
+        rightLinkage.setPosition(linkagePos.right);
     }
 
 
@@ -75,8 +111,36 @@ public class Intake extends BaseComponent{
     public double getRotator2Pos(){
         return rotator2Pos;
     }
-    public double getLinkagePos(){
+    public LinkagePos getLinkagePos(){
         return linkagePos;
+    }
+
+    public class TimedIntake implements Command {
+
+        double power,time;
+
+        ElapsedTime timer;
+
+        public TimedIntake(double power, double time) {
+            this.power = power;
+            this.time = time;
+        }
+
+        @Override
+        public void start() {
+            intake(power);
+            timer = new ElapsedTime();
+        }
+
+        @Override
+        public void stop() {
+            intake(0);
+        }
+
+        @Override
+        public boolean update() {
+            return timer.milliseconds() > time;
+        }
     }
 
 }

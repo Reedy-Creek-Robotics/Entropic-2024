@@ -9,11 +9,13 @@ public class ScoringSlide extends BaseComponent{
 
     public enum Positions {
         GROUND(0), //base position used for picking elements up
-        WALL_EDGE(150), //edge of the wall for grabbing it off of it from the observation zone
-        LOW_BASKET(300),
-        LOW_BAR(600),
-        HIGH_BAR(800),
-        HIGH_BASKET(1100);
+        //WALL_EDGE(100), //edge of the wall for grabbing it off of it from the observation zone
+        LOW_BASKET(1500),//1486
+        UNDER_LOW_BAR(400),
+        LOW_BAR(500),
+        UNDER_HIGH_BAR(1500),
+        HIGH_BAR(1600),
+        HIGH_BASKET(3000);
 
         private final int ticks;
 

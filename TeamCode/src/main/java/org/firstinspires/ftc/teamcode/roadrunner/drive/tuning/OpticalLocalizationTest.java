@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.components.BaseComponent;
 import org.firstinspires.ftc.teamcode.components.RobotContext;
 import org.firstinspires.ftc.teamcode.components.RobotDescriptor;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.AprilTagLocalizer;
@@ -19,13 +20,13 @@ public class OpticalLocalizationTest extends LinearOpMode {
 
     AprilTagLocalizer aprilTagLocalizer;
 
-    private Position cameraPosition = new Position(DistanceUnit.INCH,
-            0, 0, 0, 0);
+    private Position cameraPosition = new Position(DistanceUnit.MM,
+            -180.467, 160.292, 384.632, 0);
     private YawPitchRollAngles cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES,
-            0, -90, 0, 0);
+            -15, -120, 0, 0);
     @Override
     public void runOpMode() throws InterruptedException {
-        aprilTagLocalizer = new AprilTagLocalizer(cameraPosition, cameraOrientation, this.hardwareMap.get(WebcamName.class, "Webcam 1"), this.telemetry);
+        aprilTagLocalizer = new AprilTagLocalizer(BaseComponent.createRobotContext(this),cameraPosition, cameraOrientation, this.hardwareMap.get(WebcamName.class, "Webcam 1"));
 
         telemetry.addLine("ready");
         telemetry.update();

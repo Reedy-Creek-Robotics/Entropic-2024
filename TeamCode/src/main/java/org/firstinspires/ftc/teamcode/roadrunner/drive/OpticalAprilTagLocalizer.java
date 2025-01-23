@@ -35,7 +35,7 @@ public class OpticalAprilTagLocalizer implements Localizer {
 
         position = optical.getPoseEstimate();
 
-        if(aprilTag.good_detection()){
+        if(aprilTag.hasGoodDetection()){
             position = aprilTag.getPoseEstimate();
             optical.setPoseEstimate(position);
         }

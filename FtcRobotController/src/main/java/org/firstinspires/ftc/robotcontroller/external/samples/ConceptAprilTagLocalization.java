@@ -94,9 +94,9 @@ public class ConceptAprilTagLocalization extends LinearOpMode {
      * to +/-90 degrees if it's vertical, or 180 degrees if it's upside-down.
      */
     private Position cameraPosition = new Position(DistanceUnit.INCH,
-            0, 0, 0, 0);
+            -180.467/25.4, 160.292/25.4, 384.632/25.4,0);
     private YawPitchRollAngles cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES,
-            0, -90, 0, 0);
+            -15, -120, 0, 0);
 
     /**
      * The variable to store our instance of the AprilTag processor.
@@ -162,7 +162,7 @@ public class ConceptAprilTagLocalization extends LinearOpMode {
                 // == CAMERA CALIBRATION ==
                 // If you do not manually specify calibration parameters, the SDK will attempt
                 // to load a predefined calibration for your camera.
-                .setLensIntrinsics(458.511, 458.511, 308.875, 253.078)
+                .setLensIntrinsics(237.835, 237.835, 328.272, 237.727)
 
                 //Focals (pixels) - Fx: 458.511 Fy: 458.511
                 //Optical center - Cx: 308.875 Cy: 253.078
@@ -239,6 +239,10 @@ public class ConceptAprilTagLocalization extends LinearOpMode {
                         detection.ftcPose.bearing,
                         detection.ftcPose.elevation
                         ));
+                telemetry.addLine(String.format("xyx %6.1f %6.1f %6.1f  (inch)",
+                        detection.robotPose.getPosition().x,
+                        detection.robotPose.getPosition().y,
+                        detection.robotPose.getPosition().z));
             } else {
                 telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
                 telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));

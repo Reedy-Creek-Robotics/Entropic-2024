@@ -167,7 +167,7 @@ public class DriveTrain extends BaseComponent {
 
         @Override
         public void start() {
-            roadrunner.followTrajectorySequence(trajectory);
+            roadrunner.followTrajectorySequenceAsync(trajectory);
         }
 
         @Override
@@ -177,6 +177,8 @@ public class DriveTrain extends BaseComponent {
 
         @Override
         public boolean update() {
+            roadrunner.update();
+
             return !roadrunner.isBusy();
         }
     }
