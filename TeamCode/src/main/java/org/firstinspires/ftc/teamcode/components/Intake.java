@@ -29,8 +29,8 @@ public class Intake extends BaseComponent{
 
     double startRotatorPos = 0.75;
     double endRotatorPos = 0.2;
-    double startRotator2Pos = 0.1;
-    double endRotator2Pos = 0.65;
+    double startRotator2Pos = 0.38;
+    double endRotator2Pos = 0.95;
 
     LinkagePos linkagePos = LinkagePos.START;
 
@@ -99,6 +99,32 @@ public class Intake extends BaseComponent{
 
         leftLinkage.setPosition(linkagePos.left);
         rightLinkage.setPosition(linkagePos.right);
+    }
+
+    public void linkageContract(){
+        linkagePos = LinkagePos.START;
+        leftLinkage.setPosition(linkagePos.left);
+        rightLinkage.setPosition(linkagePos.right);
+    }
+
+    public void linkageExtend(){
+        linkagePos = LinkagePos.END;
+        leftLinkage.setPosition(linkagePos.left);
+        rightLinkage.setPosition(linkagePos.right);
+    }
+
+    public void rotatorContract(){
+        rotatorPos = startRotatorPos;
+        rotator2Pos = startRotator2Pos;
+        leftRotator.setPosition(rotatorPos);
+        rightRotator.setPosition(rotator2Pos);
+    }
+
+    public void rotatorExtend(){
+        rotatorPos = endRotatorPos;
+        rotator2Pos = endRotator2Pos;
+        leftRotator.setPosition(rotatorPos);
+        rightRotator.setPosition(rotator2Pos);
     }
 
 

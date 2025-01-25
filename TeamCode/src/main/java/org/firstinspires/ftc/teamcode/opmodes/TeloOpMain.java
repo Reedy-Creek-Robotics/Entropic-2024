@@ -6,7 +6,9 @@ import static org.firstinspires.ftc.teamcode.game.Controller.AnalogControl.RIGHT
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.bareBones.intakeTester;
 import org.firstinspires.ftc.teamcode.components.BaseComponent;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
 import org.firstinspires.ftc.teamcode.components.Intake;
@@ -27,10 +29,21 @@ public class TeloOpMain extends OpMode {
 
     protected Controller driver;
 
+    public Servo leftRotator;
+    public Servo rightRotator;
+    public Servo leftLinkage;
+    public Servo rightLinkage;
+
+    public Controller controller2;
+
+
     @Override
     public void init() {
         robot = new Robot(this);
         driver = new Controller(gamepad1);
+
+        //add testing
+        controller2 = new Controller(gamepad2);
 
         robot.init();
     }
@@ -65,7 +78,7 @@ public class TeloOpMain extends OpMode {
             robot.getIntake().intake(0);
         }
 
-       /* if(driver.isPressed(Controller.Button.DPAD_RIGHT)) {
+        if(driver.isPressed(Controller.Button.DPAD_RIGHT)) {
             switch (robot.getScoringSlide().getTarget()) {
                 case GROUND:
                     robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.LOW_BASKET);
@@ -102,7 +115,19 @@ public class TeloOpMain extends OpMode {
                     robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.HIGH_BAR);
                     break;
             }
-        }*/
+        }
+
+
+        //testing
+        if(controller2.isPressed(Controller.Button.A)){
+            robot.getIntake().rotatorContract();
+        }else if (controller2.isPressed(Controller.Button.B)){
+            robot.getIntake().rotatorExtend();
+        }else if(controller2.isPressed(Controller.Button.X)){
+            robot.getIntake().linkageContract();
+        }else if (controller2.isPressed(Controller.Button.Y)){
+            robot.getIntake().linkageExtend();
+        }
 
 
         if(driver.isPressed(Controller.Button.LEFT_STICK_BUTTON)){
