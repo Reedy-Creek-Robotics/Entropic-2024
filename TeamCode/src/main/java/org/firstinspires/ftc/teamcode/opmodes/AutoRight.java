@@ -65,7 +65,7 @@ public abstract class AutoRight extends AutoMain{
         currentEnd = collect1.end();
 
         //Intake
-        robot.getHorizontalSlide().extend(0);
+        robot.getHorizontalSlide().extend(0.87);
         robot.getIntake().timedIntake(1,1500);
         robot.waitForCommandsToFinish();
 
@@ -86,7 +86,7 @@ public abstract class AutoRight extends AutoMain{
         robot.waitForCommandsToFinish();
 
         //Intake
-        robot.getHorizontalSlide().extend(0);
+        robot.getHorizontalSlide().extend(0.75);
         robot.getIntake().timedIntake(1,1500);
         robot.waitForCommandsToFinish();
 
@@ -107,7 +107,7 @@ public abstract class AutoRight extends AutoMain{
         robot.waitForCommandsToFinish();
 
         //Intake
-        robot.getHorizontalSlide().extend(0);
+        robot.getHorizontalSlide().extend(0.87);
         robot.getIntake().timedIntake(1,1500);
         robot.waitForCommandsToFinish();
 

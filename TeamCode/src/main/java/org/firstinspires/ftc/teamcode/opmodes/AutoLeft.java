@@ -27,7 +27,8 @@ public abstract class AutoLeft extends AutoMain{
                 .setTangent(Math.toRadians(150 + getAlliance().getRotation()))
                 .splineToConstantHeading(new Vector2d(-49 * getAlliance().getTranslation(),-49 * getAlliance().getTranslation()),Math.toRadians(180 + getAlliance().getRotation()))
                 .turn(Math.toRadians(-45))
-                .addSpatialMarker(new Vector2d(0 * getAlliance().getTranslation(),0 * getAlliance().getTranslation()),() -> {//find pos
+                //TODO FIND POS, May want move raise to after movement
+                .addSpatialMarker(new Vector2d(-38 * getAlliance().getTranslation(),-55 * getAlliance().getTranslation()),() -> {//find pos
                     robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.HIGH_BASKET);
                 })
                 .build();
@@ -48,7 +49,7 @@ public abstract class AutoLeft extends AutoMain{
         currentEnd = collect1.end();
 
         //Intake first
-        robot.getHorizontalSlide().extend(0);
+        robot.getHorizontalSlide().extend(0.65);
         robot.getIntake().timedIntake(1,1500);
         robot.waitForCommandsToFinish();
 
@@ -78,7 +79,7 @@ public abstract class AutoLeft extends AutoMain{
         currentEnd = collect2.end();
 
         //Intake second
-        robot.getHorizontalSlide().extend(0);
+        robot.getHorizontalSlide().extend(0.65);
         robot.getIntake().timedIntake(1,1500);
         robot.waitForCommandsToFinish();
 
@@ -109,7 +110,7 @@ public abstract class AutoLeft extends AutoMain{
         currentEnd = collect3.end();
 
         //Intake third
-        robot.getHorizontalSlide().extend(0);
+        robot.getHorizontalSlide().extend(0.65);
         robot.getIntake().timedIntake(1,1500);
         robot.waitForCommandsToFinish();
 
