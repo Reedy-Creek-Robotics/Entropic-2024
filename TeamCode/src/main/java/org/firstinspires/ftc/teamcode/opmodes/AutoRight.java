@@ -9,29 +9,26 @@ import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySe
 public abstract class AutoRight extends AutoMain{
 
     @Override
+    public Pose2d getStartPosition() {
+        return new Pose2d((23.5-9) * getAlliance().getTranslation(), (-72+9) * getAlliance().getTranslation(), Math.toRadians(-90 + getAlliance().getRotation()));
+    }
+
+    @Override
     public void runPath() {
         deliverPreload();
         scoreSpecimen();
-
-        collectPresets(new Pose2d(38,-30 * getAlliance(),Math.toRadians(45 * getAlliance())),Math.toRadians(45 * getAlliance()));
-        deliverToHumanPlayer();
-
-        collectPresets(new Pose2d(50,-30 * getAlliance(),Math.toRadians(45 * getAlliance())),Math.toRadians(45 * getAlliance()));
-        deliverToHumanPlayer();
-
-        collectPresets(new Pose2d(56,-24 * getAlliance(),Math.toRadians(0 * getAlliance())),Math.toRadians(0 * getAlliance()));
-        deliverToHumanPlayer();
-
+        collectPresets();
         park();
     }
 
     @Override
     public void deliverPreload() {
         TrajectorySequence trajectorySequence = robot.getDriveTrain().trajectoryBuilder(getStartPosition())
-                .setTangent(Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(10,(-24-8) * getAlliance()),Math.toRadians(90 * getAlliance()))
-                .addSpatialMarker(new Vector2d(0,0  * getAlliance()),() -> {
-                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.UNDER_HIGH_BAR);
+                .setTangent(Math.toRadians(90 + getAlliance().getRotation()))
+                .lineToConstantHeading(new Vector2d(9 * getAlliance().getTranslation(),(-38) * getAlliance().getTranslation()))
+                .addSpatialMarker(new Vector2d(12 * getAlliance().getTranslation(),-48 * getAlliance().getTranslation()),() -> {
+                    robot.getIntake().timedIntake(-0.3 * getAlliance().getTranslation(),80 * getAlliance().getTranslation());
+                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.OVER_HIGH_BAR);
                 })
                 .build();
 
@@ -41,24 +38,96 @@ public abstract class AutoRight extends AutoMain{
         currentEnd = trajectorySequence.end();
     }
 
-    public void deliverToHumanPlayer(){
+    public void scoreSpecimen(){
+        robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.HIGH_BAR);
+        robot.waitForCommandsToFinish();
+
         TrajectorySequence trajectorySequence = robot.getDriveTrain().trajectoryBuilder(currentEnd)
-                .setTangent(Math.toRadians(-90 * getAlliance()))
-                .splineToLinearHeading(new Pose2d(48,-48 * getAlliance(),Math.toRadians(-90 * getAlliance())),Math.toRadians(-90 * getAlliance()))
+                .forward(4)
                 .build();
         robot.getDriveTrain().followTrajectory(trajectorySequence);
         robot.waitForCommandsToFinish();
 
         currentEnd = trajectorySequence.end();
 
-        robot.getIntake().timedIntake(-1,2000);
+        robot.getIntake().timedIntake(-1,100);
         robot.waitForCommandsToFinish();
     }
+
+    public void collectPresets(){
+        //Drive
+        TrajectorySequence collect1 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
+                .setTangent(Math.toRadians(-90 + getAlliance().getRotation()))
+                .splineToLinearHeading(new Pose2d((48+9) * getAlliance().getTranslation(),-52 * getAlliance().getTranslation(),Math.toRadians(65 + getAlliance().getRotation())),Math.toRadians(30 + getAlliance().getRotation()))
+                .build();
+        robot.getDriveTrain().followTrajectory(collect1);
+        robot.waitForCommandsToFinish();
+        currentEnd = collect1.end();
+
+        //Intake
+        robot.getHorizontalSlide().extend(0);
+        robot.getIntake().timedIntake(1,1500);
+        robot.waitForCommandsToFinish();
+
+        //Contract
+        robot.getHorizontalSlide().contract();
+        robot.waitForCommandsToFinish();
+
+        //Turn to 2
+        TrajectorySequence collect2 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
+                .turn(Math.toRadians(23))
+                .build();
+        robot.getDriveTrain().followTrajectory(collect2);
+        robot.waitForCommandsToFinish();
+        currentEnd = collect2.end();
+
+        //Outtake first
+        robot.getIntake().timedIntake(-0.5,200);
+        robot.waitForCommandsToFinish();
+
+        //Intake
+        robot.getHorizontalSlide().extend(0);
+        robot.getIntake().timedIntake(1,1500);
+        robot.waitForCommandsToFinish();
+
+        //Contract
+        robot.getHorizontalSlide().contract();
+        robot.waitForCommandsToFinish();
+
+        //Turn to 3
+        TrajectorySequence collect3 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
+                .turn(Math.toRadians(23))
+                .build();
+        robot.getDriveTrain().followTrajectory(collect3);
+        robot.waitForCommandsToFinish();
+        currentEnd = collect3.end();
+
+        //Outtake second
+        robot.getIntake().timedIntake(-0.5,200);
+        robot.waitForCommandsToFinish();
+
+        //Intake
+        robot.getHorizontalSlide().extend(0);
+        robot.getIntake().timedIntake(1,1500);
+        robot.waitForCommandsToFinish();
+
+        //Contract
+        robot.getHorizontalSlide().contract();
+        robot.waitForCommandsToFinish();
+
+        //extra time to allow slide to contract
+        robot.getIntake().timedIntake(0,500);
+        robot.waitForCommandsToFinish();
+
+        //Outtake third
+        robot.getIntake().timedIntake(-0.5,200);
+        robot.waitForCommandsToFinish();
+    }
+
     @Override
     public void park() {
         TrajectorySequence trajectorySequence = robot.getDriveTrain().trajectoryBuilder(currentEnd)
-                .setTangent(Math.toRadians(-90))
-                .splineToConstantHeading(new Vector2d(36,-60  * getAlliance()),Math.toRadians(-90  * getAlliance()))
+                .lineToLinearHeading(new Pose2d((48+9) * getAlliance().getTranslation(),-60 * getAlliance().getTranslation(),Math.toRadians(90 + getAlliance().getRotation())))
                 .build();
 
         robot.getDriveTrain().followTrajectory(trajectorySequence);

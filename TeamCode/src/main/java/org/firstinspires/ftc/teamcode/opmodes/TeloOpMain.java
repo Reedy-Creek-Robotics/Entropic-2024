@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
+import static org.firstinspires.ftc.teamcode.components.ScoringSlide.Positions.*;
 import static org.firstinspires.ftc.teamcode.game.Controller.AnalogControl.LEFT_STICK_X;
 import static org.firstinspires.ftc.teamcode.game.Controller.AnalogControl.LEFT_STICK_Y;
 import static org.firstinspires.ftc.teamcode.game.Controller.AnalogControl.RIGHT_STICK_X;
@@ -8,10 +9,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.bareBones.intakeTester;
-import org.firstinspires.ftc.teamcode.components.BaseComponent;
-import org.firstinspires.ftc.teamcode.components.DriveTrain;
-import org.firstinspires.ftc.teamcode.components.Intake;
 import org.firstinspires.ftc.teamcode.components.LittleHanger;
 import org.firstinspires.ftc.teamcode.components.Robot;
 import org.firstinspires.ftc.teamcode.components.RobotContext;
@@ -36,6 +33,8 @@ public class TeloOpMain extends OpMode {
 
     public Controller controller2;
 
+    public ScoringSlide.Positions[] slidePositions = {GROUND, LOW_BASKET, HIGH_BASKET, HIGH_BAR, OVER_HIGH_BAR};
+    public int slidePosIndex = 0;
 
     @Override
     public void init() {
@@ -59,9 +58,9 @@ public class TeloOpMain extends OpMode {
         }
 
         if (driver.isPressed(Controller.Button.DPAD_UP)){
-            robot.getIntake().extend();
+            robot.getHorizontalSlide().extend(1);
         } else if (driver.isPressed(Controller.Button.DPAD_DOWN)) {
-            robot.getIntake().contract();
+            robot.getHorizontalSlide().contract();
         }
 
         if (driver.isPressed(Controller.Button.TRIANGLE)){
@@ -79,54 +78,23 @@ public class TeloOpMain extends OpMode {
         }
 
         if(driver.isPressed(Controller.Button.DPAD_RIGHT)) {
-            switch (robot.getScoringSlide().getTarget()) {
-                case GROUND:
-                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.LOW_BASKET);
-                    break;
-                case LOW_BASKET:
-                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.LOW_BAR);
-                    break;
-                case LOW_BAR:
-                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.HIGH_BAR);
-                    break;
-                case HIGH_BAR:
-                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.HIGH_BASKET);
-                    break;
-                case HIGH_BASKET:
-                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.GROUND);
-                    break;
-            }
-
+            slidePosIndex = slidePosIndex++ < 4 ? slidePosIndex + 1 : 0;
+            robot.getScoringSlide().moveToHeight(slidePositions[slidePosIndex]);
         } else if (driver.isPressed(Controller.Button.DPAD_LEFT)) {
-            switch (robot.getScoringSlide().getTarget()) {
-                case GROUND:
-                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.HIGH_BASKET);
-                    break;
-                case LOW_BASKET:
-                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.GROUND);
-                    break;
-                case LOW_BAR:
-                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.LOW_BASKET);
-                    break;
-                case HIGH_BAR:
-                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.LOW_BAR);
-                    break;
-                case HIGH_BASKET:
-                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.HIGH_BAR);
-                    break;
-            }
+            slidePosIndex = slidePosIndex-- > 0 ? slidePosIndex - 1 : 4;
+            robot.getScoringSlide().moveToHeight(slidePositions[slidePosIndex]);
         }
 
 
         //testing
         if(controller2.isPressed(Controller.Button.A)){
-            robot.getIntake().rotatorContract();
+            robot.getHorizontalSlide().rotatorContract();
         }else if (controller2.isPressed(Controller.Button.B)){
-            robot.getIntake().rotatorExtend();
+            robot.getHorizontalSlide().rotatorExtend();
         }else if(controller2.isPressed(Controller.Button.X)){
-            robot.getIntake().linkageContract();
+            robot.getHorizontalSlide().linkageContract();
         }else if (controller2.isPressed(Controller.Button.Y)){
-            robot.getIntake().linkageExtend();
+            robot.getHorizontalSlide().linkageExtend();
         }
 
 

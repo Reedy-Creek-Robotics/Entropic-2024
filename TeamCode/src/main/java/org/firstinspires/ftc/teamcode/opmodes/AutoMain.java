@@ -8,6 +8,27 @@ import org.firstinspires.ftc.teamcode.components.ScoringSlide;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 
 public abstract class AutoMain extends LinearOpMode {
+    public enum Alliance{
+        RED(0,1),
+        BLUE(180,-1);
+
+        double rotation;
+        int translation;
+
+        Alliance(double rotation, int translation) {
+            this.rotation = rotation;
+            this.translation = translation;
+        }
+
+        public double getRotation() {
+            return rotation;
+        }
+
+        public int getTranslation() {
+            return translation;
+        }
+    }
+
     protected Robot robot;
 
     protected Pose2d currentEnd;
@@ -37,43 +58,9 @@ public abstract class AutoMain extends LinearOpMode {
 
     public abstract Pose2d getStartPosition();
 
-    public abstract double getAlliance();
+    public abstract Alliance getAlliance();
 
     public abstract void deliverPreload();
     public abstract void park();
 
-    public void scoreSpecimen(){
-        //lift up
-        //moveback to outtake
-        //outtake
-
-        robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.HIGH_BAR);
-        robot.waitForCommandsToFinish();
-
-        TrajectorySequence trajectorySequence = robot.getDriveTrain().trajectoryBuilder(currentEnd)
-                .forward(4)
-                .build();
-        robot.getDriveTrain().followTrajectory(trajectorySequence);
-        robot.waitForCommandsToFinish();
-
-        robot.getIntake().timedIntake(-1,2000);
-        robot.waitForCommandsToFinish();
-    }
-
-    public void collectPresets(Pose2d position, double angle){
-        TrajectorySequence trajectorySequence = robot.getDriveTrain().trajectoryBuilder(currentEnd)
-                .addDisplacementMarker(() -> {
-                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.GROUND);
-                })
-                .setTangent(Math.toRadians(-90 * getAlliance()))
-                .splineToLinearHeading(position,angle)
-                .build();
-        robot.getDriveTrain().followTrajectory(trajectorySequence);
-        robot.waitForCommandsToFinish();
-
-        currentEnd = trajectorySequence.end();
-
-        robot.getIntake().timedIntake(1,2000);
-        robot.waitForCommandsToFinish();
-    }
 }

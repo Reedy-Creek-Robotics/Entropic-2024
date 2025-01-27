@@ -28,10 +28,12 @@ public class intakeTester extends OpMode {
     double leftRotationPos = RotatorPos.START.left;
     double rightRotationPos = RotatorPos.START.right;
 
+    boolean slow_mode = false;
+    double incrementValue = 0.05;
 
     public enum LinkagePos{
-        START(0.9,0.04),
-        END(0.55,0.29);
+        START(0.93,0.03),//0.9,0.04
+        END(0.7,0.26);//0.55,0.29
 
         double left, right;
         LinkagePos(double left, double right) {
@@ -41,8 +43,8 @@ public class intakeTester extends OpMode {
     }
 
     public enum RotatorPos{
-        START(0.75,0.1),
-        END(0.2,0.65);
+        START(0.73,0.4),
+        END(0.22,0.91);
 
         double left, right;
         RotatorPos(double left, double right) {
@@ -68,7 +70,11 @@ public class intakeTester extends OpMode {
 
     @Override
     public void loop() {
-        double incrementValue = 0.05;
+        if(controller.isPressed(Controller.Button.RIGHT_BUMPER)){
+            slow_mode = !slow_mode;
+        }
+
+        incrementValue = slow_mode ?  0.01 : 0.05;
         if(controller.isPressed(Controller.Button.DPAD_UP)){
             leftLinkagePos += incrementValue;
             rightLinkagePos -= incrementValue;
@@ -79,23 +85,23 @@ public class intakeTester extends OpMode {
         }
 
         if(controller.isPressed(Controller.Button.DPAD_RIGHT)){
-            leftLinkagePos += incrementValue;
-            rightLinkagePos -= incrementValue;
+            leftRotationPos += incrementValue;
+            rightRotationPos -= incrementValue;
         }else if (controller.isPressed(Controller.Button.DPAD_LEFT)){
-            leftLinkagePos -= incrementValue;
-            rightLinkagePos += incrementValue;
+            leftRotationPos -= incrementValue;
+            rightRotationPos += incrementValue;
         }
 
-        if(controller.isPressed(Controller.Button.A)){
+        if(controller.isPressed(Controller.Button.CROSS)){
             leftRotationPos = RotatorPos.START.left;
             rightRotationPos = RotatorPos.START.right;
-        }else if (controller.isPressed(Controller.Button.B)){
+        }else if (controller.isPressed(Controller.Button.TRIANGLE)){
             leftRotationPos = RotatorPos.END.left;
             rightRotationPos = RotatorPos.END.right;
-        }else if(controller.isPressed(Controller.Button.X)){
+        }else if(controller.isPressed(Controller.Button.SQUARE)){
             leftLinkagePos = LinkagePos.START.left;
             rightLinkagePos = LinkagePos.START.right;
-        }else if (controller.isPressed(Controller.Button.Y)){
+        }else if (controller.isPressed(Controller.Button.CIRCLE)){
             leftLinkagePos = LinkagePos.END.left;
             rightLinkagePos = LinkagePos.END.right;
         }

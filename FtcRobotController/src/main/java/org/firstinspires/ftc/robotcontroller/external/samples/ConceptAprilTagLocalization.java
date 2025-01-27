@@ -94,9 +94,9 @@ public class ConceptAprilTagLocalization extends LinearOpMode {
      * to +/-90 degrees if it's vertical, or 180 degrees if it's upside-down.
      */
     private Position cameraPosition = new Position(DistanceUnit.INCH,
-            -180.467/25.4, 160.292/25.4, 384.632/25.4,0);
+            160.292/25.4,180.467/25.4 , 384.632/25.4,0);
     private YawPitchRollAngles cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES,
-            -15, -120, 0, 0);
+            -15-90, -120, 0, 0);
 
     /**
      * The variable to store our instance of the AprilTag processor.
@@ -242,7 +242,7 @@ public class ConceptAprilTagLocalization extends LinearOpMode {
                 telemetry.addLine(String.format("xyx %6.1f %6.1f %6.1f  (inch)",
                         detection.robotPose.getPosition().x,
                         detection.robotPose.getPosition().y,
-                        detection.robotPose.getPosition().z));
+                        detection.robotPose.getOrientation().getYaw(AngleUnit.DEGREES)));
             } else {
                 telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
                 telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));

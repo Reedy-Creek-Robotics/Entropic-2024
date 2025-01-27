@@ -7,12 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 public class AutoLeftRed extends AutoLeft{
 
     @Override
-    public Pose2d getStartPosition() {
-        return new Pose2d(-12, -72+9, Math.toRadians(270));
-    }
-
-    @Override
-    public double getAlliance() {
-        return 1;
+    public Alliance getAlliance() {
+        return Alliance.RED;
     }
 }

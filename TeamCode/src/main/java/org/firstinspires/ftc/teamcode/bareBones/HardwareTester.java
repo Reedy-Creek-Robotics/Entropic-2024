@@ -24,6 +24,9 @@ public class HardwareTester extends OpMode {
 
     double targetPosition;
 
+    double serveIncSpeed = 0.05;
+    boolean slow_mode = false;
+
     @Override
     public void init() {
         devices = new ArrayList<>();
@@ -59,8 +62,6 @@ public class HardwareTester extends OpMode {
         if (device instanceof DcMotorEx) {
             DcMotorEx motor = (DcMotorEx) device;
 
-
-
             telemetry.addData("Position", motor.getCurrentPosition());
             telemetry.addData("Power", motor.getPower());
             telemetry.addData("current",motor.getCurrent(CurrentUnit.AMPS));
@@ -78,18 +79,26 @@ public class HardwareTester extends OpMode {
             }*/
 
         } else if (device instanceof Servo) {
+
             Servo servo = (Servo) device;
 
             telemetry.addData("Position", servo.getPosition());
+            telemetry.addData("slow mode", slow_mode);
 
             if (controller.isPressed(Controller.AnalogControl.RIGHT_STICK_Y)) {
                 targetPosition += controller.analogValue(Controller.AnalogControl.RIGHT_STICK_Y) * 0.01;
             }
 
+            if(controller.isPressed(Controller.Button.A)){
+                slow_mode = !slow_mode;
+            }
+
+            serveIncSpeed = slow_mode ?  0.01 : 0.05;
+
             if (controller.isPressed(Controller.Button.DPAD_UP)){
-                targetPosition += 0.05;
+                targetPosition += serveIncSpeed;
             } else if (controller.isPressed(Controller.Button.DPAD_DOWN)) {
-                targetPosition -= 0.05;
+                targetPosition -= serveIncSpeed;
             }
 
             servo.setPosition(targetPosition);
@@ -99,6 +108,11 @@ public class HardwareTester extends OpMode {
                 servo.setPosition(targetPosition);
             }
 
+        } else if (device instanceof CRServo) {
+            CRServo servo = (CRServo) device;
+
+            double power = controller.leftStickY();
+            servo.setPower(power*0.5);
         }
 
         telemetry.update();

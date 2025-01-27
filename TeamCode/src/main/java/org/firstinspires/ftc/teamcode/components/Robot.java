@@ -21,9 +21,10 @@ public class Robot extends BaseComponent{
     private List<LynxModule> lynxModules;
 
     private DriveTrain driveTrain;
-    private Intake intake;
+    private HorizontalSlide horizontalSlide;
     private LittleHanger littleHanger;
     private ScoringSlide scoreSlide;
+    private Intake intake;
 
     private int updateCount;
     private ElapsedTime initTime;
@@ -35,11 +36,12 @@ public class Robot extends BaseComponent{
         this.lynxModules = hardwareMap.getAll(LynxModule.class);
 
         driveTrain = new DriveTrain(context);
-        intake = new Intake(context);
+        horizontalSlide = new HorizontalSlide(context);
         littleHanger = new LittleHanger(context);
         scoreSlide = new ScoringSlide(context);
+        intake = new Intake(context);
 
-        addSubComponents(driveTrain,intake,littleHanger,scoreSlide);
+        addSubComponents(driveTrain, horizontalSlide,littleHanger,scoreSlide, intake);
 
         TelemetryHolder.telemetry = telemetry;
     }
@@ -106,9 +108,9 @@ public class Robot extends BaseComponent{
     public void savePositionToDisk(String filename) {
         FileUtil.writeLines(
                 filename,
-                driveTrain.roadrunner.getLocalizer().getPoseEstimate().getX(),
-                driveTrain.roadrunner.getLocalizer().getPoseEstimate().getY(),
-                driveTrain.roadrunner.getLocalizer().getPoseEstimate().getHeading()
+                driveTrain.roadrunner.getPoseEstimate().getX(),
+                driveTrain.roadrunner.getPoseEstimate().getY(),
+                driveTrain.roadrunner.getPoseEstimate().getHeading()
         );
     }
 
@@ -182,9 +184,11 @@ public class Robot extends BaseComponent{
         return driveTrain;
     }
 
-    public Intake getIntake() {
-        return intake;
+    public HorizontalSlide getHorizontalSlide() {
+        return horizontalSlide;
     }
+
+    public Intake getIntake(){return intake;}
 
     public LittleHanger getLittleHanger() {
         return littleHanger;

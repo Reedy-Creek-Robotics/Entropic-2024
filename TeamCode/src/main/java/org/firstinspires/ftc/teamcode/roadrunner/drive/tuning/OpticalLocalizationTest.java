@@ -26,7 +26,7 @@ public class OpticalLocalizationTest extends LinearOpMode {
             -15, -120, 0, 0);
     @Override
     public void runOpMode() throws InterruptedException {
-        aprilTagLocalizer = new AprilTagLocalizer(BaseComponent.createRobotContext(this),cameraPosition, cameraOrientation, this.hardwareMap.get(WebcamName.class, "Webcam 1"));
+        aprilTagLocalizer = BaseComponent.createRobotContext(this).aprilTagLocalizer;
 
         telemetry.addLine("ready");
         telemetry.update();

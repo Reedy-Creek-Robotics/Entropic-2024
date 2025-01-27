@@ -31,7 +31,7 @@ public class RobotContext {
     public OpticalLocalizer opticalLocalizer;
 
     private Position cameraPosition = new Position(DistanceUnit.MM,
-            -180.467, 160.292, 384.632, 0);
+             160.292, 180.467,384.632, 0);
     private YawPitchRollAngles cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES,
             -15-90, -120, 0, 0);
 
@@ -51,8 +51,10 @@ public class RobotContext {
 
         //this.opticalLocalizer = new OpticalLocalizer(this);
         //this.aprilTagLocalizer = new AprilTagLocalizer(this,cameraPosition, cameraOrientation, webcam);
-        this.localizer = new OpticalAprilTagLocalizer(this, cameraPosition, cameraOrientation, webcam);
-        //this.localizer = new OpticalLocalizer(this); //new StandardTrackingWheelLocalizer(opMode.hardwareMap, lastTrackingEncPositions, lastTrackingEncVels, this.descriptor.ODOMETRY_TUNER);//new TwoWheelTrackingLocalizer(opMode.hardwareMap,this.descriptor);
+        //this.localizer = new OpticalAprilTagLocalizer(this, cameraPosition, cameraOrientation, webcam);
+        this.localizer = new OpticalLocalizer(this);
+        //new StandardTrackingWheelLocalizer(opMode.hardwareMap, lastTrackingEncPositions, lastTrackingEncVels, this.descriptor.ODOMETRY_TUNER);
+        //new TwoWheelTrackingLocalizer(opMode.hardwareMap,this.descriptor);
 
 
         this.alliance = 1; //blue is negative one, red is positive one
