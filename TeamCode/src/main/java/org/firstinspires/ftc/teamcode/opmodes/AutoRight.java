@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 
 import org.firstinspires.ftc.teamcode.components.ScoringSlide;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
-
+@Config
 public abstract class AutoRight extends AutoMain{
 
     @Override

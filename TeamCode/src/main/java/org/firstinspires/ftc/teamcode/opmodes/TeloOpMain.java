@@ -22,14 +22,8 @@ public class TeloOpMain extends OpMode {
 
     double speed = 1;
 
-    RobotContext robotContext;
 
     protected Controller driver;
-
-    public Servo leftRotator;
-    public Servo rightRotator;
-    public Servo leftLinkage;
-    public Servo rightLinkage;
 
     public Controller controller2;
 
