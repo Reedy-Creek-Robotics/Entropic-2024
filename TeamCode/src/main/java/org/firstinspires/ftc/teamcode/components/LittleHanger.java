@@ -9,7 +9,7 @@ public class LittleHanger extends BaseComponent{
 
     public enum HangHeights {
         TOP(900),
-        PULL(300);
+        PULL(0);
 
         private final int ticks;
 

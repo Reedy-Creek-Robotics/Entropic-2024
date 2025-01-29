@@ -151,6 +151,8 @@ public class HorizontalSlide extends BaseComponent{
         public void start() {
             telemetry.addLine("intake extend");
             linkagePos = length;
+            telemetry.addData("leftLinkage Pos: ", getLinkagePosFromPercent(linkagePos,-1));
+            telemetry.addData("rightLinkage Pos: ", getLinkagePosFromPercent(linkagePos,1));
 
             leftLinkage.setPosition(getLinkagePosFromPercent(linkagePos,-1));
             rightLinkage.setPosition(getLinkagePosFromPercent(linkagePos,1));
@@ -162,6 +164,8 @@ public class HorizontalSlide extends BaseComponent{
         public void stop() {
             if(length >= MIN_SAFE_LINKAGE_EXTENSION){
                 rotatorPos = 1;
+                telemetry.addData("leftRotator Pos: ", getRotatorPosFromPercent(rotatorPos,-1));
+                telemetry.addData("rightRotator Pos: ", getRotatorPosFromPercent(rotatorPos,1));
 
                 leftRotator.setPosition(getRotatorPosFromPercent(rotatorPos,-1));
                 rightRotator.setPosition(getRotatorPosFromPercent(rotatorPos,1));

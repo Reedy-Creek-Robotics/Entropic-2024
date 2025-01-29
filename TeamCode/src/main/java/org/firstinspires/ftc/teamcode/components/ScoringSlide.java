@@ -56,7 +56,7 @@ public class ScoringSlide extends BaseComponent{
     }
 
     public void stopMotors() {
-        if(motor.getCurrentPosition() <= 50){
+        if(motor.getCurrentPosition() >= 50){
             motor.setTargetPosition(motor.getCurrentPosition());
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motor.setPower(idlePower);
@@ -111,6 +111,7 @@ public class ScoringSlide extends BaseComponent{
         public void start() {
             motor.setTargetPosition(ticks);
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
 
             double power = ticks > motor.getCurrentPosition() ?
                     ascendingPower :
