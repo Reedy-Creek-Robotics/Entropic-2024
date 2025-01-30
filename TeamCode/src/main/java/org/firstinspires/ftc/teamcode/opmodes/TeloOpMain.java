@@ -81,13 +81,13 @@ public class TeloOpMain extends OpMode {
 
 
         //testing
-        if(controller2.isPressed(Controller.Button.A)){
+        if(controller2.isPressed(Controller.Button.CROSS)){
             robot.getHorizontalSlide().rotatorContract();
-        }else if (controller2.isPressed(Controller.Button.B)){
+        }else if (controller2.isPressed(Controller.Button.TRIANGLE)){
             robot.getHorizontalSlide().rotatorExtend();
-        }else if(controller2.isPressed(Controller.Button.X)){
+        }else if(controller2.isPressed(Controller.Button.SQUARE)){
             robot.getHorizontalSlide().linkageContract();
-        }else if (controller2.isPressed(Controller.Button.Y)){
+        }else if (controller2.isPressed(Controller.Button.CIRCLE)){
             robot.getHorizontalSlide().linkageExtend();
         }
 

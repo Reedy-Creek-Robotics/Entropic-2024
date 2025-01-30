@@ -102,7 +102,7 @@ public class HorizontalSlide extends BaseComponent{
 
     public double getRotatorPosFromPercent(double length, int side){
         if(side == 1){
-            return RotatorPos.START.right + length*(LinkagePos.END.right - LinkagePos.START.right);
+            return RotatorPos.START.right + length*(RotatorPos.END.right - RotatorPos.START.right);
         } else if (side == -1) {
             return RotatorPos.START.left + length*(RotatorPos.END.left -RotatorPos.START.left);
         }
