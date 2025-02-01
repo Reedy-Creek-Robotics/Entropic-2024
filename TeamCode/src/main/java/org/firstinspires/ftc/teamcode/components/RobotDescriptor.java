@@ -52,8 +52,8 @@ public class RobotDescriptor {
             216, //270
             RevHubOrientationOnRobot.LogoFacingDirection.UP,
             RevHubOrientationOnRobot.UsbFacingDirection.FORWARD,
-            new PIDCoefficients(5, 0, 0),
-            new PIDCoefficients(5, 0, 0),
+            new PIDCoefficients(10, 0, 0),
+            new PIDCoefficients(6, 0, 0),
             1.75555708403,
             1,
             1,

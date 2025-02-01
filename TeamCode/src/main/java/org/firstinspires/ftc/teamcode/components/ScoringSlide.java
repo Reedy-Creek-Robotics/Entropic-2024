@@ -15,7 +15,7 @@ public class ScoringSlide extends BaseComponent{
         /*UNDER_LOW_BAR(400),
         LOW_BAR(500),*/
         OVER_HIGH_BAR(1650),
-        HIGH_BAR(1180);
+        HIGH_BAR(1100);
 
         private final int ticks;
 

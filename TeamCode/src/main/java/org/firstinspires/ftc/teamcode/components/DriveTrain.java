@@ -140,7 +140,7 @@ public class DriveTrain extends BaseComponent {
     }
 
     public void driverRelative(double drive, double strafe, double turn, double speedFactor) {
-        DriveUtil.MotorPowers motorPowers = context.driveUtil.calculateWheelPowerForDriverRelative(drive, strafe, turn, new Heading(Math.toDegrees(context.localizer.getPoseEstimate().getHeading())), speedFactor);
+        DriveUtil.MotorPowers motorPowers = context.driveUtil.calculateWheelPowerForDriverRelative(drive, strafe, turn, new Heading(Math.toDegrees(roadrunner.getPoseEstimate().getHeading())), speedFactor);
 
         // DriveUtil.MotorPowers motorPowers = context.driveUtil.calculateWheelPowerForDriverRelative(drive, strafe, turn, new Heading(), speedFactor);
 

@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySe
 
 @Config
 public abstract class AutoLeft extends AutoMain{
-    public static boolean PRELOAD = true, FIRST = false, SECOND = false, THIRD = false, PARK = false;
+    public static boolean PRELOAD = true, FIRST = true, SECOND = true, THIRD = true, PARK = false;
 
     @Override
     public Pose2d getStartPosition() {
@@ -43,7 +43,6 @@ public abstract class AutoLeft extends AutoMain{
         park();*/
     }
 
-    @Override
     public void deliverPreload() {
         TrajectorySequence trajectorySequence = robot.getDriveTrain().trajectoryBuilder(getStartPosition())
                 .setTangent(Math.toRadians(135 + getAlliance().getRotation()))
@@ -66,7 +65,7 @@ public abstract class AutoLeft extends AutoMain{
         //turn to first
         robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.GROUND);
         TrajectorySequence collect1 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
-                .lineToSplineHeading(new Pose2d(-50 * getAlliance().getTranslation(), -47 * getAlliance().getTranslation(),Math.toRadians(85 + getAlliance().getRotation())))
+                .lineToSplineHeading(new Pose2d(-50 * getAlliance().getTranslation(), -47.5 * getAlliance().getTranslation(),Math.toRadians(84 + getAlliance().getRotation())))
                 //.turn(Math.toRadians(45))
                 .build();
         robot.getDriveTrain().followTrajectory(collect1);
@@ -74,8 +73,8 @@ public abstract class AutoLeft extends AutoMain{
         currentEnd = collect1.end();
 
         //Intake first
-        robot.getHorizontalSlide().extend(0.9);
-        robot.getIntake().timedIntake(0,1000);
+        robot.getHorizontalSlide().extend(0.4);
+        robot.getIntake().timedIntake(0,300);
         robot.waitForCommandsToFinish();
 
         TrajectorySequence push1 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
@@ -83,12 +82,12 @@ public abstract class AutoLeft extends AutoMain{
                 .build();
         robot.getDriveTrain().followTrajectory(push1);
         currentEnd = push1.end();
-        robot.getHorizontalSlide().extend(0.95);
-        robot.getIntake().timedIntake(1,1700);
+        robot.getHorizontalSlide().extend(0.45);
+        robot.getIntake().timedIntake(1,1000);
         robot.waitForCommandsToFinish();
 
         //Contract
-        robot.getHorizontalSlide().contract();
+        robot.getHorizontalSlide().contract(0);
         robot.waitForCommandsToFinish();
 
         TrajectorySequence deliver1 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
@@ -109,7 +108,7 @@ public abstract class AutoLeft extends AutoMain{
         //turn to second
         robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.GROUND);
         TrajectorySequence collect2 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
-                .lineToSplineHeading(new Pose2d(-55 * getAlliance().getTranslation(), -47 * getAlliance().getTranslation(),Math.toRadians(91 + getAlliance().getRotation())))
+                .lineToSplineHeading(new Pose2d(-55 * getAlliance().getTranslation(), -47.5 * getAlliance().getTranslation(),Math.toRadians(91 + getAlliance().getRotation())))
                 //.turn(Math.toRadians(75))
                 .build();
         robot.getDriveTrain().followTrajectory(collect2);
@@ -117,8 +116,8 @@ public abstract class AutoLeft extends AutoMain{
         currentEnd = collect2.end();
 
         //Intake first
-        robot.getHorizontalSlide().extend(0.8);
-        robot.getIntake().timedIntake(0,1000);
+        robot.getHorizontalSlide().extend(0.3);
+        robot.getIntake().timedIntake(0,300);
         robot.waitForCommandsToFinish();
 
         TrajectorySequence push1 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
@@ -126,16 +125,16 @@ public abstract class AutoLeft extends AutoMain{
                 .build();
         robot.getDriveTrain().followTrajectory(push1);
         currentEnd = push1.end();
-        robot.getHorizontalSlide().extend(0.9);
-        robot.getIntake().timedIntake(1,1700);
+        robot.getHorizontalSlide().extend(0.4);
+        robot.getIntake().timedIntake(1,1000);
         robot.waitForCommandsToFinish();
 
         //Contract
-        robot.getHorizontalSlide().contract();
+        robot.getHorizontalSlide().contract(0);
         robot.waitForCommandsToFinish();
 
         TrajectorySequence deliver2 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
-                .lineToSplineHeading(new Pose2d(-47.5 * getAlliance().getTranslation(),-47.5 * getAlliance().getTranslation(), Math.toRadians(45 + getAlliance().getRotation())))
+                .lineToSplineHeading(new Pose2d(-47 * getAlliance().getTranslation(),-47 * getAlliance().getTranslation(), Math.toRadians(45 + getAlliance().getRotation())))
                 //.turn(Math.toRadians(-75))
                 .build();
         robot.getDriveTrain().followTrajectory(deliver2);
@@ -152,15 +151,15 @@ public abstract class AutoLeft extends AutoMain{
         //drive to third
         robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.GROUND);
         TrajectorySequence collect3 =robot.getDriveTrain().trajectoryBuilder(currentEnd)
-                .lineToSplineHeading(new Pose2d(-49 * getAlliance().getTranslation(),-45 * getAlliance().getTranslation(),Math.toRadians((126 + getAlliance().getRotation()))))
+                .lineToSplineHeading(new Pose2d(-49 * getAlliance().getTranslation(),-47 * getAlliance().getTranslation(),Math.toRadians((128 + getAlliance().getRotation()))))
                 .build();
         robot.getDriveTrain().followTrajectory(collect3);
         robot.waitForCommandsToFinish();
         currentEnd = collect3.end();
 
         //Intake third
-        robot.getHorizontalSlide().extend(0.8);
-        robot.getIntake().timedIntake(0,1000);
+        robot.getHorizontalSlide().extend(0.5);
+        robot.getIntake().timedIntake(0,300);
         robot.waitForCommandsToFinish();
 
         TrajectorySequence push1 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
@@ -169,17 +168,17 @@ public abstract class AutoLeft extends AutoMain{
                 .build();
         robot.getDriveTrain().followTrajectory(push1);
         currentEnd = push1.end();
-        robot.getHorizontalSlide().extend(0.9);
-        robot.getIntake().timedIntake(1,1700);
+        robot.getHorizontalSlide().extend(0.6);
+        robot.getIntake().timedIntake(1,1000);
         robot.waitForCommandsToFinish();
 
         //Contract
-        robot.getHorizontalSlide().contract();
+        robot.getHorizontalSlide().contract(0);
         robot.waitForCommandsToFinish();
 
         TrajectorySequence deliver3 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
                 .resetVelConstraint()
-                .lineToSplineHeading(new Pose2d(-47.5 * getAlliance().getTranslation(),-47.5 * getAlliance().getTranslation(),Math.toRadians(45 + getAlliance().getRotation())))
+                .lineToSplineHeading(new Pose2d(-47 * getAlliance().getTranslation(),-47 * getAlliance().getTranslation(),Math.toRadians(45 + getAlliance().getRotation())))
                 .build();
         robot.getDriveTrain().followTrajectory(deliver3);
         robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.HIGH_BASKET);
@@ -188,6 +187,9 @@ public abstract class AutoLeft extends AutoMain{
 
         //Outtake third
         robot.getIntake().timedIntake(-0.5,200);
+        robot.waitForCommandsToFinish();
+
+        robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.GROUND);
         robot.waitForCommandsToFinish();
     }
 

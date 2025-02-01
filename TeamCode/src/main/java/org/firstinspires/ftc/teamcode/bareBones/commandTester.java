@@ -33,7 +33,7 @@ public class commandTester extends OpMode {
         if (controller.isPressed(Controller.Button.TRIANGLE)){
             horizontalSlide.extend(0.39);
         } else if (controller.isPressed(Controller.Button.CROSS)) {
-            horizontalSlide.contract();
+            horizontalSlide.contract(0);
         } else if (controller.isPressed(Controller.Button.CIRCLE)) {
             intake.timedIntake(1,500);
         } else if (controller.isPressed(Controller.Button.SQUARE)) {

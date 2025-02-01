@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.components.LittleHanger;
+import org.firstinspires.ftc.teamcode.components.RobotContext;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 
 @Config
@@ -64,13 +65,8 @@ public class Autotest extends AutoMain{
     }
 
     @Override
-    public Alliance getAlliance() {
-        return Alliance.RED;
-    }
-
-    @Override
-    public void deliverPreload() {
-
+    public RobotContext.Alliance getAlliance() {
+        return RobotContext.Alliance.RED;
     }
 
     @Override

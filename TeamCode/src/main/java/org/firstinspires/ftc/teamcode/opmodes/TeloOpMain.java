@@ -5,9 +5,11 @@ import static org.firstinspires.ftc.teamcode.game.Controller.AnalogControl.LEFT_
 import static org.firstinspires.ftc.teamcode.game.Controller.AnalogControl.LEFT_STICK_Y;
 import static org.firstinspires.ftc.teamcode.game.Controller.AnalogControl.RIGHT_STICK_X;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.components.LittleHanger;
 import org.firstinspires.ftc.teamcode.components.Robot;
@@ -22,6 +24,9 @@ public class TeloOpMain extends OpMode {
 
     double speed = 1;
 
+    ElapsedTime timer = new ElapsedTime();
+    Boolean extending = false;
+    double linkagePos = 0;
 
     protected Controller driver;
 
@@ -34,6 +39,7 @@ public class TeloOpMain extends OpMode {
     public void init() {
         robot = new Robot(this);
         driver = new Controller(gamepad1);
+        robot.loadPositionFromDisk();
 
         //add testing
         controller2 = new Controller(gamepad2);
@@ -48,19 +54,32 @@ public class TeloOpMain extends OpMode {
             double strafe = driver.leftStickX();
             double turn = driver.rightStickX();
 
-            robot.getDriveTrain().drive(drive, strafe, turn, speed);
+            robot.getDriveTrain().driverRelative(drive, strafe, turn, speed);
         }
 
-        if (driver.isPressed(Controller.Button.DPAD_UP)){
+       /* if (driver.isPressed(Controller.Button.DPAD_UP)){
             robot.getHorizontalSlide().extend(1);
         } else if (driver.isPressed(Controller.Button.DPAD_DOWN)) {
             robot.getHorizontalSlide().contract();
-        }
-
+        }*/
         if (driver.isPressed(Controller.Button.TRIANGLE)){
             robot.getLittleHanger().moveToHeight(LittleHanger.HangHeights.TOP);
-        } else if (driver.isPressed(Controller.Button.SQUARE)) {
+        } else if (driver.isPressed(Controller.Button.CROSS)) {
             robot.getLittleHanger().moveToHeight(LittleHanger.HangHeights.PULL);
+        }
+
+        if (driver.isButtonDown(Controller.Button.DPAD_RIGHT)){
+            if(timer.milliseconds()>=10 && linkagePos<1){
+                timer.reset();
+                linkagePos += 0.05;
+            }
+            robot.getHorizontalSlide().linkageMove(linkagePos);
+        } else if (driver.isButtonDown(Controller.Button.DPAD_LEFT)) {
+            if(timer.milliseconds()>=10 && linkagePos>0){
+                timer.reset();
+                linkagePos -= 0.05;
+            }
+            robot.getHorizontalSlide().linkageMove(linkagePos);
         }
 
         if (driver.rightTrigger() > 0.2){
@@ -71,10 +90,17 @@ public class TeloOpMain extends OpMode {
             robot.getIntake().intake(0);
         }
 
-        if(driver.isPressed(Controller.Button.DPAD_RIGHT)) {
+        if(driver.isPressed(Controller.Button.LEFT_BUMPER)) {
+            robot.getHorizontalSlide().rotatorContract();
+        }
+        if(driver.isPressed(Controller.Button.RIGHT_BUMPER)) {
+            robot.getHorizontalSlide().rotatorExtend();
+        }
+
+        if(driver.isPressed(Controller.Button.DPAD_DOWN)) {
             slidePosIndex = slidePosIndex++ < slidePositions.length - 1 ? slidePosIndex + 1 : 0;
             robot.getScoringSlide().moveToHeight(slidePositions[slidePosIndex]);
-        } else if (driver.isPressed(Controller.Button.DPAD_LEFT)) {
+        } else if (driver.isPressed(Controller.Button.DPAD_UP)) {
             slidePosIndex = slidePosIndex-- > 0 ? slidePosIndex - 1 : slidePositions.length - 1;
             robot.getScoringSlide().moveToHeight(slidePositions[slidePosIndex]);
         }
@@ -91,8 +117,12 @@ public class TeloOpMain extends OpMode {
             robot.getHorizontalSlide().linkageExtend();
         }
 
+        if (driver.isPressed(Controller.Button.START)){
+            robot.getDriveTrain().roadrunner.setPoseEstimate(new Pose2d(0,0,Math.toRadians(90 + robot.getRobotContext().getAlliance().getTranslation())));
+        }
 
-        if(driver.isPressed(Controller.Button.LEFT_STICK_BUTTON)){
+
+        if(driver.isPressed(Controller.Button.LEFT_STICK_BUTTON) || driver.isPressed(Controller.Button.RIGHT_STICK_BUTTON)){
             speed = (speed == 1) ? 0.3 : 1;
         }
         telemetry.addData("left hang", robot.getLittleHanger().getLeftTicks());

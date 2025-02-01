@@ -37,7 +37,7 @@ public class HorizontalSlide extends BaseComponent{
     public Servo leftLinkage;
     public Servo rightLinkage;
 
-    private static final double MIN_SAFE_LINKAGE_EXTENSION = 0.27;
+    private static final double MIN_SAFE_LINKAGE_EXTENSION = 0.25;
 
     private int targetPosition;
     public HorizontalSlide(RobotContext context) {
@@ -73,8 +73,8 @@ public class HorizontalSlide extends BaseComponent{
         rightRotator.setPosition(rotator2Pos);*/
 
     }
-    public void contract(){
-        executeCommand(new Contract());
+    public void contract(double length){
+        executeCommand(new Contract(length));
 
         /*telemetry.addLine("intake contract");
         rotatorPos = startRotatorPos;
@@ -107,6 +107,12 @@ public class HorizontalSlide extends BaseComponent{
             return RotatorPos.START.left + length*(RotatorPos.END.left -RotatorPos.START.left);
         }
         return 0.5;
+    }
+
+    public void linkageMove(double length){
+        linkagePos = length;
+        leftLinkage.setPosition(getLinkagePosFromPercent(linkagePos,-1));
+        rightLinkage.setPosition(getLinkagePosFromPercent(linkagePos,1));
     }
 
     public void linkageContract(){
@@ -181,14 +187,21 @@ public class HorizontalSlide extends BaseComponent{
 
     public class Contract implements Command{
         ElapsedTime timer = new ElapsedTime();
+        double length;
+
+        public Contract(double length) {
+            this.length = length;
+        }
 
         @Override
         public void start() {
             telemetry.addLine("intake extend");
             rotatorPos = 0;
 
-            leftRotator.setPosition(getRotatorPosFromPercent(rotatorPos,-1));
-            rightRotator.setPosition(getRotatorPosFromPercent(rotatorPos,1));
+            if(length <= MIN_SAFE_LINKAGE_EXTENSION){
+                leftRotator.setPosition(getRotatorPosFromPercent(rotatorPos,-1));
+                rightRotator.setPosition(getRotatorPosFromPercent(rotatorPos,1));
+            }
             timer.reset();
         }
 

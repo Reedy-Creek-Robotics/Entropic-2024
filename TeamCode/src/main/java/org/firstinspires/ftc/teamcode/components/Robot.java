@@ -96,7 +96,7 @@ public class Robot extends BaseComponent{
         super.update();
 
         // Update telemetry once per iteration after all components have been called.
-        telemetry.addData("position",getDriveTrain().getRoadRunner().getLocalizer().getPoseEstimate());
+        telemetry.addData("position",getDriveTrain().getRoadRunner().getPoseEstimate());
         telemetry.update();
 
     }
@@ -122,8 +122,8 @@ public class Robot extends BaseComponent{
         List<String> lines = FileUtil.readLines(filename);
         if (!lines.isEmpty()) {
             try {
-                if (lines.size() != 5) {
-                    throw new IllegalArgumentException("Expected 4 lines but found [" + lines.size() + "]");
+                if (lines.size() != 3) {
+                    throw new IllegalArgumentException("Expected 3 lines but found [" + lines.size() + "]");
                 }
 
                 Pose2d pose2d = new Pose2d(
@@ -133,6 +133,7 @@ public class Robot extends BaseComponent{
                 );
 
                 driveTrain.roadrunner.getLocalizer().setPoseEstimate(pose2d);
+                context.localizer.setPoseEstimate(pose2d);
 
             } catch (Exception e) {
                 telemetry.log().add("Error loading position: " + ErrorUtil.convertToString(e));

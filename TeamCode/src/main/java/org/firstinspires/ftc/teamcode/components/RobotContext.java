@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.opmodes.AutoMain;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.AprilTagLocalizer;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.OpticalAprilTagLocalizer;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.OpticalLocalizer;
@@ -20,6 +21,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RobotContext {
+    public enum Alliance{
+        RED(0,1),
+        BLUE(180,-1);
+
+        double rotation;
+        int translation;
+
+        Alliance(double rotation, int translation) {
+            this.rotation = rotation;
+            this.translation = translation;
+        }
+
+        public double getRotation() {
+            return rotation;
+        }
+
+        public int getTranslation() {
+            return translation;
+        }
+    }
 
     public OpMode opMode;
 
@@ -37,7 +58,7 @@ public class RobotContext {
 
     public DriveUtil driveUtil;
 
-    public int alliance;
+    public Alliance alliance;
 
     public WebcamName webcam;
 
@@ -56,8 +77,7 @@ public class RobotContext {
         //new StandardTrackingWheelLocalizer(opMode.hardwareMap, lastTrackingEncPositions, lastTrackingEncVels, this.descriptor.ODOMETRY_TUNER);
         //new TwoWheelTrackingLocalizer(opMode.hardwareMap,this.descriptor);
 
-
-        this.alliance = 1; //blue is negative one, red is positive one
+        this.alliance = Alliance.RED; //blue is negative one, red is positive one
     }
 
     public OpMode getOpMode() {
@@ -78,8 +98,12 @@ public class RobotContext {
         return driveUtil;
     }
 
-    public int getAlliance() {
+    public Alliance getAlliance() {
         return alliance;
+    }
+
+    public void setAlliance(Alliance alliance) {
+        this.alliance = alliance;
     }
 
     public WebcamName getWebcam() {
