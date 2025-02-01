@@ -9,7 +9,7 @@ public class HorizontalSlide extends BaseComponent{
     public enum LinkagePos{
         START(0.93,0.03),
         FLIP(0.84,0.12),
-        END(0.7,0.26);
+        END(0.78,0.18);
 
         double left, right;
         LinkagePos(double left, double right) {
@@ -20,7 +20,7 @@ public class HorizontalSlide extends BaseComponent{
 
     public enum RotatorPos{
         START(0.73,0.4),
-        END(0.22,0.91);
+        END(0.21,0.92);
 
         double left, right;
         RotatorPos(double left, double right) {
@@ -37,7 +37,7 @@ public class HorizontalSlide extends BaseComponent{
     public Servo leftLinkage;
     public Servo rightLinkage;
 
-    private static final double MIN_SAFE_LINKAGE_EXTENSION = 0.39;
+    private static final double MIN_SAFE_LINKAGE_EXTENSION = 0.27;
 
     private int targetPosition;
     public HorizontalSlide(RobotContext context) {
@@ -175,7 +175,7 @@ public class HorizontalSlide extends BaseComponent{
 
         @Override
         public boolean update() {
-            return timer.milliseconds() >= 300;
+            return timer.milliseconds() >= 10;
         }
     }
 

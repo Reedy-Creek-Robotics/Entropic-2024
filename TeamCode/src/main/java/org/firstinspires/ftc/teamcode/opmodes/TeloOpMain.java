@@ -72,10 +72,10 @@ public class TeloOpMain extends OpMode {
         }
 
         if(driver.isPressed(Controller.Button.DPAD_RIGHT)) {
-            slidePosIndex = slidePosIndex++ < 4 ? slidePosIndex + 1 : 0;
+            slidePosIndex = slidePosIndex++ < slidePositions.length - 1 ? slidePosIndex + 1 : 0;
             robot.getScoringSlide().moveToHeight(slidePositions[slidePosIndex]);
         } else if (driver.isPressed(Controller.Button.DPAD_LEFT)) {
-            slidePosIndex = slidePosIndex-- > 0 ? slidePosIndex - 1 : 4;
+            slidePosIndex = slidePosIndex-- > 0 ? slidePosIndex - 1 : slidePositions.length - 1;
             robot.getScoringSlide().moveToHeight(slidePositions[slidePosIndex]);
         }
 

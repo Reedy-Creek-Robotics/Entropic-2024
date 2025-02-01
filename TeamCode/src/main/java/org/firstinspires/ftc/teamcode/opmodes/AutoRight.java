@@ -24,12 +24,13 @@ public abstract class AutoRight extends AutoMain{
 
     @Override
     public void deliverPreload() {
+        robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.OVER_HIGH_BAR);
+        robot.waitForCommandsToFinish(.5);
         TrajectorySequence trajectorySequence = robot.getDriveTrain().trajectoryBuilder(getStartPosition())
                 .setTangent(Math.toRadians(90 + getAlliance().getRotation()))
-                .lineToConstantHeading(new Vector2d(9 * getAlliance().getTranslation(),(-38) * getAlliance().getTranslation()))
+                .lineToConstantHeading(new Vector2d(9 * getAlliance().getTranslation(),(-36) * getAlliance().getTranslation()))
                 .addSpatialMarker(new Vector2d(12 * getAlliance().getTranslation(),-48 * getAlliance().getTranslation()),() -> {
                     robot.getIntake().timedIntake(-0.3 * getAlliance().getTranslation(),80 * getAlliance().getTranslation());
-                    robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.OVER_HIGH_BAR);
                 })
                 .build();
 
@@ -42,7 +43,7 @@ public abstract class AutoRight extends AutoMain{
     public void scoreSpecimen(){
         robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.HIGH_BAR);
         robot.waitForCommandsToFinish();
-
+        robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.GROUND);
         TrajectorySequence trajectorySequence = robot.getDriveTrain().trajectoryBuilder(currentEnd)
                 .forward(4)
                 .build();
@@ -65,15 +66,28 @@ public abstract class AutoRight extends AutoMain{
         robot.waitForCommandsToFinish();
         currentEnd = collect1.end();
 
+        /*
         //Intake
-        robot.getHorizontalSlide().extend(0.87);
+        robot.getHorizontalSlide().extend(0.5);
+        robot.waitForCommandsToFinish();
         robot.getIntake().timedIntake(1,1500);
+        TrajectorySequence forward5In1 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
+                //.waitSeconds(.5)
+                .forward(5)
+                .build();
+        robot.getDriveTrain().followTrajectory(forward5In1);
+        currentEnd = forward5In1.end();
         robot.waitForCommandsToFinish();
 
         //Contract
         robot.getHorizontalSlide().contract();
-        robot.waitForCommandsToFinish();
-
+        TrajectorySequence backward5In1 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
+                .back(5)
+                .build();
+        robot.getDriveTrain().followTrajectory(backward5In1);
+        currentEnd = backward5In1.end();
+                robot.waitForCommandsToFinish();
+        */
         //Turn to 2
         TrajectorySequence collect2 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
                 .turn(Math.toRadians(23))
@@ -83,37 +97,62 @@ public abstract class AutoRight extends AutoMain{
         currentEnd = collect2.end();
 
         //Outtake first
-        robot.getIntake().timedIntake(-0.5,200);
+        robot.getIntake().timedIntake(-1,200);
         robot.waitForCommandsToFinish();
 
         //Intake
-        robot.getHorizontalSlide().extend(0.75);
-        robot.getIntake().timedIntake(1,1500);
+        robot.getHorizontalSlide().extend(0.5);
         robot.waitForCommandsToFinish();
+        robot.getIntake().timedIntake(1,1500);
+        TrajectorySequence forward5In2 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
+                .waitSeconds(.5)
+                .forward(5)
+                .build();
+        robot.getDriveTrain().followTrajectory(forward5In2);
+        currentEnd =forward5In2.end();
+                robot.waitForCommandsToFinish();
 
         //Contract
         robot.getHorizontalSlide().contract();
+        TrajectorySequence backward5In2 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
+                .back(5)
+                .build();
+        robot.getDriveTrain().followTrajectory(backward5In2);
+        currentEnd = backward5In2.end();
+                robot.waitForCommandsToFinish();
+
+
+        //Outtake second
+        robot.getIntake().timedIntake(-1,200);
         robot.waitForCommandsToFinish();
 
         //Turn to 3
         TrajectorySequence collect3 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
-                .turn(Math.toRadians(23))
+                .turn(Math.toRadians(33))
                 .build();
         robot.getDriveTrain().followTrajectory(collect3);
         robot.waitForCommandsToFinish();
         currentEnd = collect3.end();
 
-        //Outtake second
-        robot.getIntake().timedIntake(-0.5,200);
-        robot.waitForCommandsToFinish();
-
         //Intake
-        robot.getHorizontalSlide().extend(0.87);
-        robot.getIntake().timedIntake(1,1500);
+        robot.getHorizontalSlide().extend(0.5);
         robot.waitForCommandsToFinish();
+        robot.getIntake().timedIntake(1,1500);
+        TrajectorySequence forward5In3 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
+                .waitSeconds(.5)
+                .forward(10)
+                .build();
+        robot.getDriveTrain().followTrajectory(forward5In3);
+        currentEnd = forward5In3.end();
+                robot.waitForCommandsToFinish();
 
         //Contract
         robot.getHorizontalSlide().contract();
+        TrajectorySequence backward5In3 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
+                .back(10)
+                .build();
+        robot.getDriveTrain().followTrajectory(backward5In3);
+        currentEnd = backward5In3.end();
         robot.waitForCommandsToFinish();
 
         //extra time to allow slide to contract
@@ -121,7 +160,7 @@ public abstract class AutoRight extends AutoMain{
         robot.waitForCommandsToFinish();
 
         //Outtake third
-        robot.getIntake().timedIntake(-0.5,200);
+        robot.getIntake().timedIntake(-1,200);
         robot.waitForCommandsToFinish();
     }
 
