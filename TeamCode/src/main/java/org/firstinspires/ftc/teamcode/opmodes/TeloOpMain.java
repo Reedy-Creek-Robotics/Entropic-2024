@@ -69,15 +69,15 @@ public class TeloOpMain extends OpMode {
         }
 
         if (driver.isButtonDown(Controller.Button.DPAD_RIGHT)){
-            if(timer.milliseconds()>=10 && linkagePos<1){
+            if(timer.milliseconds()>=2 && linkagePos<1){
                 timer.reset();
-                linkagePos += 0.05;
+                linkagePos += 0.1;
             }
             robot.getHorizontalSlide().linkageMove(linkagePos);
         } else if (driver.isButtonDown(Controller.Button.DPAD_LEFT)) {
-            if(timer.milliseconds()>=10 && linkagePos>0){
+            if(timer.milliseconds()>=2 && linkagePos>0){
                 timer.reset();
-                linkagePos -= 0.05;
+                linkagePos -= 0.1;
             }
             robot.getHorizontalSlide().linkageMove(linkagePos);
         }

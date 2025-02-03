@@ -5,13 +5,13 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class ScoringSlide extends BaseComponent{
-    public static final int TARGET_REACHED_THRESHOLD = 5;
+    public static final int TARGET_REACHED_THRESHOLD = 10;
 
     public enum Positions {
         GROUND(0), //base position used for picking elements up
         //WALL_EDGE(100), //edge of the wall for grabbing it off of it from the observation zone
         LOW_BASKET(1650),//1486
-        HIGH_BASKET(3000),
+        HIGH_BASKET(3050),
         /*UNDER_LOW_BAR(400),
         LOW_BAR(500),*/
         OVER_HIGH_BAR(1650),
