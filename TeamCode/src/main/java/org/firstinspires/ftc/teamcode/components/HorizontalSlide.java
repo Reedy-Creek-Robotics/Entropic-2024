@@ -37,7 +37,7 @@ public class HorizontalSlide extends BaseComponent{
     public Servo leftLinkage;
     public Servo rightLinkage;
 
-    private static final double MIN_SAFE_LINKAGE_EXTENSION = 0.25;
+    private static final double MIN_SAFE_LINKAGE_EXTENSION = 0.15;
 
     private int targetPosition;
     public HorizontalSlide(RobotContext context) {

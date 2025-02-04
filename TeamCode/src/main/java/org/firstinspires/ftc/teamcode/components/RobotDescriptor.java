@@ -36,24 +36,26 @@ public class RobotDescriptor {
     public static Size ROBOT_DIMENSIONS_IN_INCHES = new Size(18, 18);
 
     public static DriveTuner DRIVE_TUNER = new DriveTuner(
-            537.7,
-            312,
+            384.5,
+            435,
             false,
             0, 0, 0,
             48 / 25.4,
             1,
-            14.88,
-            0.0134,
-            0.0045,
+            15.09,
+            0.013,
+            0.0051,
             0.001,
-            50,
-            50,
-            216,
-            216, //270
+            60,
+            60,
+            240,
+            240, //270
             RevHubOrientationOnRobot.LogoFacingDirection.UP,
             RevHubOrientationOnRobot.UsbFacingDirection.FORWARD,
-            new PIDCoefficients(10, 0, 0),
-            new PIDCoefficients(6, 0, 0),
+            //Translational
+            new PIDCoefficients(11/*10*/, 0, 3),
+            //Heading
+            new PIDCoefficients(10/*6*/, 0, 1),
             1.75555708403,
             1,
             1,
@@ -183,7 +185,7 @@ public class RobotDescriptor {
             125.8/25.4,
             -90/25.4,
             0,
-            0.9799584,
+            0.992,/*0.992151819394*/
             1
     );
 
