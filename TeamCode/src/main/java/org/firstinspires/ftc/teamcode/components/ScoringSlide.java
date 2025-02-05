@@ -24,11 +24,12 @@ public class ScoringSlide extends BaseComponent{
         }
     }
 
-    public DcMotorEx motor;
+    public DcMotorEx motor, motor2;
 
     public ScoringSlide(RobotContext context) {
         super(context);
         motor = (DcMotorEx) hardwareMap.dcMotor.get("ScoringSlide");
+        motor2 = (DcMotorEx) hardwareMap.dcMotor.get("ScoringSlide");
     }
 
     private double idlePower = 0.4;
@@ -45,24 +46,37 @@ public class ScoringSlide extends BaseComponent{
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        motor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motor2.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
     public void resetSlideTicks() {
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public int getPosition() {
-        return (motor.getCurrentPosition());
+        return ((motor.getCurrentPosition() + motor2.getCurrentPosition())/2);
     }
 
     public void stopMotors() {
         if(motor.getCurrentPosition() >= 50){
-            motor.setTargetPosition(motor.getCurrentPosition());
+            motor.setTargetPosition(getPosition());
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motor.setPower(idlePower);
+
+            motor2.setTargetPosition(getPosition());
+            motor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motor2.setPower(idlePower);
         }else{
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motor.setPower(0);
+
+            motor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motor2.setPower(0);
         }
     }
 
@@ -80,10 +94,11 @@ public class ScoringSlide extends BaseComponent{
             if(power != 0){
                 motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 motor.setPower(power);
+
+                motor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                motor2.setPower(power);
             }else {
-                motor.setTargetPosition(motor.getCurrentPosition());
-                motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                motor.setPower(idlePower);
+                stopMotors();
             }
         }
     }
@@ -112,12 +127,15 @@ public class ScoringSlide extends BaseComponent{
             motor.setTargetPosition(ticks);
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+            motor2.setTargetPosition(ticks);
+            motor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             double power = ticks > motor.getCurrentPosition() ?
                     ascendingPower :
                     descendingPower;
 
             motor.setPower(power);
+            motor2.setPower(power);
         }
 
         @Override
@@ -132,7 +150,7 @@ public class ScoringSlide extends BaseComponent{
 
         @Override
         public boolean update() {
-            return Math.abs(motor.getCurrentPosition() - ticks) <= TARGET_REACHED_THRESHOLD;
+            return Math.abs(getPosition() - ticks) <= TARGET_REACHED_THRESHOLD;
         }
     }
 }

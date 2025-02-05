@@ -4,10 +4,8 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
-import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
 
 import org.firstinspires.ftc.teamcode.components.ScoringSlide;
-import org.firstinspires.ftc.teamcode.roadrunner.drive.ModifiedMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 
 @Config
@@ -25,23 +23,20 @@ public abstract class AutoLeft extends AutoMain{
             deliverPreload();
         }
         if (FIRST) {
-            deliverFirstPreset();
+            collectFirstPreset();
+            scoresample();
         }
         if (SECOND) {
-            deliverSecondPreset();
+            collectSecondPreset();
+            scoresample();
         }
         if (THIRD){
-            deliverThirdPreset();
+            collectThirdPreset();
+            scoresample();
         }
         if (PARK){
             park();
         }
-
-        /*deliverPreload();
-        deliverFirstPreset();
-        deliverSecondPreset();
-        deliverThirdPreset();
-        park();*/
     }
 
     public void deliverPreload() {
@@ -62,56 +57,39 @@ public abstract class AutoLeft extends AutoMain{
         robot.waitForCommandsToFinish();
     }
 
-    public void deliverFirstPreset(){
+    public void collectFirstPreset(){
         //turn to first
         robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.GROUND);
-        TrajectorySequence collect1 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
+        TrajectorySequence lineUp = robot.getDriveTrain().trajectoryBuilder(currentEnd)
                 .lineToSplineHeading(new Pose2d(-50 * getAlliance().getTranslation(), -50 * getAlliance().getTranslation(),Math.toRadians(86 + getAlliance().getRotation())))
                 //.turn(Math.toRadians(45))
                 .build();
-        robot.getDriveTrain().followTrajectory(collect1);
+        robot.getDriveTrain().followTrajectory(lineUp);
         robot.waitForCommandsToFinish();
-        currentEnd = collect1.end();
+        currentEnd = lineUp.end();
 
         //Intake first
         robot.getHorizontalSlide().extend(0.2);
         robot.getIntake().timedIntake(0,200);
         robot.waitForCommandsToFinish();
 
-        TrajectorySequence push1 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
+        TrajectorySequence intake = robot.getDriveTrain().trajectoryBuilder(currentEnd)
                 .setVelConstraint(new MecanumVelocityConstraint(10, robot.getRobotContext().getDescriptor().DRIVE_TUNER.driveTrackWidth))
                 .forward(9)
                 .resetVelConstraint()
                 .build();
-        robot.getDriveTrain().followTrajectory(push1);
-        currentEnd = push1.end();
+        robot.getDriveTrain().followTrajectory(intake);
+        currentEnd = intake.end();
         robot.getHorizontalSlide().extend(0.3);
         robot.getIntake().timedIntake(1,1000);
         robot.waitForCommandsToFinish();
-
-        //Contract
-        robot.getHorizontalSlide().contract(0);
-        robot.waitForCommandsToFinish();
-
-        TrajectorySequence deliver1 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
-                .lineToSplineHeading(new Pose2d(-48 * getAlliance().getTranslation(),-48 * getAlliance().getTranslation(), Math.toRadians(45 + getAlliance().getRotation())))
-                //.turn(Math.toRadians(-45))
-                .build();
-        robot.getDriveTrain().followTrajectory(deliver1);
-        robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.HIGH_BASKET);
-        robot.waitForCommandsToFinish();
-        currentEnd = deliver1.end();
-
-        //Outtake first
-        robot.getIntake().timedIntake(-0.5,200);
-        robot.waitForCommandsToFinish();
     }
 
-    public void deliverSecondPreset(){
+    public void collectSecondPreset(){
         //turn to second
         robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.GROUND);
         TrajectorySequence collect2 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
-                .lineToSplineHeading(new Pose2d(-55 * getAlliance().getTranslation(), -49 * getAlliance().getTranslation(),Math.toRadians(91 + getAlliance().getRotation())))
+                .lineToSplineHeading(new Pose2d(-55 * getAlliance().getTranslation(), -50 * getAlliance().getTranslation(),Math.toRadians(91 + getAlliance().getRotation())))
                 //.turn(Math.toRadians(75))
                 .build();
         robot.getDriveTrain().followTrajectory(collect2);
@@ -131,30 +109,13 @@ public abstract class AutoLeft extends AutoMain{
         robot.getHorizontalSlide().extend(0.35);
         robot.getIntake().timedIntake(1,1000);
         robot.waitForCommandsToFinish();
-
-        //Contract
-        robot.getHorizontalSlide().contract(0);
-        robot.waitForCommandsToFinish();
-
-        TrajectorySequence deliver2 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
-                .lineToSplineHeading(new Pose2d(-47 * getAlliance().getTranslation(),-47 * getAlliance().getTranslation(), Math.toRadians(45 + getAlliance().getRotation())))
-                //.turn(Math.toRadians(-75))
-                .build();
-        robot.getDriveTrain().followTrajectory(deliver2);
-        robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.HIGH_BASKET);
-        robot.waitForCommandsToFinish();
-        currentEnd = deliver2.end();
-
-        //Outtake second
-        robot.getIntake().timedIntake(-0.5,200);
-        robot.waitForCommandsToFinish();
     }
 
-    public void deliverThirdPreset(){
+    public void collectThirdPreset(){
         //drive to third
         robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.GROUND);
         TrajectorySequence collect3 =robot.getDriveTrain().trajectoryBuilder(currentEnd)
-                .lineToSplineHeading(new Pose2d(-49 * getAlliance().getTranslation(),-46 * getAlliance().getTranslation(),Math.toRadians((127 + getAlliance().getRotation()))))
+                .lineToSplineHeading(new Pose2d(-50 * getAlliance().getTranslation(),-46 * getAlliance().getTranslation(),Math.toRadians((127 + getAlliance().getRotation()))))
                 .build();
         robot.getDriveTrain().followTrajectory(collect3);
         robot.waitForCommandsToFinish();
@@ -175,24 +136,21 @@ public abstract class AutoLeft extends AutoMain{
         robot.getHorizontalSlide().extend(0.6);
         robot.getIntake().timedIntake(1,1000);
         robot.waitForCommandsToFinish();
+    }
 
-        //Contract
+    public void scoresample(){
+        TrajectorySequence deliver1 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
+                .lineToSplineHeading(new Pose2d(-48 * getAlliance().getTranslation(),-48 * getAlliance().getTranslation(), Math.toRadians(45 + getAlliance().getRotation())))
+                //.turn(Math.toRadians(-45))
+                .build();
+        robot.getDriveTrain().followTrajectory(deliver1);
+        robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.HIGH_BASKET);
         robot.getHorizontalSlide().contract(0);
         robot.waitForCommandsToFinish();
+        currentEnd = deliver1.end();
 
-        TrajectorySequence deliver3 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
-                .lineToSplineHeading(new Pose2d(-46 * getAlliance().getTranslation(),-46 * getAlliance().getTranslation(),Math.toRadians(45 + getAlliance().getRotation())))
-                .build();
-        robot.getDriveTrain().followTrajectory(deliver3);
-        robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.HIGH_BASKET);
-        robot.waitForCommandsToFinish();
-        currentEnd = deliver3.end();
-
-        //Outtake third
+        //Outtake first
         robot.getIntake().timedIntake(-0.5,200);
-        robot.waitForCommandsToFinish();
-
-        robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.GROUND);
         robot.waitForCommandsToFinish();
     }
 

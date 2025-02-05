@@ -59,7 +59,14 @@ public class HorizontalSlide extends BaseComponent{
     }
 
     public void extend(double length){
-        executeCommand(new Extend(length));
+        rotatorPos = 1;
+        leftRotator.setPosition(getRotatorPosFromPercent(rotatorPos,-1));
+        rightRotator.setPosition(getRotatorPosFromPercent(rotatorPos,1));
+
+        linkagePos = length;
+        leftLinkage.setPosition(getLinkagePosFromPercent(linkagePos,-1));
+        rightLinkage.setPosition(getLinkagePosFromPercent(linkagePos,1));
+        //executeCommand(new Extend(length));
 
        /* telemetry.addLine("intake extend");
         rotatorPos = endRotatorPos;
@@ -74,7 +81,14 @@ public class HorizontalSlide extends BaseComponent{
 
     }
     public void contract(double length){
-        executeCommand(new Contract(length));
+        rotatorPos = 0;
+        leftRotator.setPosition(getRotatorPosFromPercent(rotatorPos,-1));
+        rightRotator.setPosition(getRotatorPosFromPercent(rotatorPos,1));
+
+        linkagePos = length;
+        leftLinkage.setPosition(getLinkagePosFromPercent(linkagePos,-1));
+        rightLinkage.setPosition(getLinkagePosFromPercent(linkagePos,1));
+        //executeCommand(new Contract(length));
 
         /*telemetry.addLine("intake contract");
         rotatorPos = startRotatorPos;
