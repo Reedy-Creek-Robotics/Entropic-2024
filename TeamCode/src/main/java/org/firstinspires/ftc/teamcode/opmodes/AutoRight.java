@@ -61,7 +61,7 @@ public abstract class AutoRight extends AutoMain{
 
     public void deliverSpecimen(double x) {
         robot.getHorizontalSlide().contract(0);
-        robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.OVER_HIGH_BAR);
+        //robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.OVER_HIGH_BAR);
         robot.waitForCommandsToFinish(.5);
         TrajectorySequence trajectorySequence = robot.getDriveTrain().trajectoryBuilder(getStartPosition())
                 .resetVelConstraint()
@@ -75,10 +75,10 @@ public abstract class AutoRight extends AutoMain{
     }
 
     public void scoreSpecimen(){
-        robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.HIGH_BAR);
+        //robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.HIGH_BAR);
         robot.waitForCommandsToFinish();
 
-        robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.GROUND);
+        //robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.GROUND);
     }
 
     public void intakeSpecimen(){
@@ -104,8 +104,18 @@ public abstract class AutoRight extends AutoMain{
     }
 
     public void collectFirstPreset(){
+        //(49,-49,90),flip out
+        //forward, intake
+        //(60,-49,90)
+        //outtake
 
-        //drive to pos(51,-43,44), flip out
+        //forward, flip out, intake
+        //(49,-49,90)
+
+
+
+        //51,-43,44
+        //drive to pos(48,-49,90), flip out
         TrajectorySequence lineUp = robot.getDriveTrain().trajectoryBuilder(currentEnd)
                 .setTangent(-270 + getAlliance().getRotation())
                 .splineToLinearHeading(new Pose2d(51 * getAlliance().getTranslation(),-43 * getAlliance().getTranslation(),Math.toRadians(44 + getAlliance().getRotation())),Math.toRadians(0 + getAlliance().getRotation()))
@@ -200,7 +210,6 @@ public abstract class AutoRight extends AutoMain{
     }
 
     public void collectPresets(){
-        robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.GROUND);
 
         TrajectorySequence collect1 = robot.getDriveTrain().trajectoryBuilder(currentEnd)
                 .setTangent(Math.toRadians(-90 + getAlliance().getRotation()))
@@ -327,7 +336,6 @@ public abstract class AutoRight extends AutoMain{
 
     @Override
     public void park() {
-        robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.GROUND);
         TrajectorySequence trajectorySequence = robot.getDriveTrain().trajectoryBuilder(currentEnd)
                 .lineToLinearHeading(new Pose2d((48+9) * getAlliance().getTranslation(),-60 * getAlliance().getTranslation(),Math.toRadians(90 + getAlliance().getRotation())))
                 .build();

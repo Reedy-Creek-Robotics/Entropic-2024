@@ -32,7 +32,7 @@ public class MachineVisionSubmersible extends BaseComponent{
         colorLocator = new ColorBlobLocatorProcessor.Builder()
                 .setTargetColorRange(ColorRange.RED)//context.getAlliance() == RobotContext.Alliance.RED ? ColorRange.RED : ColorRange.BLUE)         // use a predefined color match
                 .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)    // exclude blobs inside blobs
-                .setRoi(ImageRegion.asUnityCenterCoordinates(-0.5, 0.5, 0.5, -0.5))  // search central 1/4 of camera view
+                .setRoi(ImageRegion.asUnityCenterCoordinates(-1, 0, 1, -1))  // search central 1/4 of camera view
                 .setDrawContours(true)                        // Show contours on the Stream Preview
                 .setBlurSize(5)                               // Smooth the transitions between different colors in image
                 .setDilateSize(10)
@@ -43,6 +43,7 @@ public class MachineVisionSubmersible extends BaseComponent{
                 .addProcessor(colorLocator)
                 .setCameraResolution(new Size((int) camera_width, (int) camera_height))
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+                .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 .build();
     }
 
@@ -106,17 +107,24 @@ public class MachineVisionSubmersible extends BaseComponent{
 
     public Pose2d runPipeline(){
         Pose2d elementPos;
+        ColorBlobLocatorProcessor.Blob bestElement;
 
 
         List<ColorBlobLocatorProcessor.Blob> blobs = colorLocator.getBlobs();
-        ColorBlobLocatorProcessor.Util.filterByArea(15000, 500000, blobs);  //15000
+        ColorBlobLocatorProcessor.Util.filterByArea(1000, 50000, blobs);  //15000
         ColorBlobLocatorProcessor.Util.sortByArea(SortOrder.DESCENDING, blobs);
-
-        ColorBlobLocatorProcessor.Blob bestElement = blobs.get(0);
+        if (!blobs.isEmpty()) {
+            bestElement = blobs.get(0);
+            telemetry.addData("Blob Center x: ", bestElement.getBoxFit().center.x);
+            telemetry.addData("Blob Center y: ", bestElement.getBoxFit().center.y);
+        } else {
+            telemetry.addLine("No Blob Found");
+            return null;
+        }
 
         //pixel to camera ray
         double pixelX = bestElement.getBoxFit().center.x;
-        double pixelY = bestElement.getBoxFit().center.y;
+        double pixelY = 1080 - bestElement.getBoxFit().center.y;
         double focalLength = 238;
         double cameraHeight = 15.157;
         double tiltDown = 30;
@@ -142,6 +150,7 @@ public class MachineVisionSubmersible extends BaseComponent{
         if (intersection != null) {
             elementPos = new Pose2d(intersection[2], intersection[0], new Rotation2d(bestElement.getBoxFit().angle));
         } else {
+            telemetry.addLine("No intersection with ground");
             elementPos = null;
         }
 
