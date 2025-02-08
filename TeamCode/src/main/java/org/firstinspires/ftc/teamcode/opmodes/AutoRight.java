@@ -5,12 +5,11 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
 
-import org.firstinspires.ftc.teamcode.components.ScoringSlide;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 @Config
 public abstract class AutoRight extends AutoMain{
 
-    public static boolean PRELOAD1 = true, COLLECT_PRESETS = false, PRELOAD2 = false, PRESET1 = false, PRESET2 = false, PRESET3 = false, PARK = true;
+    public static boolean PRELOAD1 = true, COLLECT_PRESETS = true, PRELOAD2 = false, PRESET1 = false, PRESET2 = false, PRESET3 = false, PARK = false;
 
     @Override
     public Pose2d getStartPosition() {
@@ -25,9 +24,9 @@ public abstract class AutoRight extends AutoMain{
         }
 
         if (COLLECT_PRESETS) {
-            collectFirstPreset();
-            collectSecondPreset();
-            collectThirdPreset();
+            collectMiddlePreset();
+            collectLeftPreset();
+            collectRightPreset();
             giveSpace();
         }
 
@@ -103,23 +102,12 @@ public abstract class AutoRight extends AutoMain{
         robot.waitForCommandsToFinish();
     }
 
-    public void collectFirstPreset(){
-        //(49,-49,90),flip out
-        //forward, intake
-        //(60,-49,90)
-        //outtake
-
-        //forward, flip out, intake
-        //(49,-49,90)
-
-
-
-        //51,-43,44
-        //drive to pos(48,-49,90), flip out
+    public void collectMiddlePreset(){
+        //(58,-47,90),flip out
         TrajectorySequence lineUp = robot.getDriveTrain().trajectoryBuilder(currentEnd)
-                .setTangent(-270 + getAlliance().getRotation())
-                .splineToLinearHeading(new Pose2d(51 * getAlliance().getTranslation(),-43 * getAlliance().getTranslation(),Math.toRadians(44 + getAlliance().getRotation())),Math.toRadians(0 + getAlliance().getRotation()))
-                .addSpatialMarker(new Vector2d(47 * getAlliance().getTranslation(),-47 * getAlliance().getTranslation()),() -> {
+                .setTangent(-90 + getAlliance().getRotation())
+                .splineToLinearHeading(new Pose2d(58 * getAlliance().getTranslation(),-47 * getAlliance().getTranslation(),Math.toRadians(90 + getAlliance().getRotation())),Math.toRadians(0 + getAlliance().getRotation()))
+                .addSpatialMarker(new Vector2d(50 * getAlliance().getTranslation(),-47 * getAlliance().getTranslation()),() -> {
                     robot.getHorizontalSlide().extend(0.4);
                 })
                 .build();
@@ -127,32 +115,38 @@ public abstract class AutoRight extends AutoMain{
         robot.waitForCommandsToFinish();
         currentEnd = lineUp.end();
 
-        //Intake and drive forward
+        //forward, intake
         TrajectorySequence intake = robot.getDriveTrain().trajectoryBuilder(currentEnd)
                 .setVelConstraint(new MecanumVelocityConstraint(10, robot.getRobotContext().getDescriptor().DRIVE_TUNER.driveTrackWidth))
-                .forward(12)
+                .forward(8)
                 .build();
         robot.getDriveTrain().followTrajectory(intake);
         robot.getIntake().timedIntake(1,1500);
         robot.waitForCommandsToFinish();
         currentEnd = intake.end();
 
+        //(48,-49,90)
+        TrajectorySequence Dropoff = robot.getDriveTrain().trajectoryBuilder(currentEnd)
+                .lineToLinearHeading(new Pose2d(48 * getAlliance().getTranslation(),-49 * getAlliance().getTranslation(),Math.toRadians(90 + getAlliance().getRotation())))
+                .build();
+        robot.getDriveTrain().followTrajectory(Dropoff);
+        robot.getHorizontalSlide().contract(0);
+        robot.waitForCommandsToFinish();
+        currentEnd = Dropoff.end();
+
+        //outtake
+        robot.getIntake().timedIntake(-1,200);
+        robot.waitForCommandsToFinish();
+
+        //----------------OLD---------------------
+        //drive to pos(51,-43,44), flip out
+        //Intake and drive forward
         //flip in and repos(58,-49,90)
-        TrajectorySequence Dropoff = robot.getDriveTrain().trajectoryBuilder(currentEnd)
-                .lineToLinearHeading(new Pose2d(58 * getAlliance().getTranslation(),-49 * getAlliance().getTranslation(),Math.toRadians(90 + getAlliance().getRotation())))
-                .build();
-        robot.getDriveTrain().followTrajectory(Dropoff);
-        robot.getHorizontalSlide().contract(0);
-        robot.waitForCommandsToFinish();
-        currentEnd = Dropoff.end();
-
         //outtake
-        robot.getIntake().timedIntake(-1,200);
-        robot.waitForCommandsToFinish();
     }
 
-    public void collectSecondPreset(){
-        //Intake and drive forward
+    public void collectLeftPreset(){
+        //forward, flip out, intake
         TrajectorySequence intake = robot.getDriveTrain().trajectoryBuilder(currentEnd)
                 .setVelConstraint(new MecanumVelocityConstraint(10, robot.getRobotContext().getDescriptor().DRIVE_TUNER.driveTrackWidth))
                 .forward(12)
@@ -163,9 +157,9 @@ public abstract class AutoRight extends AutoMain{
         robot.waitForCommandsToFinish();
         currentEnd = intake.end();
 
-        //flip in and drive back (48,-49,90)
+        //(49,-49,90)
         TrajectorySequence Dropoff = robot.getDriveTrain().trajectoryBuilder(currentEnd)
-                .lineToLinearHeading(new Pose2d(48 * getAlliance().getTranslation(),-49 * getAlliance().getTranslation(),Math.toRadians(90 + getAlliance().getRotation())))
+                .lineToLinearHeading(new Pose2d(49 * getAlliance().getTranslation(),-49 * getAlliance().getTranslation(),Math.toRadians(90 + getAlliance().getRotation())))
                 .build();
         robot.getDriveTrain().followTrajectory(Dropoff);
         robot.getHorizontalSlide().contract(0);
@@ -175,10 +169,24 @@ public abstract class AutoRight extends AutoMain{
         //outtake
         robot.getIntake().timedIntake(-1,200);
         robot.waitForCommandsToFinish();
+
+        //----------------OLD-----------------
+        //Intake and drive forward
+        //flip in and drive back (48,-49,90)
+        //outtake
     }
 
-    public void collectThirdPreset(){
-        //Intake and drive forward
+    public void collectRightPreset(){
+        //lineup(51,-45,47), flip out
+        TrajectorySequence lineUp = robot.getDriveTrain().trajectoryBuilder(currentEnd)
+                .lineToLinearHeading(new Pose2d(51 * getAlliance().getTranslation(),-45 * getAlliance().getTranslation(),Math.toRadians(47 + getAlliance().getRotation())))
+                .build();
+        robot.getDriveTrain().followTrajectory(lineUp);
+        robot.getHorizontalSlide().extend(0.4);
+        robot.waitForCommandsToFinish();
+        currentEnd = lineUp.end();
+
+        //forward, intake
         TrajectorySequence intake = robot.getDriveTrain().trajectoryBuilder(currentEnd)
                 .setVelConstraint(new MecanumVelocityConstraint(10, robot.getRobotContext().getDescriptor().DRIVE_TUNER.driveTrackWidth))
                 .forward(12)
@@ -189,9 +197,9 @@ public abstract class AutoRight extends AutoMain{
         robot.waitForCommandsToFinish();
         currentEnd = intake.end();
 
-        //flip in and drive back (48,-49,90)
+        //(49,-49,90)
         TrajectorySequence Dropoff = robot.getDriveTrain().trajectoryBuilder(currentEnd)
-                .lineToLinearHeading(new Pose2d(48 * getAlliance().getTranslation(),-49 * getAlliance().getTranslation(),Math.toRadians(90 + getAlliance().getRotation())))
+                .lineToLinearHeading(new Pose2d(49 * getAlliance().getTranslation(),-49 * getAlliance().getTranslation(),Math.toRadians(90 + getAlliance().getRotation())))
                 .build();
         robot.getDriveTrain().followTrajectory(Dropoff);
         robot.getHorizontalSlide().contract(0);
@@ -201,6 +209,11 @@ public abstract class AutoRight extends AutoMain{
         //outtake
         robot.getIntake().timedIntake(-1,200);
         robot.waitForCommandsToFinish();
+
+        //---------------------OLD-----------------------
+        //Intake and drive forward
+        //flip in and drive back (48,-49,90)
+        //outtake
     }
 
     public void giveSpace(){
