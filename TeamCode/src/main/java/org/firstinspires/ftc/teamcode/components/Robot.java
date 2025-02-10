@@ -110,7 +110,8 @@ public class Robot extends BaseComponent{
                 filename,
                 driveTrain.roadrunner.getPoseEstimate().getX(),
                 driveTrain.roadrunner.getPoseEstimate().getY(),
-                driveTrain.roadrunner.getPoseEstimate().getHeading()
+                driveTrain.roadrunner.getPoseEstimate().getHeading(),
+                littleHanger.getPosition()
         );
     }
 
@@ -122,8 +123,8 @@ public class Robot extends BaseComponent{
         List<String> lines = FileUtil.readLines(filename);
         if (!lines.isEmpty()) {
             try {
-                if (lines.size() != 3) {
-                    throw new IllegalArgumentException("Expected 3 lines but found [" + lines.size() + "]");
+                if (lines.size() != 4) {
+                    throw new IllegalArgumentException("Expected 4 lines but found [" + lines.size() + "]");
                 }
 
                 Pose2d pose2d = new Pose2d(
@@ -135,6 +136,7 @@ public class Robot extends BaseComponent{
                 driveTrain.roadrunner.getLocalizer().setPoseEstimate(pose2d);
                 context.localizer.setPoseEstimate(pose2d);
 
+                littleHanger.setInitialPosition(Integer.parseInt(lines.get(3)));
             } catch (Exception e) {
                 telemetry.log().add("Error loading position: " + ErrorUtil.convertToString(e));
             }
@@ -142,6 +144,23 @@ public class Robot extends BaseComponent{
             // Now that the position has been consumed, remove the file
             FileUtil.removeFile(filename);
         }
+    }
+
+    public void saveTimingRecord(String filename){
+        FileUtil.writeLines(filename,context.record);
+    }
+
+    public String loadTimingRecord(String filename){
+        String out = "";
+        for (String string: FileUtil.readLines(filename)) {
+            out += string + "\n";
+        }
+
+        return out;
+    }
+
+    public void resetFiles(String filename){
+        FileUtil.removeFile(filename);
     }
 
     @SuppressLint("DefaultLocale")
@@ -179,6 +198,7 @@ public class Robot extends BaseComponent{
         while (!isStopRequested() && isBusy() && time.seconds() < maxTime) {
             update();
         }
+
     }
 
     public DriveTrain getDriveTrain() {

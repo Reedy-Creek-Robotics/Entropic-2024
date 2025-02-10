@@ -14,8 +14,6 @@ public class L2Tester extends OpMode {
     public DcMotor L2AscentLeft;
     public DcMotor L2AscentRight;
 
-
-
     public Controller controller;
 
     int height1 = 300, height2 = 550, height3 = 900;
@@ -45,9 +43,9 @@ public class L2Tester extends OpMode {
 
         if(manualMode) {
             L2AscentLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            L2AscentLeft.setPower(power * 0.5);
+            L2AscentLeft.setPower(power);
             L2AscentRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            L2AscentRight.setPower(power * 0.5);
+            L2AscentRight.setPower(power);
         }else {
             L2AscentLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             L2AscentRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);

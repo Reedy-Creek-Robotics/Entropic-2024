@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.util.FileUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -137,6 +138,7 @@ public abstract class BaseComponent implements Component {
             // If the command is finished, remove it
             if (finished) {
                 currentCommand.stop();
+                context.record += "├─" + currentCommand.getClass().getSimpleName() + ": " + (context.clock.milliseconds() - commandTime.milliseconds()) + "-" + context.clock.milliseconds() + "," + commandTime.milliseconds() + "\n";
                 currentCommand = null;
             }
         }

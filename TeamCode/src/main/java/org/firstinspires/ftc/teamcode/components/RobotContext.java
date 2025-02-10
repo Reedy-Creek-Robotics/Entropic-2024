@@ -2,7 +2,9 @@ package org.firstinspires.ftc.teamcode.components;
 
 import com.acmerobotics.roadrunner.localization.Localizer;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -44,6 +46,9 @@ public class RobotContext {
 
     public OpMode opMode;
 
+    public ElapsedTime clock;
+    public String record;
+
     public RobotDescriptor descriptor;
 
     public Localizer localizer;
@@ -69,6 +74,7 @@ public class RobotContext {
         this.descriptor = descriptor;
         this.driveUtil = new MecanumUtil();
         this.webcam = opMode.hardwareMap.get(WebcamName.class, "Webcam 1");
+        this.clock = new ElapsedTime();
 
         //this.opticalLocalizer = new OpticalLocalizer(this);
         //this.aprilTagLocalizer = new AprilTagLocalizer(this,cameraPosition, cameraOrientation, webcam);
@@ -78,6 +84,8 @@ public class RobotContext {
         //new TwoWheelTrackingLocalizer(opMode.hardwareMap,this.descriptor);
 
         this.alliance = Alliance.RED; //blue is negative one, red is positive one
+
+        this.record = "";
     }
 
     public OpMode getOpMode() {

@@ -1,17 +1,17 @@
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.bareBones;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.components.LittleHanger;
 import org.firstinspires.ftc.teamcode.components.RobotContext;
+import org.firstinspires.ftc.teamcode.opmodes.AutoMain;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 
 @Config
 @Autonomous
-public class Autotest extends AutoMain{
+public class Autotest extends AutoMain {
     public static double X1 = 9,Y2 = -38, ANGLE1 = 30, ANGLE2 = 65,ANGLE3 = 23, ANGLE4 = 23, Y1 = -52;
 
     //public static double ANGLE1 = 45, ANGLE2 = 75, X1 = -49, X2 = -56, ANGLE3 = 45, ANGLE4= 75, ANGLE5 = 82;

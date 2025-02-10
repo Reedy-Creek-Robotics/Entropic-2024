@@ -8,8 +8,9 @@ public class LittleHanger extends BaseComponent{
     public static final int TARGET_REACHED_THRESHOLD = 5;
 
     public enum HangHeights {
-        TOP(900),
-        PULL(250);
+        TOP(6500),
+        TOUCH(810),
+        PULL(3500);
 
         private final int ticks;
 
@@ -23,14 +24,15 @@ public class LittleHanger extends BaseComponent{
 
     private int targetPosition;
 
+    private int initialPosition;
+
     public LittleHanger(RobotContext context) {
         super(context);
         leftHang = (DcMotorEx) hardwareMap.dcMotor.get("LeftHang");
         rightHang = (DcMotorEx) hardwareMap.dcMotor.get("RightHang");
-
     }
 
-    private double idlePower = 0.4;
+    private double idlePower = 1.0;
     private double ascendingPower = 1.0;
     private double descendingPower = 1.0;
 
@@ -49,6 +51,14 @@ public class LittleHanger extends BaseComponent{
         rightHang.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    public int getInitialPosition() {
+        return initialPosition;
+    }
+
+    public void setInitialPosition(int initialPosition) {
+        this.initialPosition = initialPosition;
+    }
+
     public void resetSlideTicks() {
         leftHang.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightHang.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -58,11 +68,16 @@ public class LittleHanger extends BaseComponent{
         return (targetPosition);
     }
 
+    public int getPosition(){
+        return ((leftHang.getCurrentPosition() + rightHang.getCurrentPosition())/2);
+    }
+
+
     public void stopMotors() {
-        leftHang.setTargetPosition(leftHang.getCurrentPosition());
+        leftHang.setTargetPosition(getPosition());
         leftHang.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftHang.setPower(idlePower);
-        rightHang.setTargetPosition(rightHang.getCurrentPosition());
+        rightHang.setTargetPosition(getPosition());
         rightHang.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightHang.setPower(idlePower);
     }

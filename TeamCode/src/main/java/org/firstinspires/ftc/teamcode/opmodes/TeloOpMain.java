@@ -8,12 +8,10 @@ import static org.firstinspires.ftc.teamcode.game.Controller.AnalogControl.RIGHT
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.components.LittleHanger;
 import org.firstinspires.ftc.teamcode.components.Robot;
-import org.firstinspires.ftc.teamcode.components.RobotContext;
 import org.firstinspires.ftc.teamcode.components.ScoringSlide;
 import org.firstinspires.ftc.teamcode.game.Controller;
 
@@ -25,15 +23,17 @@ public class TeloOpMain extends OpMode {
     double speed = 1;
 
     ElapsedTime timer = new ElapsedTime();
-    Boolean extending = false;
+    Boolean pulling = false;
     double linkagePos = 0;
 
     protected Controller driver;
 
     public Controller controller2;
 
-    public ScoringSlide.Positions[] slidePositions = {GROUND, LOW_BASKET, HIGH_BASKET, HIGH_BAR, OVER_HIGH_BAR};
-    public int slidePosIndex = 0;
+    public ScoringSlide.Positions[] slideUpPositions = {GROUND, HIGH_BASKET};
+    public ScoringSlide.Positions[] slideDownPositions = {GROUND, HIGH_BAR, OVER_HIGH_BAR};
+    public int slideUpPosIndex = 0;
+    public int slideDownPosIndex = 0;
 
     @Override
     public void init() {
@@ -45,6 +45,14 @@ public class TeloOpMain extends OpMode {
         controller2 = new Controller(gamepad2);
 
         robot.init();
+    }
+
+    @Override
+    public void start() {
+        super.start();
+
+        robot.getLittleHanger().moveToTicks(- robot.getLittleHanger().getInitialPosition());
+        robot.getLittleHanger().resetSlideTicks();
     }
 
     @Override
@@ -62,25 +70,29 @@ public class TeloOpMain extends OpMode {
         } else if (driver.isPressed(Controller.Button.DPAD_DOWN)) {
             robot.getHorizontalSlide().contract();
         }*/
-        if (driver.isPressed(Controller.Button.TRIANGLE)){
-            robot.getLittleHanger().moveToHeight(LittleHanger.HangHeights.TOP);
+        if (driver.isButtonDown(Controller.Button.TRIANGLE)){
+            pulling = true;
+            robot.getLittleHanger().rotate(1);
         } else if (driver.isPressed(Controller.Button.CROSS)) {
             robot.getLittleHanger().moveToHeight(LittleHanger.HangHeights.PULL);
+        } else if (pulling){
+            robot.getLittleHanger().rotate(0);
+            pulling = false;
         }
 
         if (driver.isButtonDown(Controller.Button.DPAD_RIGHT)){
-            if(timer.milliseconds()>=2 && linkagePos<1){
+            if(timer.milliseconds()>=1 && linkagePos<1){
                 timer.reset();
-                linkagePos += 0.1;
+                linkagePos += 0.2;
             }
-            robot.getHorizontalSlide().linkageMove(linkagePos);
         } else if (driver.isButtonDown(Controller.Button.DPAD_LEFT)) {
-            if(timer.milliseconds()>=2 && linkagePos>0){
+            if(timer.milliseconds()>=1 && linkagePos>0){
                 timer.reset();
-                linkagePos -= 0.1;
+                linkagePos -= 0.2;
             }
-            robot.getHorizontalSlide().linkageMove(linkagePos);
         }
+
+        robot.getHorizontalSlide().linkageMove(linkagePos);
 
         if (driver.rightTrigger() > 0.2){
             robot.getIntake().intake(1);
@@ -97,12 +109,12 @@ public class TeloOpMain extends OpMode {
             robot.getHorizontalSlide().rotatorExtend();
         }
 
-        if(driver.isPressed(Controller.Button.DPAD_DOWN)) {
-            slidePosIndex = slidePosIndex++ < slidePositions.length - 1 ? slidePosIndex + 1 : 0;
-            robot.getScoringSlide().moveToHeight(slidePositions[slidePosIndex]);
-        } else if (driver.isPressed(Controller.Button.DPAD_UP)) {
-            slidePosIndex = slidePosIndex-- > 0 ? slidePosIndex - 1 : slidePositions.length - 1;
-            robot.getScoringSlide().moveToHeight(slidePositions[slidePosIndex]);
+        if (driver.isPressed(Controller.Button.DPAD_UP)) {
+            slideUpPosIndex = ((slideUpPosIndex + 1) <= (slideUpPositions.length - 1)) ? slideUpPosIndex + 1 : 0;
+            robot.getScoringSlide().moveToHeight(slideUpPositions[slideUpPosIndex]);
+        }else if(driver.isPressed(Controller.Button.DPAD_DOWN)) {
+            slideDownPosIndex = ((slideDownPosIndex - 1) >= 0) ? slideDownPosIndex - 1 : slideDownPositions.length - 1;
+            robot.getScoringSlide().moveToHeight(slideDownPositions[slideDownPosIndex]);
         }
 
 
@@ -123,10 +135,14 @@ public class TeloOpMain extends OpMode {
 
 
         if(driver.isPressed(Controller.Button.LEFT_STICK_BUTTON) || driver.isPressed(Controller.Button.RIGHT_STICK_BUTTON)){
-            speed = (speed == 1) ? 0.3 : 1;
+            speed = (speed == 1) ? 0.55 : 1;
         }
         telemetry.addData("left hang", robot.getLittleHanger().getLeftTicks());
         telemetry.addData("right hang", robot.getLittleHanger().getRightTicks());
+        telemetry.addData("linkage", linkagePos);
+        telemetry.addData("UP",slideUpPosIndex);
+        telemetry.addData("DOWN",slideDownPosIndex);
+
 
         robot.update();
     }
