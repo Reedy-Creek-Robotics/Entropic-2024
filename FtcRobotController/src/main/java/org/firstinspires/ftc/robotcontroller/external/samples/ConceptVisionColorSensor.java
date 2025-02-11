@@ -21,6 +21,7 @@
 
 package org.firstinspires.ftc.robotcontroller.external.samples;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.util.Size;
 
@@ -55,10 +56,10 @@ import org.firstinspires.ftc.vision.opencv.PredominantColorProcessor;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Disabled
 @TeleOp(name = "Concept: Vision Color-Sensor", group = "Concept")
 public class ConceptVisionColorSensor extends LinearOpMode
 {
+    @SuppressLint("DefaultLocale")
     @Override
     public void runOpMode()
     {
@@ -83,8 +84,28 @@ public class ConceptVisionColorSensor extends LinearOpMode
          *     This will force any other colored region into one of these colors.
          *     eg: Green may be reported as YELLOW, as this may be the "closest" match.
          */
-        PredominantColorProcessor colorSensor = new PredominantColorProcessor.Builder()
-                .setRoi(ImageRegion.asUnityCenterCoordinates(-0.1, 0.1, 0.1, -0.1))
+        double top = 0.2;
+        double bottom = 0.9;
+        PredominantColorProcessor leftRegion = new PredominantColorProcessor.Builder()
+                .setRoi(ImageRegion.asUnityCenterCoordinates(-0.6, top, -0.2, bottom))
+                .setSwatches(
+                        PredominantColorProcessor.Swatch.RED,
+                        PredominantColorProcessor.Swatch.BLUE,
+                        PredominantColorProcessor.Swatch.YELLOW,
+                        PredominantColorProcessor.Swatch.BLACK,
+                        PredominantColorProcessor.Swatch.WHITE)
+                .build();
+        PredominantColorProcessor centerRegion = new PredominantColorProcessor.Builder()
+                .setRoi(ImageRegion.asUnityCenterCoordinates(-0.2, top, 0.2, bottom))
+                .setSwatches(
+                        PredominantColorProcessor.Swatch.RED,
+                        PredominantColorProcessor.Swatch.BLUE,
+                        PredominantColorProcessor.Swatch.YELLOW,
+                        PredominantColorProcessor.Swatch.BLACK,
+                        PredominantColorProcessor.Swatch.WHITE)
+                .build();
+        PredominantColorProcessor rightRegion = new PredominantColorProcessor.Builder()
+                .setRoi(ImageRegion.asUnityCenterCoordinates(0.2, top, 0.6, bottom))
                 .setSwatches(
                         PredominantColorProcessor.Swatch.RED,
                         PredominantColorProcessor.Swatch.BLUE,
@@ -106,9 +127,10 @@ public class ConceptVisionColorSensor extends LinearOpMode
          *      .setCamera(BuiltinCameraDirection.BACK)    ... for a Phone Camera
          */
         VisionPortal portal = new VisionPortal.Builder()
-                .addProcessor(colorSensor)
-                .setCameraResolution(new Size(320, 240))
+                .addProcessors(leftRegion, centerRegion, rightRegion)
+                .setCameraResolution(new Size(1920, 1080))
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+                .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 .build();
 
         telemetry.setMsTransmissionInterval(50);  // Speed up telemetry updates, Just use for debugging.
@@ -123,11 +145,19 @@ public class ConceptVisionColorSensor extends LinearOpMode
             // Note: to take actions based on the detected color, simply use the colorSwatch in a comparison or switch.
             //  eg:
             //      if (result.closestSwatch == PredominantColorProcessor.Swatch.RED) {... some code  ...}
-            PredominantColorProcessor.Result result = colorSensor.getAnalysis();
+            PredominantColorProcessor.Result leftResult = leftRegion.getAnalysis();
+            PredominantColorProcessor.Result centerResult = centerRegion.getAnalysis();
+            PredominantColorProcessor.Result rightResult = rightRegion.getAnalysis();
 
             // Display the Color Sensor result.
-            telemetry.addData("Best Match:", result.closestSwatch);
-            telemetry.addLine(String.format("R %3d, G %3d, B %3d", Color.red(result.rgb), Color.green(result.rgb), Color.blue(result.rgb)));
+            telemetry.addData("Best Match Left:", leftResult.closestSwatch);
+            telemetry.addLine(String.format("leftRegion:   R %3d, G %3d, B %3d\n", Color.red(leftResult.rgb), Color.green(leftResult.rgb), Color.blue(leftResult.rgb)));
+
+            telemetry.addData("Best Match Center:", centerResult.closestSwatch);
+            telemetry.addLine(String.format("centerRegion: R %3d, G %3d, B %3d\n", Color.red(centerResult.rgb), Color.green(centerResult.rgb), Color.blue(centerResult.rgb)));
+
+            telemetry.addData("Best Match Right:", rightResult.closestSwatch);
+            telemetry.addLine(String.format("rightRegion:  R %3d, G %3d, B %3d\n", Color.red(rightResult.rgb), Color.green(rightResult.rgb), Color.blue(rightResult.rgb)));
             telemetry.update();
 
             sleep(20);

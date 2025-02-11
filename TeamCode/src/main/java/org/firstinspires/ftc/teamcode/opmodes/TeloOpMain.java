@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.components.Robot;
 import org.firstinspires.ftc.teamcode.components.ScoringSlide;
 import org.firstinspires.ftc.teamcode.game.Controller;
 
-@TeleOp
+@TeleOp(name = "_TeleOpMain")
 public class TeloOpMain extends OpMode {
 
     Robot robot;
