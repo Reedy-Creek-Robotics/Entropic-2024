@@ -19,6 +19,11 @@ public abstract class AutoLeft extends AutoMain{
     }
 
     @Override
+    public void loadPaths() {
+
+    }
+
+    @Override
     public void runPath() {
         if (PRELOAD) {
             deliverPreload();
@@ -166,7 +171,6 @@ public abstract class AutoLeft extends AutoMain{
         robot.waitForCommandsToFinish();
     }
 
-    @Override
     public void park() {
         robot.getRobotContext().record += "Park in Ascent Zone \n";
 

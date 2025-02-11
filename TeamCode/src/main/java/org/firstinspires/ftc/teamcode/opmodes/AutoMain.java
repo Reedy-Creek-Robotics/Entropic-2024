@@ -36,18 +36,19 @@ public abstract class AutoMain extends LinearOpMode {
 
     public void initRobot(){
         robot = new Robot(this);
+        loadPaths();
         robot.init();
         robot.resetFiles(FILE_NAME);
         robot.getDriveTrain().getRoadRunner().setPoseEstimate(getStartPosition());
         currentEnd = getStartPosition();
     }
 
+    public abstract void loadPaths();
+
     public abstract void runPath();
 
     public abstract Pose2d getStartPosition();
 
     public abstract RobotContext.Alliance getAlliance();
-
-    public abstract void park();
 
 }

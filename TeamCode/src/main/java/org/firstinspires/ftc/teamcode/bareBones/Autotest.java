@@ -17,6 +17,11 @@ public class Autotest extends AutoMain {
     //public static double ANGLE1 = 45, ANGLE2 = 75, X1 = -49, X2 = -56, ANGLE3 = 45, ANGLE4= 75, ANGLE5 = 82;
 
     @Override
+    public void loadPaths() {
+
+    }
+
+    @Override
     public void runPath() {
         TrajectorySequence trajectorySequenceRight = robot.getDriveTrain().trajectoryBuilder(currentEnd)
                 .setTangent(Math.toRadians(90))
@@ -69,8 +74,4 @@ public class Autotest extends AutoMain {
         return RobotContext.Alliance.RED;
     }
 
-    @Override
-    public void park() {
-
-    }
 }
