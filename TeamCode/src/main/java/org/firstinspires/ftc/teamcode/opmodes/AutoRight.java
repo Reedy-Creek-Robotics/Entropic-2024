@@ -28,7 +28,7 @@ public abstract class AutoRight extends AutoMain{
     @Override
     public Pose2d getStartPosition() {
         //return new Pose2d((24) * getAlliance().getTranslation(), (-72+9) * getAlliance().getTranslation(), Math.toRadians(90 + getAlliance().getRotation()));
-        return new Pose2d((9) * getAlliance().getTranslation(), (-72+9) * getAlliance().getTranslation(), Math.toRadians(-90 + getAlliance().getRotation()));
+        return new Pose2d((24) * getAlliance().getTranslation(), (-72+9) * getAlliance().getTranslation(), Math.toRadians(90 + getAlliance().getRotation()));
     }
 
     @Override
@@ -37,18 +37,18 @@ public abstract class AutoRight extends AutoMain{
 
         //Middle Preset
         intakeMiddlePreset = robot.getDriveTrain().trajectoryBuilder(currentEnd)
-                .addSpatialMarker(new Vector2d(48, -48), () -> {
+                .addSpatialMarker(new Vector2d(48, -52), () -> {
                     robot.getHorizontalSlide().extend(0.95);
                 })
-                .lineToConstantHeading(new Vector2d(58,-48))
+                .lineToConstantHeading(new Vector2d(58,-52))
                 .addDisplacementMarker(() -> {
-                    robot.getIntake().timedIntake(1,1500);
+                    robot.getIntake().timedIntake(1,1000);
                 })
                 .forward(7,new MecanumVelocityConstraint(intakeSpeed,15.5),new ProfileAccelerationConstraint(60))
                 .build();
         currentEnd = intakeMiddlePreset.end();
         dropoffMiddlePreset = robot.getDriveTrain().trajectoryBuilder(currentEnd)
-                .lineToConstantHeading(new Vector2d(54,-53))
+                .lineToConstantHeading(new Vector2d(52,-53))
                 .build();
         currentEnd = dropoffMiddlePreset.end();
 
@@ -57,23 +57,23 @@ public abstract class AutoRight extends AutoMain{
                 .addDisplacementMarker(() -> {
                     robot.getHorizontalSlide().extend(0.95);
                 })
-                .splineToLinearHeading(new Pose2d(54,-48,Math.toRadians(47)),Math.toRadians(80))
+                .splineToLinearHeading(new Pose2d(52,-46,Math.toRadians(47)),Math.toRadians(80))
                 .addDisplacementMarker(() -> {
-                    robot.getIntake().timedIntake(1,1500);
+                    robot.getIntake().timedIntake(1,800);
                 })
                 .forward(8,new MecanumVelocityConstraint(intakeSpeed,15.09),new ProfileAccelerationConstraint(60))
                 .build();
         currentEnd = intakeRightPreset.end();
         dropoffRightPreset = robot.getDriveTrain().trajectoryBuilder(currentEnd)
-                .lineToLinearHeading(new Pose2d(48,-53,Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(48,-56,Math.toRadians(90)))
                 .build();
         currentEnd = dropoffRightPreset.end();
 
         //Left Preset
         intakeLeftPreset = robot.getDriveTrain().trajectoryBuilder(currentEnd)
                 .addDisplacementMarker(() -> {
-                    robot.getHorizontalSlide().extend(0.95);
-                    robot.getIntake().timedIntake(1,1650);
+                    robot.getHorizontalSlide().extend(0.65);
+                    robot.getIntake().timedIntake(1,1000);
                 })
                 .forward(10,new MecanumVelocityConstraint(intakeSpeed,15.5),new ProfileAccelerationConstraint(60))
                 .build();
