@@ -84,34 +84,31 @@ public class ConceptVisionColorSensor extends LinearOpMode
          *     This will force any other colored region into one of these colors.
          *     eg: Green may be reported as YELLOW, as this may be the "closest" match.
          */
-        double top = 0.2;
-        double bottom = 0.9;
+        double top = -0.1;
+        double bottom = -0.9;
         PredominantColorProcessor leftRegion = new PredominantColorProcessor.Builder()
                 .setRoi(ImageRegion.asUnityCenterCoordinates(-0.6, top, -0.2, bottom))
                 .setSwatches(
                         PredominantColorProcessor.Swatch.RED,
-                        PredominantColorProcessor.Swatch.BLUE,
-                        PredominantColorProcessor.Swatch.YELLOW,
-                        PredominantColorProcessor.Swatch.BLACK,
-                        PredominantColorProcessor.Swatch.WHITE)
+                        PredominantColorProcessor.Swatch.BLUE
+                        //PredominantColorProcessor.Swatch.YELLOW
+                )
                 .build();
         PredominantColorProcessor centerRegion = new PredominantColorProcessor.Builder()
                 .setRoi(ImageRegion.asUnityCenterCoordinates(-0.2, top, 0.2, bottom))
                 .setSwatches(
                         PredominantColorProcessor.Swatch.RED,
-                        PredominantColorProcessor.Swatch.BLUE,
-                        PredominantColorProcessor.Swatch.YELLOW,
-                        PredominantColorProcessor.Swatch.BLACK,
-                        PredominantColorProcessor.Swatch.WHITE)
+                        PredominantColorProcessor.Swatch.BLUE
+                        //PredominantColorProcessor.Swatch.YELLOW
+                )
                 .build();
         PredominantColorProcessor rightRegion = new PredominantColorProcessor.Builder()
                 .setRoi(ImageRegion.asUnityCenterCoordinates(0.2, top, 0.6, bottom))
                 .setSwatches(
                         PredominantColorProcessor.Swatch.RED,
-                        PredominantColorProcessor.Swatch.BLUE,
-                        PredominantColorProcessor.Swatch.YELLOW,
-                        PredominantColorProcessor.Swatch.BLACK,
-                        PredominantColorProcessor.Swatch.WHITE)
+                        PredominantColorProcessor.Swatch.BLUE
+                        //PredominantColorProcessor.Swatch.YELLOW
+                )
                 .build();
 
         /*

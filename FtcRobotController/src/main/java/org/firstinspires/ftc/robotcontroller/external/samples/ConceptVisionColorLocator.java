@@ -63,9 +63,11 @@ import java.util.List;
 @TeleOp(name = "Concept: Vision Color-Locator", group = "Concept")
 public class ConceptVisionColorLocator extends LinearOpMode
 {
+
     @Override
     public void runOpMode()
     {
+
         /* Build a "Color Locator" vision processor based on the ColorBlobLocatorProcessor class.
          * - Specify the color range you are looking for.  You can use a predefined color, or create you own color range
          *     .setTargetColorRange(ColorRange.BLUE)                      // use a predefined color match
@@ -106,12 +108,15 @@ public class ConceptVisionColorLocator extends LinearOpMode
          *                                    object, such as when removing noise from an image.
          *                                    "pixels" in the range of 2-4 are suitable for low res images.
          */
+        ColorRange targetColor = ColorRange.RED;
         ColorBlobLocatorProcessor colorLocator = new ColorBlobLocatorProcessor.Builder()
-                .setTargetColorRange(ColorRange.BLUE)         // use a predefined color match
+                .setTargetColorRange(targetColor)         // use a predefined color match
                 .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)    // exclude blobs inside blobs
-                .setRoi(ImageRegion.asUnityCenterCoordinates(-0.5, 0.5, 0.5, -0.5))  // search central 1/4 of camera view
+                .setRoi(ImageRegion.asUnityCenterCoordinates(-1, 0, 1, -1))  // search central 1/4 of camera view
                 .setDrawContours(true)                        // Show contours on the Stream Preview
-                .setBlurSize(5)                               // Smooth the transitions between different colors in image
+                .setBlurSize(5)
+                .setDilateSize(10)
+                .setErodeSize(10)// Smooth the transitions between different colors in image
                 .build();
 
         /*
@@ -130,6 +135,7 @@ public class ConceptVisionColorLocator extends LinearOpMode
                 .addProcessor(colorLocator)
                 .setCameraResolution(new Size(1920, 1080))
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+                .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 .build();
 
         telemetry.setMsTransmissionInterval(50);   // Speed up telemetry updates, Just use for debugging.

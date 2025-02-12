@@ -9,6 +9,8 @@ import org.firstinspires.ftc.teamcode.components.MachineVisionSubmersible;
 import org.firstinspires.ftc.teamcode.components.RobotContext;
 import org.firstinspires.ftc.teamcode.game.Controller;
 
+import java.util.List;
+
 @TeleOp
 public class MVTest extends OpMode {
 
@@ -16,7 +18,7 @@ public class MVTest extends OpMode {
     RobotContext robotContext;
     MachineVisionSubmersible mvs;
 
-    Pose2d lastElemPos;
+    List<List<Integer>> counts;
 
     @Override
     public void init() {
@@ -32,8 +34,13 @@ public class MVTest extends OpMode {
 
         if(driver.isPressed(Controller.Button.CROSS)){
 
-            lastElemPos = mvs.runPipeline();
-            telemetry.addData("last element position: ", lastElemPos);
+            counts = mvs.getElementCounts();
+            telemetry.addData("region0 team: ", counts.get(0).get(0));
+            telemetry.addData("region1 team: ", counts.get(0).get(1));
+            telemetry.addData("region2 team: ", counts.get(0).get(2));
+            telemetry.addData("region0 yellow: ", counts.get(1).get(0));
+            telemetry.addData("region1 yellow: ", counts.get(1).get(1));
+            telemetry.addData("region2 yellow: ", counts.get(1).get(2));
         }
 
 

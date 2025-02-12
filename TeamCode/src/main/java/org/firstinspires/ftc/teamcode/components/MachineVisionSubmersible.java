@@ -4,33 +4,49 @@ import android.util.Size;
 
 import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
-import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.SortOrder;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.geometry.Position;
 import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.firstinspires.ftc.teamcode.util.ColorBlobLocatorProcessor;
 import org.firstinspires.ftc.teamcode.util.ColorRange;
 import org.firstinspires.ftc.teamcode.util.ImageRegion;
+import org.firstinspires.ftc.teamcode.util.ColorSpace;
+import org.opencv.core.Scalar;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MachineVisionSubmersible extends BaseComponent{
 
-    ColorBlobLocatorProcessor colorLocator;
+    ColorBlobLocatorProcessor teamLocator;
+    ColorBlobLocatorProcessor yellowLocator;
     VisionPortal portal;
-    double camera_width = 1920;
-    double camera_height = 1080;
+    double camera_width = 640;
+    double camera_height = 480;
+    int numInside;
+    //(5,169,109), (31,255,255)
+    ColorRange betterYELLOW = new ColorRange(
+            ColorSpace.HSV,
+            new Scalar(15,111,125),
+            new Scalar(50,255,255)
+    );
 
     public MachineVisionSubmersible(RobotContext context) {
         super(context);
-        colorLocator = new ColorBlobLocatorProcessor.Builder()
+        teamLocator = new ColorBlobLocatorProcessor.Builder()
                 .setTargetColorRange(ColorRange.RED)//context.getAlliance() == RobotContext.Alliance.RED ? ColorRange.RED : ColorRange.BLUE)         // use a predefined color match
+                .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)    // exclude blobs inside blobs
+                .setRoi(ImageRegion.asUnityCenterCoordinates(-1, 0, 1, -1))  // search central 1/4 of camera view
+                .setDrawContours(true)                        // Show contours on the Stream Preview
+                .setBlurSize(5)                               // Smooth the transitions between different colors in image
+                .setDilateSize(10)
+                .setErodeSize(10)
+                .build();
+        yellowLocator = new ColorBlobLocatorProcessor.Builder()
+                .setTargetColorRange(betterYELLOW)//context.getAlliance() == RobotContext.Alliance.RED ? ColorRange.RED : ColorRange.BLUE)         // use a predefined color match
                 .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)    // exclude blobs inside blobs
                 .setRoi(ImageRegion.asUnityCenterCoordinates(-1, 0, 1, -1))  // search central 1/4 of camera view
                 .setDrawContours(true)                        // Show contours on the Stream Preview
@@ -40,7 +56,7 @@ public class MachineVisionSubmersible extends BaseComponent{
                 .build();
 
         portal = new VisionPortal.Builder()
-                .addProcessor(colorLocator)
+                .addProcessors(teamLocator, yellowLocator)
                 .setCameraResolution(new Size((int) camera_width, (int) camera_height))
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
@@ -105,23 +121,42 @@ public class MachineVisionSubmersible extends BaseComponent{
         return new double[]{rayOrigin[0] + t * rayWorld[0], rayOrigin[1] + t * rayWorld[1], rayOrigin[2] + t * rayWorld[2]};
     }
 
-    public Pose2d runPipeline(){
-        Pose2d elementPos;
-        ColorBlobLocatorProcessor.Blob bestElement;
-
-
-        List<ColorBlobLocatorProcessor.Blob> blobs = colorLocator.getBlobs();
-        ColorBlobLocatorProcessor.Util.filterByArea(1000, 50000, blobs);  //15000
-        ColorBlobLocatorProcessor.Util.sortByArea(SortOrder.DESCENDING, blobs);
-        if (!blobs.isEmpty()) {
-            bestElement = blobs.get(0);
-            telemetry.addData("Blob Center x: ", bestElement.getBoxFit().center.x);
-            telemetry.addData("Blob Center y: ", bestElement.getBoxFit().center.y);
-        } else {
-            telemetry.addLine("No Blob Found");
-            return null;
+    public Integer getNumInsideRegion(List<ColorBlobLocatorProcessor.Blob> blobs, double regionTop, double regionBottom, double regionLeft, double regionRight){
+        numInside = 0;
+        for (ColorBlobLocatorProcessor.Blob blob: blobs){
+            double x = blob.getBoxFit().center.x;
+            double y = blob.getBoxFit().center.y;
+            //telemetry.addData("((regionLeft * camera_width/2) + camera_width/2): ", (regionLeft * camera_width/2) + camera_width/2);
+            //telemetry.addData("((regionRight * camera_width/2) + camera_width/2): ", (regionRight * camera_width/2) + camera_width/2);
+            //telemetry.addData("((regionTop * camera_height/2) + camera_height/2): ", (-regionTop * camera_height/2) + camera_height/2);
+            //telemetry.addData("((regionBottom * camera_height/2) + camera_height/2): ", (-regionBottom * camera_height/2) + camera_height/2);
+            if ((x >= (regionLeft * camera_width/2) + camera_width/2) && (x <= (regionRight * camera_width/2) + camera_width/2) && (y >= (-regionTop * camera_height/2) + camera_height/2) && (y <= (-regionBottom * camera_height/2) + camera_height/2)) {
+                numInside++;
+            }
         }
+        return numInside;
+    }
 
+    public List<List<Integer>> getElementCounts(){
+        List<List<Integer>> counts = new ArrayList<>();
+        counts.add(new ArrayList<>());
+        counts.add(new ArrayList<>());
+
+        if(getBlobs(teamLocator) != null) {
+            counts.get(0).add(getNumInsideRegion(getBlobs(teamLocator), -0.1, -0.9, -0.4, -0.2));
+            counts.get(0).add(getNumInsideRegion(getBlobs(teamLocator), -0.1, -0.9, -0.2, 0.2));
+            counts.get(0).add(getNumInsideRegion(getBlobs(teamLocator), -0.1, -0.9, 0.2, 0.4));
+        } else {telemetry.addLine("teamLocator null");counts.set(0, Stream.of(0,0,0).collect(Collectors.toList()));}
+        if(getBlobs(yellowLocator) != null) {
+            counts.get(1).add(getNumInsideRegion(getBlobs(yellowLocator), -0.1, -0.9, -0.4, -0.2));
+            counts.get(1).add(getNumInsideRegion(getBlobs(yellowLocator), -0.1, -0.9, -0.2, 0.2));
+            counts.get(1).add(getNumInsideRegion(getBlobs(yellowLocator), -0.1, -0.9, 0.2, 0.4));
+        } else {telemetry.addLine("yellowLocator null");counts.set(1, Stream.of(0,0,0).collect(Collectors.toList()));}
+        return counts;
+    }
+
+    public Pose2d blobToPos(ColorBlobLocatorProcessor.Blob bestElement){
+        Pose2d elementPos;
         //pixel to camera ray
         double pixelX = bestElement.getBoxFit().center.x;
         double pixelY = 1080 - bestElement.getBoxFit().center.y;
@@ -155,7 +190,23 @@ public class MachineVisionSubmersible extends BaseComponent{
         }
 
         return elementPos;
+    }
 
+    public List<ColorBlobLocatorProcessor.Blob> getBlobs(ColorBlobLocatorProcessor colorLocator) {
+        ColorBlobLocatorProcessor.Blob bestElement;
+
+        List<ColorBlobLocatorProcessor.Blob> blobs = colorLocator.getBlobs();
+        ColorBlobLocatorProcessor.Util.filterByArea(300, 50000, blobs);  //15000
+        ColorBlobLocatorProcessor.Util.sortByArea(SortOrder.DESCENDING, blobs);
+        if (!blobs.isEmpty()) {
+            bestElement = blobs.get(0);
+            telemetry.addData("Blob Center x: ", bestElement.getBoxFit().center.x);
+            telemetry.addData("Blob Center y: ", bestElement.getBoxFit().center.y);
+        } else {
+            telemetry.addLine("No Blob Found");
+            return null;
+        }
+        return blobs;
     }
 
 }

@@ -424,7 +424,7 @@ class ColorBlobLocatorProcessorImpl extends ColorBlobLocatorProcessor implements
                 rect = Imgproc.minAreaRect(new MatOfPoint2f(getContourPoints()));
 
 
-                rect.center.x = 2;
+                //rect.center.x = 2;
             }
             return rect;
         }
