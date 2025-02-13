@@ -57,7 +57,8 @@ public class Robot extends BaseComponent{
         double voltage = computeBatteryVoltage();
         if (voltage < VOLTAGE_WARNING_THRESHOLD) {
             telemetry.log().add("LOW BATTERY WARNING");
-            telemetry.log().add("My battery is low and it's getting dark -Opportunity");
+            telemetry.log().add("\"My battery is low and it's getting dark\" -Opportunity");
+            telemetry.log().add("\"ding fries are done ding fries are done\" - Peter Griffin");
         }
 
         // Set the caching mode for reading values from Lynx components to manual. This means that when reading values

@@ -24,8 +24,8 @@ public class MachineVisionSubmersible extends BaseComponent{
     ColorBlobLocatorProcessor teamLocator;
     ColorBlobLocatorProcessor yellowLocator;
     VisionPortal portal;
-    double camera_width = 640;
-    double camera_height = 480;
+    public static double camera_width = 640;
+    public static double camera_height = 480;
     int numInside;
     //(5,169,109), (31,255,255)
     ColorRange betterYELLOW = new ColorRange(
@@ -37,7 +37,7 @@ public class MachineVisionSubmersible extends BaseComponent{
     public MachineVisionSubmersible(RobotContext context) {
         super(context);
         teamLocator = new ColorBlobLocatorProcessor.Builder()
-                .setTargetColorRange(ColorRange.RED)//context.getAlliance() == RobotContext.Alliance.RED ? ColorRange.RED : ColorRange.BLUE)         // use a predefined color match
+                .setTargetColorRange(context.getAlliance() == RobotContext.Alliance.RED ? ColorRange.RED : ColorRange.BLUE)         // use a predefined color match
                 .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)    // exclude blobs inside blobs
                 .setRoi(ImageRegion.asUnityCenterCoordinates(-1, 0, 1, -1))  // search central 1/4 of camera view
                 .setDrawContours(true)                        // Show contours on the Stream Preview
@@ -143,14 +143,14 @@ public class MachineVisionSubmersible extends BaseComponent{
         counts.add(new ArrayList<>());
 
         if(getBlobs(teamLocator) != null) {
-            counts.get(0).add(getNumInsideRegion(getBlobs(teamLocator), -0.1, -0.9, -0.4, -0.2));
-            counts.get(0).add(getNumInsideRegion(getBlobs(teamLocator), -0.1, -0.9, -0.2, 0.2));
-            counts.get(0).add(getNumInsideRegion(getBlobs(teamLocator), -0.1, -0.9, 0.2, 0.4));
+            counts.get(0).add(getNumInsideRegion(getBlobs(teamLocator), RobotContext.topLim, RobotContext.bottomLim, RobotContext.region0LeftLim, RobotContext.region0RightLim));
+            counts.get(0).add(getNumInsideRegion(getBlobs(teamLocator), RobotContext.topLim, RobotContext.bottomLim, RobotContext.region1LeftLim, RobotContext.region1RightLim));
+            counts.get(0).add(getNumInsideRegion(getBlobs(teamLocator), RobotContext.topLim, RobotContext.bottomLim, RobotContext.region2LeftLim, RobotContext.region2RightLim));
         } else {telemetry.addLine("teamLocator null");counts.set(0, Stream.of(0,0,0).collect(Collectors.toList()));}
         if(getBlobs(yellowLocator) != null) {
-            counts.get(1).add(getNumInsideRegion(getBlobs(yellowLocator), -0.1, -0.9, -0.4, -0.2));
-            counts.get(1).add(getNumInsideRegion(getBlobs(yellowLocator), -0.1, -0.9, -0.2, 0.2));
-            counts.get(1).add(getNumInsideRegion(getBlobs(yellowLocator), -0.1, -0.9, 0.2, 0.4));
+            counts.get(1).add(getNumInsideRegion(getBlobs(yellowLocator), RobotContext.topLim, RobotContext.bottomLim, RobotContext.region0LeftLim, RobotContext.region0RightLim));
+            counts.get(1).add(getNumInsideRegion(getBlobs(yellowLocator), RobotContext.topLim, RobotContext.bottomLim, RobotContext.region1LeftLim, RobotContext.region1RightLim));
+            counts.get(1).add(getNumInsideRegion(getBlobs(yellowLocator), RobotContext.topLim, RobotContext.bottomLim, RobotContext.region2LeftLim, RobotContext.region2RightLim));
         } else {telemetry.addLine("yellowLocator null");counts.set(1, Stream.of(0,0,0).collect(Collectors.toList()));}
         return counts;
     }
@@ -200,8 +200,8 @@ public class MachineVisionSubmersible extends BaseComponent{
         ColorBlobLocatorProcessor.Util.sortByArea(SortOrder.DESCENDING, blobs);
         if (!blobs.isEmpty()) {
             bestElement = blobs.get(0);
-            telemetry.addData("Blob Center x: ", bestElement.getBoxFit().center.x);
-            telemetry.addData("Blob Center y: ", bestElement.getBoxFit().center.y);
+            //telemetry.addData("Blob Center x: ", bestElement.getBoxFit().center.x);
+            //telemetry.addData("Blob Center y: ", bestElement.getBoxFit().center.y);
         } else {
             telemetry.addLine("No Blob Found");
             return null;

@@ -3,12 +3,15 @@ package org.firstinspires.ftc.teamcode.util;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Color;
 
 import androidx.annotation.ColorInt;
 
 import com.qualcomm.robotcore.util.SortOrder;
 
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
+import org.firstinspires.ftc.teamcode.components.MachineVisionSubmersible;
+import org.firstinspires.ftc.teamcode.components.RobotContext;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -27,6 +30,14 @@ import java.util.List;
 
 class ColorBlobLocatorProcessorImpl extends ColorBlobLocatorProcessor implements VisionProcessor
 {
+    private float top = (float) ((-RobotContext.topLim * MachineVisionSubmersible.camera_height/2) + MachineVisionSubmersible.camera_height/2);
+    private float bottom = (float) ((-RobotContext.bottomLim * MachineVisionSubmersible.camera_height/2) + MachineVisionSubmersible.camera_height/2);
+    private float region0Left = (float) ((RobotContext.region0LeftLim * MachineVisionSubmersible.camera_width/2) + MachineVisionSubmersible.camera_width/2);
+    private float region0Right = (float) ((RobotContext.region0RightLim * MachineVisionSubmersible.camera_width/2) + MachineVisionSubmersible.camera_width/2);
+    private float region1Left = (float) ((RobotContext.region1LeftLim * MachineVisionSubmersible.camera_width/2) + MachineVisionSubmersible.camera_width/2);
+    private float region1Right = (float) ((RobotContext.region1RightLim * MachineVisionSubmersible.camera_width/2) + MachineVisionSubmersible.camera_width/2);
+    private float region2Left = (float) ((RobotContext.region2LeftLim * MachineVisionSubmersible.camera_width/2) + MachineVisionSubmersible.camera_width/2);
+    private float region2Right = (float) ((RobotContext.region2RightLim * MachineVisionSubmersible.camera_width/2) + MachineVisionSubmersible.camera_width/2);
     private ColorRange colorRange;
     private ImageRegion roiImg;
     private Rect roi;
@@ -272,6 +283,15 @@ class ColorBlobLocatorProcessorImpl extends ColorBlobLocatorProcessor implements
                         );
             }
         }
+
+        //CUSTOM: DRAW REGIONS
+        roiPaint.setColor(roiColor);
+        roiPaint.setStyle(Paint.Style.STROKE);
+        canvas.drawRect(region0Left, top, region0Right, bottom, roiPaint);
+        canvas.drawRect(region1Left, top, region1Right, bottom, roiPaint);
+        canvas.drawRect(region2Left, top, region2Right, bottom, roiPaint);
+
+        roiPaint.setColor(Color.rgb(150,150,150));
 
         canvas.drawLine(gfxRect.left, gfxRect.top, gfxRect.right, gfxRect.top, roiPaint);
         canvas.drawLine(gfxRect.right, gfxRect.top, gfxRect.right, gfxRect.bottom, roiPaint);

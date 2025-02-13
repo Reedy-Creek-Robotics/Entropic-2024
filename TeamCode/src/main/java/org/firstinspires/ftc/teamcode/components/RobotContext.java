@@ -23,6 +23,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RobotContext {
+    public static double topLim = -0.25;
+    public static double bottomLim = -0.9;
+    public static double region0LeftLim = -0.6;
+    public static double region0RightLim = -0.2;
+    public static double region1LeftLim = -0.2;
+    public static double region1RightLim = 0.2;
+    public static double region2LeftLim = 0.2;
+    public static double region2RightLim = 0.6;
+
     public enum Alliance{
         RED(0,1),
         BLUE(180,-1);

@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.components.MachineVisionSubmersible;
 import org.firstinspires.ftc.teamcode.components.Robot;
 import org.firstinspires.ftc.teamcode.components.RobotContext;
 import org.firstinspires.ftc.teamcode.components.ScoringSlide;
@@ -11,9 +12,11 @@ import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySe
 
 @Config
 public abstract class AutoMain extends LinearOpMode {
-    public static String FILE_NAME = "Recorder";
+    public static String FILE_NAME = "Recorder.txt";
 
     protected Robot robot;
+    protected RobotContext robotContext;
+    protected MachineVisionSubmersible mvs;
 
     protected Pose2d currentEnd;
 
@@ -36,6 +39,8 @@ public abstract class AutoMain extends LinearOpMode {
 
     public void initRobot(){
         robot = new Robot(this);
+        robotContext = robot.getRobotContext();
+        mvs = new MachineVisionSubmersible(robotContext);
         loadPaths();
         robot.init();
         robot.resetFiles(FILE_NAME);

@@ -6,12 +6,18 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
 
 import org.firstinspires.ftc.teamcode.components.LittleHanger;
+import org.firstinspires.ftc.teamcode.components.MachineVisionSubmersible;
 import org.firstinspires.ftc.teamcode.components.ScoringSlide;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Config
 public abstract class AutoLeft extends AutoMain{
     public static boolean PRELOAD = true, FIRST = true, SECOND = true, THIRD = true, PARK = true;
+
 
     @Override
     public Pose2d getStartPosition() {
@@ -20,7 +26,8 @@ public abstract class AutoLeft extends AutoMain{
 
     @Override
     public void loadPaths() {
-
+        telemetry.addData("team: ", robotContext.getAlliance());
+        
     }
 
     @Override
@@ -176,16 +183,88 @@ public abstract class AutoLeft extends AutoMain{
 
         robot.getScoringSlide().moveToHeight(ScoringSlide.Positions.GROUND);
         TrajectorySequence trajectorySequence = robot.getDriveTrain().trajectoryBuilder(currentEnd)
-                .lineToLinearHeading(new Pose2d(-48 * getAlliance().getTranslation(),-13.5 * getAlliance().getTranslation(), Math.toRadians(180 + getAlliance().getRotation())))
+                .lineToLinearHeading(new Pose2d(-48 * getAlliance().getTranslation(),-11 * getAlliance().getTranslation(), Math.toRadians(0 + getAlliance().getRotation())))
                 .setTangent(Math.toRadians(0 + getAlliance().getRotation()))
-                .lineToLinearHeading(new Pose2d(-18 * getAlliance().getTranslation(),-13.5 * getAlliance().getTranslation(),Math.toRadians(180 + getAlliance().getRotation())))//,Math.toRadians(0 + getAlliance().getRotation()))
+                .lineToLinearHeading(new Pose2d(-20 * getAlliance().getTranslation(),-12.5 * getAlliance().getTranslation(),Math.toRadians(0 + getAlliance().getRotation())))//,Math.toRadians(0 + getAlliance().getRotation()))
                 .build();
         robot.getDriveTrain().followTrajectory(trajectorySequence);
+        currentEnd = trajectorySequence.end();
         robot.waitForCommandsToFinish();
+
+        //machine vision
+        List<List<Integer>> counts = mvs.getElementCounts();
+        List<Double> totals = new ArrayList<>();
+        totals.add(counts.get(0).get(0) + counts.get(1).get(0) * 1.1);
+        totals.add(counts.get(0).get(1) + counts.get(1).get(1) * 1.1);
+        totals.add(counts.get(0).get(2) + counts.get(1).get(2) * 1.1);
+
+        int bestRegion = totals.indexOf(Collections.max(totals));
+        robot.getRobotContext().record += "totals: ".concat(totals.toString()).concat("\n");
+        if(Collections.max(totals) > 0) {
+            //turnAround();
+            robot.getRobotContext().record += "Best Region: ".concat((String.valueOf(bestRegion))).concat("\n");
+            
+            switch (bestRegion) {
+                //Left region
+                case 0:
+                    robot.getRobotContext().record += "aiming left..\n";
+                    aimLeftRegion();
+                    break;
+                //Center region
+                case 1:
+                    robot.getRobotContext().record += "aiming center..\n";
+                    break;
+                //Right region
+                case 2:
+                    robot.getRobotContext().record += "aiming right..\n";
+                    aimRightRegion();
+                    break;
+            }
+            
+            collectRegion();
+        } else{robot.getRobotContext().record += "No Elements Found on Field\n";}
+
+        TrajectorySequence leaveSub = robot.getDriveTrain().trajectoryBuilder(currentEnd)
+                .setTangent(Math.toRadians(0 + getAlliance().getRotation()))
+                .splineToSplineHeading(new Pose2d(-44 * getAlliance().getTranslation(),-15 * getAlliance().getTranslation(), Math.toRadians(90 + getAlliance().getRotation())), Math.toRadians(180 + getAlliance().getRotation()))
+                .build();
+        robot.getDriveTrain().followTrajectory(leaveSub);
+        currentEnd = trajectorySequence.end();
+        deliverPreload();
+
 
         robot.getLittleHanger().moveToHeight(LittleHanger.HangHeights.TOUCH);
 
-        currentEnd = trajectorySequence.end();
+        robot.waitForCommandsToFinish();
+    }
+
+    public void turnAround(){
+        TrajectorySequence turnAround = robot.getDriveTrain().trajectoryBuilder(currentEnd)
+                .setTangent(Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(-44,-10, Math.toRadians(180)), 180)
+                .build();
+        robot.getDriveTrain().followTrajectory(turnAround);
+        currentEnd = turnAround.end();
+        robot.waitForCommandsToFinish();
+    }
+
+    public void aimLeftRegion(){
+
+    }
+    public void aimRightRegion(){
+
+    }
+
+    public void collectRegion() {
+        robot.getRobotContext().record += "collecting...\n";
+        
+        robot.getHorizontalSlide().extend(0.1);
+        robot.getIntake().timedIntake(1,700);
+        robot.waitForCommandsToFinish();
+        robot.getIntake().timedIntake(1,1000);
+        robot.getHorizontalSlide().linkageExtend();
+        robot.waitForCommandsToFinish();
+        robot.getHorizontalSlide().contract(0);
         robot.waitForCommandsToFinish();
     }
 
