@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.components.RobotContext;
 
 @Autonomous
-public class AutoRightRed extends AutoRight{
+public class AutoRightRed extends AutoRightLong {
 
     @Override
     public RobotContext.Alliance getAlliance() {

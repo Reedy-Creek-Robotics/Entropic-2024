@@ -9,7 +9,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationCon
 import org.firstinspires.ftc.teamcode.components.ScoringSlide;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 @Config
-public abstract class AutoRight extends AutoMain{
+public abstract class AutoRightLong extends AutoMain{
 
     public static boolean MIDDLE = true, RIGHT = true, LEFT = true, PRELOAD1 = true, PRELOAD2 = true, PRESET1 = false, PRESET2 = false, PRESET3 = false, PARK = false;
 

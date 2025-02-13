@@ -4,20 +4,17 @@ import com.acmerobotics.roadrunner.localization.Localizer;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.teamcode.opmodes.AutoMain;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.AprilTagLocalizer;
-import org.firstinspires.ftc.teamcode.roadrunner.drive.OpticalAprilTagLocalizer;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.OpticalLocalizer;
-import org.firstinspires.ftc.teamcode.roadrunner.drive.StandardTrackingWheelLocalizer;
-import org.firstinspires.ftc.teamcode.roadrunner.drive.TwoWheelTrackingLocalizer;
 import org.firstinspires.ftc.teamcode.util.DriveUtil;
 import org.firstinspires.ftc.teamcode.util.MecanumUtil;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,19 +59,28 @@ public class RobotContext {
 
     public Localizer localizer;
 
+    public VisionPortal frontPortal, sidePortal;
+    public VisionPortal.Builder frontPortalBuilder, sidePortalBuilder;
+    public AprilTagProcessor frontAprilTagProcessor, sideAprilTagProcessor;
+
     public AprilTagLocalizer aprilTagLocalizer;
     public OpticalLocalizer opticalLocalizer;
 
-    private Position cameraPosition = new Position(DistanceUnit.MM,
+    private Position frontCameraPosition = new Position(DistanceUnit.MM,
              160.292, 180.467,384.632, 0);
-    private YawPitchRollAngles cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES,
+    private YawPitchRollAngles frontCameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES,
             -15-90, -120, 0, 0);
+
+    private Position sideCameraPostion = new Position(DistanceUnit.MM,
+            0,0,0,0);
+    private YawPitchRollAngles sideCameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES,
+            0,-90,0,0);
 
     public DriveUtil driveUtil;
 
     public Alliance alliance;
 
-    public WebcamName webcam;
+    public WebcamName frontWebcam, sideWebcam;
 
     List<Integer> lastTrackingEncPositions = new ArrayList<>();
     List<Integer> lastTrackingEncVels = new ArrayList<>();
@@ -82,11 +88,36 @@ public class RobotContext {
         this.opMode = opMode;
         this.descriptor = descriptor;
         this.driveUtil = new MecanumUtil();
-        this.webcam = opMode.hardwareMap.get(WebcamName.class, "Webcam 1");
+        this.frontWebcam = opMode.hardwareMap.get(WebcamName.class, "Front Webcam");
+        this.sideWebcam = opMode.hardwareMap.get(WebcamName.class, "Side Webcam");
         this.clock = new ElapsedTime();
 
-        //this.opticalLocalizer = new OpticalLocalizer(this);
-        //this.aprilTagLocalizer = new AprilTagLocalizer(this,cameraPosition, cameraOrientation, webcam);
+        //Processors
+        this.frontAprilTagProcessor = new AprilTagProcessor.Builder()
+                .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
+                .setCameraPose(frontCameraPosition, frontCameraOrientation)
+                .setLensIntrinsics(237.835,237.835,328.272,237.727)
+                .build();
+        this.sideAprilTagProcessor = new AprilTagProcessor.Builder()
+                .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
+                .setCameraPose(sideCameraPostion, sideCameraOrientation)
+                .setLensIntrinsics(0,0,0,0)
+                .build();
+
+        //Builders
+        this.frontPortalBuilder = new VisionPortal.Builder();
+        this.frontPortalBuilder.setCamera(frontWebcam);
+        this.frontPortalBuilder.setStreamFormat(VisionPortal.StreamFormat.MJPEG);
+        this.frontPortalBuilder.addProcessor(frontAprilTagProcessor);
+
+        this.sidePortalBuilder = new VisionPortal.Builder();
+        this.sidePortalBuilder.setCamera(sideWebcam);
+        this.sidePortalBuilder.addProcessor(sideAprilTagProcessor);
+
+        //Portal
+        this.frontPortal = frontPortalBuilder.build();
+        this.sidePortal = sidePortalBuilder.build();
+
         //this.localizer = new OpticalAprilTagLocalizer(this, cameraPosition, cameraOrientation, webcam);
         this.localizer = new OpticalLocalizer(this);
         //new StandardTrackingWheelLocalizer(opMode.hardwareMap, lastTrackingEncPositions, lastTrackingEncVels, this.descriptor.ODOMETRY_TUNER);
@@ -123,8 +154,8 @@ public class RobotContext {
         this.alliance = alliance;
     }
 
-    public WebcamName getWebcam() {
-        return webcam;
+    public WebcamName getFrontWebcam() {
+        return frontWebcam;
     }
 
     /*public enum Alliance{

@@ -154,6 +154,10 @@ public class DriveTrain extends BaseComponent {
         executeCommand(new FollowTrajectory(trajectory));
     }
 
+    public void followTrajectoryAlt(TrajectorySequence trajectory){
+        roadrunner.followTrajectorySequence(trajectory);
+    }
+
     public TrajectorySequenceBuilder trajectoryBuilder(Pose2d start){
         return roadrunner.trajectorySequenceBuilder(start);
     }
