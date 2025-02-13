@@ -25,6 +25,7 @@ public class Robot extends BaseComponent{
     private LittleHanger littleHanger;
     private ScoringSlide scoreSlide;
     private Intake intake;
+    protected MachineVisionSubmersible mvs;
 
     private int updateCount;
     private ElapsedTime initTime;
@@ -40,8 +41,9 @@ public class Robot extends BaseComponent{
         littleHanger = new LittleHanger(context);
         scoreSlide = new ScoringSlide(context);
         intake = new Intake(context);
+        mvs = new MachineVisionSubmersible(context);
 
-        addSubComponents(driveTrain, horizontalSlide,littleHanger,scoreSlide, intake);
+        addSubComponents(driveTrain, horizontalSlide,littleHanger,scoreSlide, intake, mvs);
 
         TelemetryHolder.telemetry = telemetry;
     }
@@ -219,6 +221,10 @@ public class Robot extends BaseComponent{
     public ScoringSlide getScoringSlide() {
         return scoreSlide;
     };
+
+    public MachineVisionSubmersible getMvs() {
+        return mvs;
+    }
 
     private double computeBatteryVoltage() {
         double result = Double.POSITIVE_INFINITY;

@@ -23,44 +23,15 @@ public class MachineVisionSubmersible extends BaseComponent{
 
     ColorBlobLocatorProcessor teamLocator;
     ColorBlobLocatorProcessor yellowLocator;
-    VisionPortal portal;
     public static double camera_width = 640;
     public static double camera_height = 480;
     int numInside;
     //(5,169,109), (31,255,255)
-    ColorRange betterYELLOW = new ColorRange(
-            ColorSpace.HSV,
-            new Scalar(15,111,125),
-            new Scalar(50,255,255)
-    );
 
     public MachineVisionSubmersible(RobotContext context) {
         super(context);
-        teamLocator = new ColorBlobLocatorProcessor.Builder()
-                .setTargetColorRange(context.getAlliance() == RobotContext.Alliance.RED ? ColorRange.RED : ColorRange.BLUE)         // use a predefined color match
-                .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)    // exclude blobs inside blobs
-                .setRoi(ImageRegion.asUnityCenterCoordinates(-1, 0, 1, -1))  // search central 1/4 of camera view
-                .setDrawContours(true)                        // Show contours on the Stream Preview
-                .setBlurSize(5)                               // Smooth the transitions between different colors in image
-                .setDilateSize(10)
-                .setErodeSize(10)
-                .build();
-        yellowLocator = new ColorBlobLocatorProcessor.Builder()
-                .setTargetColorRange(betterYELLOW)//context.getAlliance() == RobotContext.Alliance.RED ? ColorRange.RED : ColorRange.BLUE)         // use a predefined color match
-                .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)    // exclude blobs inside blobs
-                .setRoi(ImageRegion.asUnityCenterCoordinates(-1, 0, 1, -1))  // search central 1/4 of camera view
-                .setDrawContours(true)                        // Show contours on the Stream Preview
-                .setBlurSize(5)                               // Smooth the transitions between different colors in image
-                .setDilateSize(10)
-                .setErodeSize(10)
-                .build();
-
-        portal = new VisionPortal.Builder()
-                .addProcessors(teamLocator, yellowLocator)
-                .setCameraResolution(new Size((int) camera_width, (int) camera_height))
-                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
-                .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
-                .build();
+        teamLocator = context.teamLocator;
+        yellowLocator = context.yellowLocator;
     }
 
     @Override

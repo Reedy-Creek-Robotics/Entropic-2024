@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.roadrunner.drive;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -78,4 +79,7 @@ public class OpticalAprilTagLocalizer extends OpticalLocalizer {
         return false;
     }
 
+    public List<AprilTagDetection> getCurrentDetections() {
+        return currentDetections;
+    }
 }

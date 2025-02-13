@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.components;
 
+import android.util.Size;
+
 import com.acmerobotics.roadrunner.localization.Localizer;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -10,11 +12,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.AprilTagLocalizer;
+import org.firstinspires.ftc.teamcode.roadrunner.drive.OpticalAprilTagLocalizer;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.OpticalLocalizer;
+import org.firstinspires.ftc.teamcode.util.ColorBlobLocatorProcessor;
+import org.firstinspires.ftc.teamcode.util.ColorRange;
+import org.firstinspires.ftc.teamcode.util.ColorSpace;
 import org.firstinspires.ftc.teamcode.util.DriveUtil;
+import org.firstinspires.ftc.teamcode.util.ImageRegion;
 import org.firstinspires.ftc.teamcode.util.MecanumUtil;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import org.opencv.core.Scalar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +58,12 @@ public class RobotContext {
         }
     }
 
+    ColorRange betterYELLOW = new ColorRange(
+            ColorSpace.HSV,
+            new Scalar(15,111,125),
+            new Scalar(50,255,255)
+    );
+
     public OpMode opMode;
 
     public ElapsedTime clock;
@@ -57,14 +71,16 @@ public class RobotContext {
 
     public RobotDescriptor descriptor;
 
-    public Localizer localizer;
+    public OpticalAprilTagLocalizer localizer;
 
     public VisionPortal frontPortal, sidePortal;
-    public VisionPortal.Builder frontPortalBuilder, sidePortalBuilder;
     public AprilTagProcessor frontAprilTagProcessor, sideAprilTagProcessor;
+    ColorBlobLocatorProcessor teamLocator, yellowLocator;
 
-    public AprilTagLocalizer aprilTagLocalizer;
     public OpticalLocalizer opticalLocalizer;
+
+    public static double camera_width = 640;
+    public static double camera_height = 480;
 
     private Position frontCameraPosition = new Position(DistanceUnit.MM,
              160.292, 180.467,384.632, 0);
@@ -103,23 +119,39 @@ public class RobotContext {
                 .setCameraPose(sideCameraPostion, sideCameraOrientation)
                 .setLensIntrinsics(0,0,0,0)
                 .build();
-
-        //Builders
-        this.frontPortalBuilder = new VisionPortal.Builder();
-        this.frontPortalBuilder.setCamera(frontWebcam);
-        this.frontPortalBuilder.setStreamFormat(VisionPortal.StreamFormat.MJPEG);
-        this.frontPortalBuilder.addProcessor(frontAprilTagProcessor);
-
-        this.sidePortalBuilder = new VisionPortal.Builder();
-        this.sidePortalBuilder.setCamera(sideWebcam);
-        this.sidePortalBuilder.addProcessor(sideAprilTagProcessor);
+        this.teamLocator = new ColorBlobLocatorProcessor.Builder()
+                .setTargetColorRange(getAlliance() == RobotContext.Alliance.RED ? ColorRange.RED : ColorRange.BLUE)         // use a predefined color match
+                .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)    // exclude blobs inside blobs
+                .setRoi(ImageRegion.asUnityCenterCoordinates(-1, 0, 1, -1))  // search central 1/4 of camera view
+                .setDrawContours(true)                        // Show contours on the Stream Preview
+                .setBlurSize(5)                               // Smooth the transitions between different colors in image
+                .setDilateSize(10)
+                .setErodeSize(10)
+                .build();
+        this.yellowLocator = new ColorBlobLocatorProcessor.Builder()
+                .setTargetColorRange(betterYELLOW)//context.getAlliance() == RobotContext.Alliance.RED ? ColorRange.RED : ColorRange.BLUE)         // use a predefined color match
+                .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)    // exclude blobs inside blobs
+                .setRoi(ImageRegion.asUnityCenterCoordinates(-1, 0, 1, -1))  // search central 1/4 of camera view
+                .setDrawContours(true)                        // Show contours on the Stream Preview
+                .setBlurSize(5)                               // Smooth the transitions between different colors in image
+                .setDilateSize(10)
+                .setErodeSize(10)
+                .build();
 
         //Portal
-        this.frontPortal = frontPortalBuilder.build();
-        this.sidePortal = sidePortalBuilder.build();
+        this.frontPortal = new VisionPortal.Builder()
+                .setCamera(frontWebcam)
+                .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
+                .addProcessors(frontAprilTagProcessor, teamLocator, yellowLocator)
+                .setCameraResolution(new Size((int) camera_width, (int) camera_height))
+                .build();
+        this.sidePortal = new VisionPortal.Builder()
+                .setCamera(sideWebcam)
+                .addProcessors(sideAprilTagProcessor)
+                .build();
 
-        //this.localizer = new OpticalAprilTagLocalizer(this, cameraPosition, cameraOrientation, webcam);
-        this.localizer = new OpticalLocalizer(this);
+        this.localizer = new OpticalAprilTagLocalizer(this);
+        //this.localizer = new OpticalLocalizer(this);
         //new StandardTrackingWheelLocalizer(opMode.hardwareMap, lastTrackingEncPositions, lastTrackingEncVels, this.descriptor.ODOMETRY_TUNER);
         //new TwoWheelTrackingLocalizer(opMode.hardwareMap,this.descriptor);
 
@@ -139,8 +171,6 @@ public class RobotContext {
     public Localizer getLocalizer() {
         return localizer;
     }
-
-    public Localizer getAprilTagLocalizer() {return aprilTagLocalizer;}
 
     public DriveUtil getDriveUtil() {
         return driveUtil;

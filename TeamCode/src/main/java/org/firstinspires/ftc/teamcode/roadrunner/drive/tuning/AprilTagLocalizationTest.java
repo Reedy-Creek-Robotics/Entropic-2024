@@ -18,7 +18,6 @@ public class AprilTagLocalizationTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         descriptor = new RobotDescriptor();
         context = new RobotContext(this,descriptor );
-        aprilTag = context.getAprilTagLocalizer();
 
 
         telemetry.addLine("ready");

@@ -16,7 +16,6 @@ public abstract class AutoMain extends LinearOpMode {
 
     protected Robot robot;
     protected RobotContext robotContext;
-    protected MachineVisionSubmersible mvs;
 
     protected Pose2d currentEnd;
 
@@ -40,7 +39,7 @@ public abstract class AutoMain extends LinearOpMode {
     public void initRobot(){
         robot = new Robot(this);
         robotContext = robot.getRobotContext();
-        mvs = new MachineVisionSubmersible(robotContext);
+        robot.getRobotContext().setAlliance(getAlliance());
         loadPaths();
         robot.init();
         robot.resetFiles(FILE_NAME);
