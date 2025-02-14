@@ -26,6 +26,7 @@ public class Robot extends BaseComponent{
     private ScoringSlide scoreSlide;
     private Intake intake;
     protected MachineVisionSubmersible mvs;
+    private SubParker subParker;
 
     private int updateCount;
     private ElapsedTime initTime;
@@ -42,6 +43,7 @@ public class Robot extends BaseComponent{
         scoreSlide = new ScoringSlide(context);
         intake = new Intake(context);
         mvs = new MachineVisionSubmersible(context);
+        //subParker = new SubParker(context);
 
         addSubComponents(driveTrain, horizontalSlide,littleHanger,scoreSlide, intake, mvs);
 
@@ -224,6 +226,10 @@ public class Robot extends BaseComponent{
 
     public MachineVisionSubmersible getMvs() {
         return mvs;
+    }
+
+    public SubParker getSubParker() {
+        return subParker;
     }
 
     private double computeBatteryVoltage() {

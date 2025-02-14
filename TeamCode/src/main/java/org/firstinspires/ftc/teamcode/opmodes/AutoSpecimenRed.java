@@ -3,9 +3,10 @@ package org.firstinspires.ftc.teamcode.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.components.RobotContext;
+import org.firstinspires.ftc.teamcode.unfinishedAutos.AutoRightLong;
 
 @Autonomous
-public class AutoRightRed extends AutoRightLong {
+public class AutoSpecimenRed extends AutoSpecimen3 {
 
     @Override
     public RobotContext.Alliance getAlliance() {

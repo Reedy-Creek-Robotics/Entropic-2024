@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.unfinishedAutos;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -7,13 +7,14 @@ import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationCon
 
 import org.firstinspires.ftc.teamcode.components.LittleHanger;
 import org.firstinspires.ftc.teamcode.components.ScoringSlide;
+import org.firstinspires.ftc.teamcode.opmodes.AutoMain;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class AutoLeftSingle extends AutoMain{
+public abstract class AutoLeftSingle extends AutoMain {
     public static boolean SCORE = true, PARK = true;
 
     TrajectorySequence scorePresets;
