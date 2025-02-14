@@ -23,7 +23,7 @@ public class OpticalLocalizationTest extends LinearOpMode {
             -15, -120, 0, 0);
     @Override
     public void runOpMode() throws InterruptedException {
-        opticalAprilTagLocalizer = BaseComponent.createRobotContext(this).localizer;
+        //opticalAprilTagLocalizer = BaseComponent.createRobotContext(this).localizer;
 
         telemetry.addLine("ready");
         telemetry.update();

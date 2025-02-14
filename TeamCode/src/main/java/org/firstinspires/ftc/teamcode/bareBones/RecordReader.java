@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.components.Robot;
 @Autonomous
 public class RecordReader extends OpMode {
 
-    public static String FILE_NAME = "Recorder";
+    public static String FILE_NAME = "Recorder.txt";
 
     Robot robot;
 
