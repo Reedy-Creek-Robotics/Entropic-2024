@@ -28,6 +28,7 @@ public class ColorTester extends OpMode {
         robotContext = BaseComponent.createRobotContext(this);
         robotContext.setAlliance(RobotContext.Alliance.BLUE);
         intake = new Intake(robotContext);
+        intake.setLED(true);
     }
 
     @Override
