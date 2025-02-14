@@ -71,7 +71,7 @@ public class RobotContext {
 
     public RobotDescriptor descriptor;
 
-    public OpticalAprilTagLocalizer localizer;
+    public OpticalLocalizer localizer;
 
     public VisionPortal frontPortal, sidePortal;
     public AprilTagProcessor frontAprilTagProcessor, sideAprilTagProcessor;
@@ -138,20 +138,25 @@ public class RobotContext {
                 .setErodeSize(10)
                 .build();
 
+
+
         //Portal
         this.frontPortal = new VisionPortal.Builder()
                 .setCamera(frontWebcam)
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 .addProcessors(frontAprilTagProcessor, teamLocator, yellowLocator)
                 .setCameraResolution(new Size((int) camera_width, (int) camera_height))
+                .enableLiveView(true)
                 .build();
         this.sidePortal = new VisionPortal.Builder()
                 .setCamera(sideWebcam)
                 .addProcessors(sideAprilTagProcessor)
+                .enableLiveView(false)
+                .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 .build();
 
-        this.localizer = new OpticalAprilTagLocalizer(this);
-        //this.localizer = new OpticalLocalizer(this);
+        //this.localizer = new OpticalAprilTagLocalizer(this);
+        this.localizer = new OpticalLocalizer(this);
         //new StandardTrackingWheelLocalizer(opMode.hardwareMap, lastTrackingEncPositions, lastTrackingEncVels, this.descriptor.ODOMETRY_TUNER);
         //new TwoWheelTrackingLocalizer(opMode.hardwareMap,this.descriptor);
 

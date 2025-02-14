@@ -52,7 +52,7 @@ public class ModifiedMecanumDrive extends MecanumDrive {
         super(tunner.kv, tunner.ka, tunner.kStatic, tunner.driveTrackWidth, tunner.driveTrackWidth, tunner.lateralMultiplier);
 
         follower = new HolonomicPIDVAFollower(tunner.translationalPid, tunner.translationalPid, tunner.headingPid,
-                new Pose2d(0.25, 0.25, Math.toRadians(3.0)), 0.2);
+                new Pose2d(0.25, 0.25, Math.toRadians(3.0)), 0.5);
 
         this.motors = motors;
         this.imu = imu;

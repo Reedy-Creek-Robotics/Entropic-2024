@@ -164,7 +164,7 @@ public abstract class AutoLeftSingle extends AutoMain{
         robot.waitForCommandsToFinish();
 
         //machine vision
-        List<List<Integer>> counts = mvs.getElementCounts();
+        List<List<Integer>> counts = robot.getMvs().getElementCounts();
         List<Double> totals = new ArrayList<>();
         totals.add(counts.get(0).get(0) + counts.get(1).get(0) * 1.1);
         totals.add(counts.get(0).get(1) + counts.get(1).get(1) * 1.1);
