@@ -46,6 +46,9 @@ public class Intake extends BaseComponent{
     public double getDistance(){
         return ((DistanceSensor) colorSensor).getDistance(DistanceUnit.MM);
     }
+    public double getLightDetected(){
+        return ((OpticalDistanceSensor) colorSensor).getLightDetected();
+    }
 
     public void setLED(boolean enabled){
         colorSensor.enableLed(enabled);

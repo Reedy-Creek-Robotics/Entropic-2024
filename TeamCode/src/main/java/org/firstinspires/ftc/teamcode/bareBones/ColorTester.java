@@ -38,12 +38,14 @@ public class ColorTester extends OpMode {
         float saturation = hsvValues[1];
         float value = hsvValues[2];
         double distance = intake.getDistance();
+        double light = intake.getLightDetected();
         telemetry.addLine("Press CROSS to toggle intake");
         telemetry.addLine("Press SQUARE to reject if RED");
         telemetry.addLine("Press CIRCLE to reject if BLUE");
         telemetry.addData("intake spinning: ", spinning);
         telemetry.addLine("-----COLOR SENSOR-----");
         telemetry.addData("distance (mm): ", distance);
+        telemetry.addData("light detected (%): ", light);
         telemetry.addData("hue: ", hue);
         telemetry.addData("saturation: ", saturation);
         telemetry.addData("value: ", value);
