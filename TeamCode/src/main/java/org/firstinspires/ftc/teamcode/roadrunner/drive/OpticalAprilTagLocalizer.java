@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.components.RobotContext;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class OpticalAprilTagLocalizer extends OpticalLocalizer {
@@ -23,7 +24,7 @@ public class OpticalAprilTagLocalizer extends OpticalLocalizer {
 
     Pose2d positionEstimate = new Pose2d(0,0,0);
 
-    List<AprilTagDetection> currentDetections;
+    List<AprilTagDetection> currentDetections = new ArrayList<>();
 
     public OpticalAprilTagLocalizer(RobotContext context) {
         super(context);

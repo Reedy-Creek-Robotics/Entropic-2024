@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.components.BaseComponent;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
+import org.firstinspires.ftc.teamcode.components.RobotContext;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.ModifiedMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.StandardTrackingWheelLocalizer;
 
@@ -70,7 +71,7 @@ public class TrackingWheelLateralDistanceTuner extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        DriveTrain driveTrain = new DriveTrain(BaseComponent.createRobotContext(this));
+        DriveTrain driveTrain = new DriveTrain(BaseComponent.createRobotContext(this, RobotContext.Alliance.RED));
         ModifiedMecanumDrive drive = driveTrain.roadrunner;
 
         if (!(drive.getLocalizer() instanceof StandardTrackingWheelLocalizer)) {

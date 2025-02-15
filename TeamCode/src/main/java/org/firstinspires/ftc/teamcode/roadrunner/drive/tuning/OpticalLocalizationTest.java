@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.components.BaseComponent;
+import org.firstinspires.ftc.teamcode.components.RobotContext;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.OpticalAprilTagLocalizer;
 
 @TeleOp
@@ -23,7 +24,7 @@ public class OpticalLocalizationTest extends LinearOpMode {
             -15, -120, 0, 0);
     @Override
     public void runOpMode() throws InterruptedException {
-        //opticalAprilTagLocalizer = BaseComponent.createRobotContext(this).localizer;
+        //opticalAprilTagLocalizer = BaseComponent.createRobotContext(this, RobotContext.Alliance.RED).localizer;
 
         telemetry.addLine("ready");
         telemetry.update();

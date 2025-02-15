@@ -62,6 +62,22 @@ public class ScoringSlide extends BaseComponent{
         return ((leftMotor.getCurrentPosition() + rightMotor.getCurrentPosition())/2);
     }
 
+    public int getRightPosition(){
+        return rightMotor.getCurrentPosition();
+    }
+
+    public int getleftPosition(){
+        return leftMotor.getCurrentPosition();
+    }
+
+    public int getRightTarget(){
+        return rightMotor.getTargetPosition();
+    }
+
+    public int getLeftTarget(){
+        return leftMotor.getTargetPosition();
+    }
+
     public void stopMotors() {
         if(leftMotor.getCurrentPosition() >= 50){
             leftMotor.setTargetPosition(getPosition());

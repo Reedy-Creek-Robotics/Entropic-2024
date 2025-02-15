@@ -17,6 +17,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.components.BaseComponent;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
+import org.firstinspires.ftc.teamcode.components.RobotContext;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.ModifiedMecanumDrive;
 
 import java.util.Objects;
@@ -60,7 +61,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        driveTrain = new DriveTrain(BaseComponent.createRobotContext(this));
+        driveTrain = new DriveTrain(BaseComponent.createRobotContext(this, RobotContext.Alliance.RED));
         drive = driveTrain.roadrunner;
 
         if (driveTrain.driveTuner.runUsingEncoder) {

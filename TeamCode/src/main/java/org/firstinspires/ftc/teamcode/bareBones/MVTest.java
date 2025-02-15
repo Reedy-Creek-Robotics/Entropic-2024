@@ -28,8 +28,7 @@ public class MVTest extends OpMode {
     public void init() {
 
         driver = new Controller(gamepad1);
-        robotContext = BaseComponent.createRobotContext(this);
-        robotContext.setAlliance(RobotContext.Alliance.BLUE);
+        robotContext = BaseComponent.createRobotContext(this, RobotContext.Alliance.BLUE);
         mvs = new MachineVisionSubmersible(robotContext);
 
         mvs.init();

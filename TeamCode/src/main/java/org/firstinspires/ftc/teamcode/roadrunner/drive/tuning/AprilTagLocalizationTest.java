@@ -17,7 +17,7 @@ public class AprilTagLocalizationTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         descriptor = new RobotDescriptor();
-        context = new RobotContext(this,descriptor );
+        context = new RobotContext(this, descriptor, RobotContext.Alliance.RED);
 
 
         telemetry.addLine("ready");

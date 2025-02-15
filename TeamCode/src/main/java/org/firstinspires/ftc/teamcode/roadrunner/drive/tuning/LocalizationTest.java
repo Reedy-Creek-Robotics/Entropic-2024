@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.components.BaseComponent;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
+import org.firstinspires.ftc.teamcode.components.RobotContext;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.ModifiedMecanumDrive;
 
 /**
@@ -20,7 +21,7 @@ import org.firstinspires.ftc.teamcode.roadrunner.drive.ModifiedMecanumDrive;
 public class LocalizationTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        DriveTrain driveTrain = new DriveTrain(BaseComponent.createRobotContext(this));
+        DriveTrain driveTrain = new DriveTrain(BaseComponent.createRobotContext(this, RobotContext.Alliance.RED));
         ModifiedMecanumDrive drive = driveTrain.getRoadrunner();
 
         driveTrain.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

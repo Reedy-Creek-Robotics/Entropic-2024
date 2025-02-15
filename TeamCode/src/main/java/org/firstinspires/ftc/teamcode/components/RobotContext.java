@@ -77,8 +77,6 @@ public class RobotContext {
     public AprilTagProcessor frontAprilTagProcessor, sideAprilTagProcessor;
     ColorBlobLocatorProcessor teamLocator, yellowLocator;
 
-    public OpticalLocalizer opticalLocalizer;
-
     public static double camera_width = 640;
     public static double camera_height = 480;
 

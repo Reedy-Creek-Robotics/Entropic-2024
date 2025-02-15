@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.components.BaseComponent;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
+import org.firstinspires.ftc.teamcode.components.RobotContext;
 import org.firstinspires.ftc.teamcode.game.Controller;
 
 @TeleOp
@@ -16,7 +17,7 @@ public class bareboneDrive extends OpMode {
 
     @Override
     public void init() {
-        driveTrain = new DriveTrain(BaseComponent.createRobotContext(this));
+        driveTrain = new DriveTrain(BaseComponent.createRobotContext(this, RobotContext.Alliance.RED));
         controller = new Controller(gamepad1);
     }
 

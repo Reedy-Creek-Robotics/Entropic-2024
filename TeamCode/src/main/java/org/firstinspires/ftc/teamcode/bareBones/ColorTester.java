@@ -25,8 +25,7 @@ public class ColorTester extends OpMode {
     public void init() {
 
         driver = new Controller(gamepad1);
-        robotContext = BaseComponent.createRobotContext(this);
-        robotContext.setAlliance(RobotContext.Alliance.BLUE);
+        robotContext = BaseComponent.createRobotContext(this, RobotContext.Alliance.RED);
         intake = new Intake(robotContext);
         intake.setLED(true);
     }

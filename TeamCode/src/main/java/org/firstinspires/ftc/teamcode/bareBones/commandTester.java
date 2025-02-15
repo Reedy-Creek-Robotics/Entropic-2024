@@ -19,7 +19,7 @@ public class commandTester extends OpMode {
     @Override
     public void init() {
         controller = new Controller(gamepad1);
-        context = BaseComponent.createRobotContext(this);
+        context = BaseComponent.createRobotContext(this, RobotContext.Alliance.RED);
 
         horizontalSlide = new HorizontalSlide(context);
         intake = new Intake(context);

@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.components.BaseComponent;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
+import org.firstinspires.ftc.teamcode.components.RobotContext;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.ModifiedMecanumDrive;
 
 /*
@@ -25,7 +26,7 @@ public class StraightTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        ModifiedMecanumDrive drive = new DriveTrain(BaseComponent.createRobotContext(this)).roadrunner;
+        ModifiedMecanumDrive drive = new DriveTrain(BaseComponent.createRobotContext(this, RobotContext.Alliance.RED)).roadrunner;
 
         Trajectory trajectory = drive.trajectoryBuilder(new Pose2d())
                 .forward(DISTANCE)

@@ -102,6 +102,11 @@ public class Robot extends BaseComponent{
 
         // Update telemetry once per iteration after all components have been called.
         telemetry.addData("position",getDriveTrain().getRoadRunner().getPoseEstimate());
+        telemetry.addData("right slide", getScoringSlide().getRightPosition());
+        telemetry.addData("left slide", getScoringSlide().getleftPosition());
+
+        telemetry.addData("right target", getScoringSlide().getRightTarget());
+        telemetry.addData("left target", getScoringSlide().getLeftTarget());
         telemetry.update();
 
     }

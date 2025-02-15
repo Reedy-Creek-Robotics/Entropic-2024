@@ -54,6 +54,18 @@ public class Intake extends BaseComponent{
         colorSensor.enableLed(enabled);
     }
 
+    public boolean isBlueCollected(){
+        double distance = getDistance();
+        float hue = getHSVValues()[0];
+        return distance > 50 && hue > 160 && hue < 290;
+    }
+
+    public boolean isRedCollected(){
+        double distance = getDistance();
+        float hue = getHSVValues()[0];
+        return distance > 50 && (hue < 60 || hue > 330);
+    }
+
     public class TimedIntake implements Command {
 
         double power,time;

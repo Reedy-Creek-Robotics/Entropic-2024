@@ -13,6 +13,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.internal.system.Misc;
 import org.firstinspires.ftc.teamcode.components.BaseComponent;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
+import org.firstinspires.ftc.teamcode.components.RobotContext;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.ModifiedMecanumDrive;
 
 /*
@@ -35,7 +36,7 @@ public class TrackWidthTuner extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        DriveTrain driveTrain = new DriveTrain(BaseComponent.createRobotContext(this));
+        DriveTrain driveTrain = new DriveTrain(BaseComponent.createRobotContext(this, RobotContext.Alliance.RED));
         ModifiedMecanumDrive drive = driveTrain.roadrunner;
         // TODO: if you haven't already, set the localizer to something that doesn't depend on
         // drive encoders for computing the heading

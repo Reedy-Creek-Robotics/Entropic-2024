@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
 
+import org.firstinspires.ftc.teamcode.components.RobotContext;
 import org.firstinspires.ftc.teamcode.components.ScoringSlide;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 
@@ -274,6 +275,10 @@ public abstract class AutoSample extends AutoMain{
         robot.getIntake().timedIntake(1,800);
         robot.getHorizontalSlide().linkageExtend();
         robot.waitForCommandsToFinish();
+        boolean otherTeamCollected = getAlliance() == RobotContext.Alliance.BLUE ? robot.getIntake().isRedCollected() : robot.getIntake().isBlueCollected();
+        if(otherTeamCollected) {
+            robot.getIntake().timedIntake(-1, 800);
+        }
         robot.getHorizontalSlide().contract(0);
         robot.waitForCommandsToFinish();
     }

@@ -52,7 +52,7 @@ public class TeleOpMain extends OpMode {
     public void init_loop() {
         super.start();
 
-        robot.getIntake().timedIntake(-1,120);
+        robot.getIntake().intake(-1);
         robot.getHorizontalSlide().start();
     }
 
