@@ -26,6 +26,7 @@ public class Robot extends BaseComponent{
     private ScoringSlide scoreSlide;
     private Intake intake;
     protected MachineVisionSubmersible mvs;
+    private ParkingStick parkingStick;
 
     private int updateCount;
     private ElapsedTime initTime;
@@ -42,8 +43,9 @@ public class Robot extends BaseComponent{
         scoreSlide = new ScoringSlide(context);
         intake = new Intake(context);
         mvs = new MachineVisionSubmersible(context);
+        parkingStick = new ParkingStick(context);
 
-        addSubComponents(driveTrain, horizontalSlide,littleHanger,scoreSlide, intake, mvs);
+        addSubComponents(driveTrain, horizontalSlide,littleHanger,scoreSlide, intake, mvs, parkingStick);
 
         TelemetryHolder.telemetry = telemetry;
     }
@@ -224,6 +226,10 @@ public class Robot extends BaseComponent{
 
     public MachineVisionSubmersible getMvs() {
         return mvs;
+    }
+
+    public ParkingStick getParkingStick() {
+        return parkingStick;
     }
 
     private double computeBatteryVoltage() {

@@ -117,6 +117,14 @@ public class TeleOpMain extends OpMode {
             robot.getScoringSlide().moveToHeight(slideDownPositions[slideDownPosIndex]);
         }
 
+        if(driver.isPressed(Controller.Button.TOUCH_PAD)){
+            if (robot.getParkingStick().getExtended()) {
+                robot.getParkingStick().contract();
+            } else {
+                robot.getParkingStick().extend();
+            }
+        }
+
 
         //testing
         if(controller2.isPressed(Controller.Button.CROSS)){
