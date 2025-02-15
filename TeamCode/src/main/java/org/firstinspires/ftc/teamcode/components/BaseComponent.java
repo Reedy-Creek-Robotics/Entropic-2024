@@ -72,10 +72,11 @@ public abstract class BaseComponent implements Component {
         nextCommands.clear();
     }
 
-    public static RobotContext createRobotContext(OpMode opMode) {
+    public static RobotContext createRobotContext(OpMode opMode, RobotContext.Alliance alliance) {
         return new RobotContext(
                 opMode,
-                new RobotDescriptor()
+                new RobotDescriptor(),
+                alliance
         );
     }
 

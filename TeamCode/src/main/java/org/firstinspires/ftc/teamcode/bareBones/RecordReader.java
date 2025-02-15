@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.components.BaseComponent;
 import org.firstinspires.ftc.teamcode.components.Robot;
+import org.firstinspires.ftc.teamcode.components.RobotContext;
 
 @Config
 @Autonomous
@@ -17,7 +18,7 @@ public class RecordReader extends OpMode {
 
     @Override
     public void init() {
-        robot = new Robot(this);
+        robot = new Robot(this, RobotContext.Alliance.RED);
     }
 
     @Override

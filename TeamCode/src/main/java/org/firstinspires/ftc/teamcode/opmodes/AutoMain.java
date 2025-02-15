@@ -37,7 +37,7 @@ public abstract class AutoMain extends LinearOpMode {
     }
 
     public void initRobot(){
-        robot = new Robot(this);
+        robot = new Robot(this, getAlliance());
         robotContext = robot.getRobotContext();
         loadPaths();
         robot.init();

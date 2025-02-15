@@ -100,13 +100,15 @@ public class RobotContext {
 
     List<Integer> lastTrackingEncPositions = new ArrayList<>();
     List<Integer> lastTrackingEncVels = new ArrayList<>();
-    public RobotContext(OpMode opMode, RobotDescriptor descriptor) {
+    public RobotContext(OpMode opMode, RobotDescriptor descriptor, Alliance alliance) {
         this.opMode = opMode;
         this.descriptor = descriptor;
         this.driveUtil = new MecanumUtil();
         this.frontWebcam = opMode.hardwareMap.get(WebcamName.class, "Front Webcam");
         this.sideWebcam = opMode.hardwareMap.get(WebcamName.class, "Side Webcam");
         this.clock = new ElapsedTime();
+
+        this.alliance = alliance;
 
         int[] viewIds = VisionPortal.makeMultiPortalView(2, VisionPortal.MultiPortalLayout.VERTICAL);
 
@@ -164,8 +166,7 @@ public class RobotContext {
         this.localizer = new OpticalLocalizer(this);
         //new StandardTrackingWheelLocalizer(opMode.hardwareMap, lastTrackingEncPositions, lastTrackingEncVels, this.descriptor.ODOMETRY_TUNER);
         //new TwoWheelTrackingLocalizer(opMode.hardwareMap,this.descriptor);
-
-        this.alliance = Alliance.RED; //blue is negative one, red is positive one
+        // blue is negative one, red is positive one
 
         this.record = "";
     }

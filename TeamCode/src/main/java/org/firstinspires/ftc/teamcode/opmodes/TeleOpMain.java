@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.components.LittleHanger;
 import org.firstinspires.ftc.teamcode.components.Robot;
+import org.firstinspires.ftc.teamcode.components.RobotContext;
 import org.firstinspires.ftc.teamcode.components.ScoringSlide;
 import org.firstinspires.ftc.teamcode.game.Controller;
 
@@ -37,7 +38,7 @@ public class TeleOpMain extends OpMode {
 
     @Override
     public void init() {
-        robot = new Robot(this);
+        robot = new Robot(this, RobotContext.Alliance.RED);
         driver = new Controller(gamepad1);
         robot.loadPositionFromDisk();
 

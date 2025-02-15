@@ -32,8 +32,8 @@ public class Robot extends BaseComponent{
     private ElapsedTime initTime;
     private ElapsedTime firstUpdateTime;
 
-    public Robot(OpMode opMode) {
-        super(createRobotContext(opMode));
+    public Robot(OpMode opMode, RobotContext.Alliance alliance) {
+        super(createRobotContext(opMode, alliance));
 
         this.lynxModules = hardwareMap.getAll(LynxModule.class);
 
@@ -185,10 +185,11 @@ public class Robot extends BaseComponent{
         telemetry.log().clear();
     }
 
-    public static RobotContext createRobotContext(OpMode opMode) {
+    public static RobotContext createRobotContext(OpMode opMode, RobotContext.Alliance alliance) {
         return new RobotContext(
                 opMode,
-                new RobotDescriptor()
+                new RobotDescriptor(),
+                alliance
         );
     }
 
