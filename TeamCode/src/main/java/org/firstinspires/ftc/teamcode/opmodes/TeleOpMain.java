@@ -48,11 +48,11 @@ public class TeleOpMain extends OpMode {
     }
 
     @Override
-    public void start() {
+    public void init_loop() {
         super.start();
 
-        robot.getLittleHanger().moveToTicks(- robot.getLittleHanger().getInitialPosition());
-        robot.getLittleHanger().resetSlideTicks();
+        robot.getIntake().timedIntake(-1,120);
+        robot.getHorizontalSlide().start();
     }
 
     @Override

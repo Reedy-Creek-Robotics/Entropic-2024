@@ -88,7 +88,7 @@ public class RobotContext {
             -15-90, -120, 0, 0);
 
     private Position sideCameraPostion = new Position(DistanceUnit.MM,
-            0,0,0,0);
+            214.071,38.961,158.5,0);
     private YawPitchRollAngles sideCameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES,
             0,-90,0,0);
 
@@ -124,7 +124,7 @@ public class RobotContext {
         this.sideAprilTagProcessor = new AprilTagProcessor.Builder()
                 .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
                 .setCameraPose(sideCameraPostion, sideCameraOrientation)
-                .setLensIntrinsics(0,0,0,0)
+                .setLensIntrinsics(456.881,456.881,310.532 ,243.914)
                 .build();
         this.teamLocator = new ColorBlobLocatorProcessor.Builder()
                 .setTargetColorRange(getAlliance() == RobotContext.Alliance.RED ? ColorRange.RED : ColorRange.BLUE)         // use a predefined color match
@@ -144,8 +144,6 @@ public class RobotContext {
                 .setDilateSize(10)
                 .setErodeSize(10)
                 .build();
-
-
 
         //Portal
         this.frontPortal = new VisionPortal.Builder()

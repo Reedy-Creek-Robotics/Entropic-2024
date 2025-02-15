@@ -41,6 +41,7 @@ public abstract class AutoMain extends LinearOpMode {
         robotContext = robot.getRobotContext();
         loadPaths();
         robot.init();
+        robot.getHorizontalSlide().start();
         robot.getRobotContext().setAlliance(getAlliance());
         robot.resetFiles(FILE_NAME);
         robot.getDriveTrain().getRoadRunner().setPoseEstimate(getStartPosition());
