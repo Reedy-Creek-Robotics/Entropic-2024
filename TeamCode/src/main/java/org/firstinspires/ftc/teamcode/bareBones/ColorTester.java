@@ -52,41 +52,39 @@ public class ColorTester extends OpMode {
         telemetry.addLine("----------------------");
 
         if (driver.isPressed(Controller.Button.CROSS)) {
-            if (spinning) {
-                telemetry.addLine("Stopping Intake...");
-                spinning = false;
-                intake.intake(0);
-            } else {
-                telemetry.addLine("Starting Intake...");
-                spinning = true;
-                intake.intake(1);
-            }
+            telemetry.addLine("Starting Intake...");
+            spinning = true;
+            intake.intake(1);
         }
 
         if (driver.isPressed(Controller.Button.SQUARE)) {
-            if (distance < 50){
+            if (distance > 50){
                 telemetry.addLine("DISTANCE too far.");
             }
             else if(hue < 60 || hue > 330){
                 telemetry.addLine("Rejecting RED...");
-                intake.timedIntake(-1, 1000);
-                intake.intake(spinning ? 1:0);
+                intake.intake(-1);
             } else {
                 telemetry.addLine("RED not found.");
             }
         }
 
         if (driver.isPressed(Controller.Button.CIRCLE)){
-            if (distance < 50){
+            if (distance > 50){
                 telemetry.addLine("DISTANCE too far.");
             }
             else if(hue > 160 && hue < 290){
                 telemetry.addLine("Rejecting BLUE...");
-                intake.timedIntake(-1, 1000);
-                intake.intake(spinning ? 1:0);
+                intake.intake(-1);
             } else {
                 telemetry.addLine("BLUE not found.");
             }
+        }
+
+        if(driver.isPressed(Controller.Button.TRIANGLE)){
+            telemetry.addLine("Stopping Intake...");
+            spinning = false;
+            intake.intake(0);
         }
 
 
