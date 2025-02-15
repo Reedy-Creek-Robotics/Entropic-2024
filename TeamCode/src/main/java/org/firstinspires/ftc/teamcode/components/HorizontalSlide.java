@@ -53,6 +53,9 @@ public class HorizontalSlide extends BaseComponent{
     @Override
     public void init(){
         telemetry.addLine("intake initialized");
+    }
+
+    public void start(){
         leftRotator.setPosition(getRotatorPosFromPercent(rotatorPos,-1));
         rightRotator.setPosition(getRotatorPosFromPercent(rotatorPos,1));
         leftLinkage.setPosition(getLinkagePosFromPercent(linkagePos,-1));

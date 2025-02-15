@@ -5,8 +5,6 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
 
-import org.firstinspires.ftc.teamcode.components.LittleHanger;
-import org.firstinspires.ftc.teamcode.components.MachineVisionSubmersible;
 import org.firstinspires.ftc.teamcode.components.ScoringSlide;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 
@@ -15,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Config
-public abstract class AutoLeft extends AutoMain{
+public abstract class AutoSample extends AutoMain{
     public static boolean PRELOAD = true, FIRST = true, SECOND = true, THIRD = true, PARK = true;
 
     @Override

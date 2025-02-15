@@ -88,7 +88,7 @@ public class RobotContext {
             -15-90, -120, 0, 0);
 
     private Position sideCameraPostion = new Position(DistanceUnit.MM,
-            0,0,0,0);
+            214.071,38.961,158.5,0);
     private YawPitchRollAngles sideCameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES,
             0,-90,0,0);
 
@@ -108,6 +108,13 @@ public class RobotContext {
         this.sideWebcam = opMode.hardwareMap.get(WebcamName.class, "Side Webcam");
         this.clock = new ElapsedTime();
 
+        int[] viewIds = VisionPortal.makeMultiPortalView(2, VisionPortal.MultiPortalLayout.VERTICAL);
+
+        // We extract the two view IDs from the array to make our lives a little easier later.
+        // NB: the array is 2 long because we asked for 2 portals up above.
+        int portal1ViewId = viewIds[0];
+        int portal2ViewId = viewIds[1];
+
         //Processors
         this.frontAprilTagProcessor = new AprilTagProcessor.Builder()
                 .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
@@ -117,7 +124,7 @@ public class RobotContext {
         this.sideAprilTagProcessor = new AprilTagProcessor.Builder()
                 .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
                 .setCameraPose(sideCameraPostion, sideCameraOrientation)
-                .setLensIntrinsics(0,0,0,0)
+                .setLensIntrinsics(456.881,456.881,310.532 ,243.914)
                 .build();
         this.teamLocator = new ColorBlobLocatorProcessor.Builder()
                 .setTargetColorRange(getAlliance() == RobotContext.Alliance.RED ? ColorRange.RED : ColorRange.BLUE)         // use a predefined color match
@@ -138,20 +145,18 @@ public class RobotContext {
                 .setErodeSize(10)
                 .build();
 
-
-
         //Portal
         this.frontPortal = new VisionPortal.Builder()
                 .setCamera(frontWebcam)
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 .addProcessors(frontAprilTagProcessor, teamLocator, yellowLocator)
                 .setCameraResolution(new Size((int) camera_width, (int) camera_height))
-                .enableLiveView(true)
+                .setLiveViewContainerId(portal1ViewId)
                 .build();
         this.sidePortal = new VisionPortal.Builder()
                 .setCamera(sideWebcam)
                 .addProcessors(sideAprilTagProcessor)
-                .enableLiveView(false)
+                .setLiveViewContainerId(portal2ViewId)
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 .build();
 

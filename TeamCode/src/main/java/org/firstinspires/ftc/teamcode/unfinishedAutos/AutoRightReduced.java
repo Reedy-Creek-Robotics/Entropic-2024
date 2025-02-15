@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.unfinishedAutos;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -6,9 +6,10 @@ import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstra
 import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
 
 import org.firstinspires.ftc.teamcode.components.ScoringSlide;
+import org.firstinspires.ftc.teamcode.opmodes.AutoMain;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 
-public abstract class AutoRightReduced extends AutoMain{
+public abstract class AutoRightReduced extends AutoMain {
 
     public static boolean MIDDLE = true, RIGHT = true, LEFT = true, PRELOAD1 = true, PRELOAD2 = true, PRESET1 = false, PRESET2 = false, PRESET3 = false, PARK = false;
 
