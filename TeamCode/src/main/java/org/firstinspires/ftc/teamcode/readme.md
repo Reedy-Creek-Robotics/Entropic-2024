@@ -54,6 +54,7 @@ Once you are familiar with the range of samples available, you can choose one to
 basis for your own robot.  In all cases, the desired sample(s) needs to be copied into
 your TeamCode module to be used.
 
+
 This is done inside Android Studio directly, using the following steps:
 
  1) Locate the desired sample class in the Project/Android tree.
